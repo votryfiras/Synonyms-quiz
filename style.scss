@@ -2,6 +2,7 @@ $page-bg-color: hsl(0, 0%, 90%);
 $primary-color: hsl(0, 0%, 99%);
 $secondary-color: #8f00ff;
 $text-color: #444444;
+// $text-color: #000;
 $border-radius: 8px;
 $border-color: darken($primary-color, 15);
 
@@ -9,15 +10,7 @@ body {
   margin: 0;
 }
 
-.background {
-  position: absolute;
-  top: 0;
-  background-image: url(wave-haikei.svg);
-  background-repeat: no-repeat;
-  background-size: cover;
-  height: 100vh;
-  width: 100vw;
-  z-index: -1;
+.app {
 }
 
 main {
@@ -28,6 +21,8 @@ main {
   justify-content: center;
   align-items: center;
   color: $text-color;
+  background-image: url(quiz.svg);
+  background-size: 80px 80px;
 }
 
 $offset-margin: 0.6rem;
@@ -56,6 +51,7 @@ $offset-margin: 0.6rem;
     transform: translate(-50%, -50%);
     border-radius: 1000000000000px;
     padding: 0.7em 1em;
+    color: white;
     background-color: $secondary-color;
     p {
       margin: 0;
@@ -93,12 +89,13 @@ $offset-margin: 0.6rem;
     user-select: none;
     cursor: pointer;
     &:hover {
-      border-color: darkviolet;
+      border-color: black;
     }
   }
   .selected-choice:focus {
     background-color: $secondary-color;
-    border-color: darkviolet;
+    border-color: black;
+    color: white;
     outline: 0;
   }
 }
@@ -119,13 +116,18 @@ $offset-margin: 0.6rem;
 .submit-segment {
   margin-inline: $offset-margin;
   margin-top: 2rem;
-  .submit-button {
+  button {
     font-size: 1.3em;
     padding: 0.5em 0.7em;
     border-radius: 10px;
-    border: 0;
+    border-color: $border-color;
+    border-style: solid;
     cursor: pointer;
-    background-color: $secondary-color;
+    background-color: $primary-color;
+    &:hover {
+      color: $secondary-color;
+      border-color: $secondary-color;
+    }
   }
 }
 
