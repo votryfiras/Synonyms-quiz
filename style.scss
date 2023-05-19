@@ -10,9 +10,6 @@ body {
   margin: 0;
 }
 
-.app {
-}
-
 main {
   min-height: 100vh;
   background-color: $page-bg-color;
@@ -62,10 +59,10 @@ $offset-margin: 0.6rem;
 .answer-segment {
   margin-top: 0.2rem;
   width: 100%;
-  &.choice .answer-textbox-segment {
+  &.choice-mode .answer-textbox-segment {
     display: none;
   }
-  &.insert .choice-segment {
+  &.insert-mode .choice-container {
     display: none;
   }
 }
@@ -92,11 +89,22 @@ $offset-margin: 0.6rem;
       border-color: black;
     }
   }
-  .selected-choice:focus {
+  .selected-choice {
     background-color: $secondary-color;
     border-color: black;
     color: white;
     outline: 0;
+  }
+}
+
+.answer-textbox-segment {
+  margin-inline: $offset-margin;
+  // margin-right: 0;
+
+  margin-top: 1em;
+  input {
+    font-size: 1.1em;
+    width: 100%;
   }
 }
 
