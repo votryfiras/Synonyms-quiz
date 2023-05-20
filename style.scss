@@ -2,7 +2,6 @@ $page-bg-color: hsl(0, 0%, 90%);
 $primary-color: hsl(0, 0%, 99%);
 $secondary-color: #8f00ff;
 $text-color: #444444;
-// $text-color: #000;
 $border-radius: 8px;
 $border-color: darken($primary-color, 15);
 
@@ -59,7 +58,7 @@ $offset-margin: 0.6rem;
 .answer-segment {
   margin-top: 0.2rem;
   width: 100%;
-  &.choice-mode .answer-textbox-segment {
+  &.choice-mode .answer-textbox-container {
     display: none;
   }
   &.insert-mode .choice-container {
@@ -97,14 +96,43 @@ $offset-margin: 0.6rem;
   }
 }
 
-.answer-textbox-segment {
+.answer-textbox-container {
   margin-inline: $offset-margin;
-  // margin-right: 0;
-
-  margin-top: 1em;
-  input {
-    font-size: 1.1em;
+  margin-top: 2em;
+  position: relative;
+  .answer-textbox {
+    box-sizing: border-box;
     width: 100%;
+    padding: 0.2em 0.4em;
+
+    font-size: 1.2em;
+
+    border-radius: $border-radius;
+    border-style: solid;
+    border-color: $border-color;
+    border-width: 2px;
+    outline: 0;
+    transition: border 50ms;
+    &:focus,
+    &:focus-visible {
+      border-color: $secondary-color;
+    }
+  }
+  &::before {
+    content: "here.";
+    position: absolute;
+    left: 15.9ch;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 1.2em;
+    color: gray;
+    animation: placeholder-type 5s infinite;
+  }
+  &:focus-within::before {
+    animation: unset;
+  }
+  &.typing::before {
+    content: "";
   }
 }
 
@@ -125,7 +153,7 @@ $offset-margin: 0.6rem;
   margin-inline: $offset-margin;
   margin-top: 2rem;
   button {
-    font-size: 1.3em;
+    font-size: 1.2em;
     padding: 0.5em 0.7em;
     border-radius: 10px;
     border-color: $border-color;
@@ -135,7 +163,59 @@ $offset-margin: 0.6rem;
     &:hover {
       color: $secondary-color;
       border-color: $secondary-color;
+      text-decoration: underline;
     }
+  }
+}
+
+@keyframes placeholder-type {
+  20% {
+    content: "here";
+  }
+  24% {
+    content: "her";
+  }
+  28% {
+    content: "he";
+  }
+  32% {
+    content: "h";
+  }
+  36% {
+    content: "";
+  }
+  40% {
+    content: "i";
+  }
+  44% {
+    content: "in";
+  }
+  48% {
+    content: "in t";
+  }
+  52% {
+    content: "in th";
+  }
+  56% {
+    content: "in thi";
+  }
+  60% {
+    content: "in this";
+  }
+  64% {
+    content: "in this s";
+  }
+  68% {
+    content: "in this sp";
+  }
+  72% {
+    content: "in this spo";
+  }
+  76% {
+    content: "in this spot";
+  }
+  80% {
+    content: "in this spot.";
   }
 }
 
