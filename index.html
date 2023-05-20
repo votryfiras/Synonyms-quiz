@@ -6,7 +6,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Synonyms</title>
     <link rel="stylesheet" href="style.css" />
-    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
     <script src="script.js" defer type="module"></script>
   </head>
   <body>
@@ -36,10 +35,10 @@
         </div>
         <div class="answer-segment choice-mode">
           <div class="choice-container">
-            <button class="choice">Choice 1</button>
-            <button class="choice">Choice 2</button>
-            <button class="choice">Choice 3</button>
-            <button class="choice">Choice 4</button>
+            <div class="choice"><button class="choice__button"></button></div>
+            <div class="choice"><button class="choice__button"></button></div>
+            <div class="choice"><button class="choice__button"></button></div>
+            <div class="choice"><button class="choice__button"></button></div>
           </div>
           <div class="answer-textbox-container">
             <input class="answer-textbox" placeholder="Write your answer" />
@@ -49,6 +48,7 @@
           <button class="submit-button">Submit</button>
           <button class="next-button">Next Question</button>
         </div>
+        <div class="answer-grade-segment">Good Job!</div>
       </div>
     </main>
   </body>

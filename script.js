@@ -53,10 +53,12 @@ const modeSelect = document.querySelector('.mode-select')
 const questionCounter = document.querySelector('.question-segment__banner__question-counter')
 const questionScript = document.querySelector(".question__script")
 const questionPrompt = document.querySelector('.question__prompt')
-const choices = document.querySelectorAll('.choice')
+const choiceButtons = document.querySelectorAll('.choice__button')
 const answerSegment = document.querySelector('.answer-segment')
 const answerTextbox = document.querySelector('.answer-textbox')
 const nextButton = document.querySelector(".next-button")
+const submitButton = document.querySelector(".submit-button")
+const answerGrade = document.querySelector(".answer-grade-segment")
 
 function getRandomItem(arr) {
   const randomIndex = Math.floor(Math.random() * arr.length);
@@ -99,18 +101,19 @@ function manipulateChoices(wordObject) {
     }
     newChoices.push(randomSynonym)
   }
-  newChoices.push(pickRandomSynonym(wordObject.syns))
+  const currentWordObject = WORDS.find(wordOject => wordOject.word === questionPrompt.textContent)
+  newChoices.push(getRandomItem(currentWordObject.syns))
 
   const shuffledChoices = shuffleArray(newChoices)
   for (let i = 0; i < 4; i++) {
-    choices[i].textContent = shuffledChoices[i]
+    choiceButtons[i].textContent = shuffledChoices[i]
   }
 }
 
 function selectChoice(e) {
   const selectedChoice = document.querySelector('.selected-choice')
   selectedChoice?.classList.remove('selected-choice')
-  e.target.classList.add('selected-choice')
+  e.target.parentElement.classList.add('selected-choice')
 }
 
 function switchMode() {
@@ -140,7 +143,19 @@ function nextQuestion() {
   questionPrompt.textContent = newWordObject.word
 }
 
-choices.forEach((choice => {
+function checkAnswer() {
+  const selectedChoice = document.querySelector('.selected-choice')?.firstChild.textContent
+  if (!selectedChoice) { }
+  else if (answerSegment.classList.contains("choice-mode")) {
+    const correctChoice = questionPrompt.textContent;
+    if (WORDS.find(wordObject => wordObject.word === correctChoice).syns.includes(selectedChoice)) {
+      answerGrade.classList.add("correct")
+      answerGrade.classList.remove("wrong")
+    }
+  }
+}
+
+choiceButtons.forEach((choice => {
   choice.addEventListener('click', selectChoice)
 }))
 
@@ -151,3 +166,4 @@ manipulateChoices(initialWord)
 modeSelect.addEventListener('change', switchMode)
 answerTextbox.addEventListener('keydown', textboxPlaceholderToggle)
 nextButton.addEventListener('click', nextQuestion)
+submitButton.addEventListener('click', checkAnswer)
