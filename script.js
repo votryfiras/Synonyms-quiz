@@ -47,10 +47,16 @@ function getSentences(str) {
   console.log(exmpls)
 }
 
-const choices = document.querySelectorAll('.choice')
+const TOTAL_QUESTION_COUNT = 10
+
 const modeSelect = document.querySelector('.mode-select')
+const questionCounter = document.querySelector('.question-segment__banner__question-counter')
+const questionScript = document.querySelector(".question__script")
+const questionPrompt = document.querySelector('.question__prompt')
+const choices = document.querySelectorAll('.choice')
 const answerSegment = document.querySelector('.answer-segment')
 const answerTextbox = document.querySelector('.answer-textbox')
+const nextButton = document.querySelector(".next-button")
 
 function selectChoice(e) {
   const selectedChoice = document.querySelector('.selected-choice')
@@ -61,6 +67,8 @@ function selectChoice(e) {
 function switchMode(e) {
   answerSegment.classList.toggle('choice-mode')
   answerSegment.classList.toggle('insert-mode')
+  if (answerSegment.classList.contains("choice-mode")) questionScript.textContent = "Which of these is"
+  else questionScript.textContent = "Write"
 }
 
 function textboxPlaceholderToggle(e) {
@@ -70,10 +78,27 @@ function textboxPlaceholderToggle(e) {
   }, 0)
 }
 
+function nextQuestion() {
+  function increaseCounter() {
+    const count = parseInt(questionCounter.textContent)
+    if (count < TOTAL_QUESTION_COUNT) questionCounter.textContent = count + 1
+  }
+  function pickRandomWord() {
+    const randomIndex = Math.floor(Math.random() * WORDS.length);
+    let newWord = WORDS[randomIndex].word;
+    const currentWord = questionPrompt.textContent
+
+    if (newWord === currentWord) newWord = pickRandomWord()
+    return newWord;
+  }
+  increaseCounter()
+  questionPrompt.textContent = pickRandomWord()
+}
+
 choices.forEach((choice => {
   choice.addEventListener('click', selectChoice)
 }))
 
 modeSelect.addEventListener('change', switchMode)
-
 answerTextbox.addEventListener('keydown', textboxPlaceholderToggle)
+nextButton.addEventListener('click', nextQuestion)
