@@ -2,21 +2,21 @@ const WORDS = [
   {
     word: "buy",
     def: ["to get something by giving money for it"],
-    syns: ["purchase", "acquire"],
+    syns: ["purchase", "acquire", "obtain"],
     languageLevel: "A1",
     examples: ['Eventually she had saved enough money to buy a small car.', 'He bought his mother some flowers/He bought some flowers for his mother.', 'There are more people buying at this time of the year so prices are high.', 'The company was set up to buy and sell shares on behalf of investors.', 'I bought my camera from a friend of mine.']
   },
   {
     word: "basin",
     def: ["an open, round container shaped like a bowl with sloping sides, used for holding food or liquid", "a large, open bowl, or the amount such a container will hold"],
-    syns: ["bowl", "dish", "pan", "pot", 'container', 'receptacle', "valley", "hollow", "gully", "gorge", "ravine", "bed", "channel", "dip", "depression", "concavity", "trough"],
+    syns: ["bowl", "dish", "pan", "pot", 'container'],
     languageLevel: "B1",
     examples: ['Run some water into the basin and wash your hands and face properly.', 'When you have broken the eggs into a basin, whisk them together lightly with a fork.', 'The basin in the upstairs bathroom has gold taps! …eaning fluids under the basin in the back toilet.', 'In the auction there is a rather nice antique porcelain basin and jug.', 'I left the napkins soaking in a basin.']
   },
   {
     word: "carbon footprint",
     def: ["a measure of the amount of carbon dioxide released into the atmosphere as a result of the activities of a particular individual, organization, or community."],
-    syns: ["pollution", "impurity"],
+    syns: ["pollution"],
     languageLevel: "B2",
     examples: ['The four main areas that determine your carbon foo…tural gas usage, car mileage, and airplane trips.', 'We have partnered with nearby farms, hoping to reduce the carbon footprint of our delivery trucks.'],
   },
@@ -30,7 +30,7 @@ const WORDS = [
   {
     word: "consume",
     def: ["to use fuel, energy, time, or a product, especially in large amounts", "to eat or drink something"],
-    syns: ["eat", "devour", "ingest", "swallow", "absorb"],
+    syns: ["eat", "devour", "swallow", "absorb"],
     languageLevel: "C1",
     examples: ["Our high living standards cause our current population to consume 25 percent of the world's oil.", 'Most of their manufactured products are consumed domestically.', 'The software consumes huge amounts of internet bandwidth.', "He consumes huge amounts of bread with every meal."]
   },
@@ -58,13 +58,62 @@ const answerSegment = document.querySelector('.answer-segment')
 const answerTextbox = document.querySelector('.answer-textbox')
 const nextButton = document.querySelector(".next-button")
 
+function getRandomItem(arr) {
+  const randomIndex = Math.floor(Math.random() * arr.length);
+  const wordObject = arr[randomIndex]
+  return wordObject
+}
+
+function pickRandomWordObject() {
+  let newWordObject = getRandomItem(WORDS);
+  const currentWordObject = WORDS.find(wordOject => wordOject.word === questionPrompt.textContent)
+
+  if (newWordObject === currentWordObject) newWordObject = pickRandomWordObject()
+  return newWordObject;
+}
+
+function manipulateChoices(wordObject) {
+  function pickRandomSynonym() {
+    const randomWordObject = pickRandomWordObject()
+    const randomSynonym = getRandomItem(randomWordObject.syns)
+    return randomSynonym
+  }
+  function shuffleArray(arr) {
+    let currentIndex = arr.length, randomIndex;
+    while (currentIndex != 0) {
+      randomIndex = Math.floor(Math.random() * currentIndex);
+      currentIndex--;
+      [arr[currentIndex], arr[randomIndex]] = [
+        arr[randomIndex], arr[currentIndex]];
+    }
+
+    return arr;
+  }
+
+  const newChoices = []
+
+  for (let i = 0; i < 3; i++) {
+    let randomSynonym = pickRandomSynonym()
+    while (newChoices.find(syn => syn === randomSynonym)) {
+      randomSynonym = pickRandomSynonym()
+    }
+    newChoices.push(randomSynonym)
+  }
+  newChoices.push(pickRandomSynonym(wordObject.syns))
+
+  const shuffledChoices = shuffleArray(newChoices)
+  for (let i = 0; i < 4; i++) {
+    choices[i].textContent = shuffledChoices[i]
+  }
+}
+
 function selectChoice(e) {
   const selectedChoice = document.querySelector('.selected-choice')
   selectedChoice?.classList.remove('selected-choice')
   e.target.classList.add('selected-choice')
 }
 
-function switchMode(e) {
+function switchMode() {
   answerSegment.classList.toggle('choice-mode')
   answerSegment.classList.toggle('insert-mode')
   if (answerSegment.classList.contains("choice-mode")) questionScript.textContent = "Which of these is"
@@ -83,21 +132,21 @@ function nextQuestion() {
     const count = parseInt(questionCounter.textContent)
     if (count < TOTAL_QUESTION_COUNT) questionCounter.textContent = count + 1
   }
-  function pickRandomWord() {
-    const randomIndex = Math.floor(Math.random() * WORDS.length);
-    let newWord = WORDS[randomIndex].word;
-    const currentWord = questionPrompt.textContent
 
-    if (newWord === currentWord) newWord = pickRandomWord()
-    return newWord;
-  }
+  const newWordObject = pickRandomWordObject()
+
   increaseCounter()
-  questionPrompt.textContent = pickRandomWord()
+  manipulateChoices(newWordObject)
+  questionPrompt.textContent = newWordObject.word
 }
 
 choices.forEach((choice => {
   choice.addEventListener('click', selectChoice)
 }))
+
+const initialWord = getRandomItem(WORDS)
+questionPrompt.textContent = initialWord.word;
+manipulateChoices(initialWord)
 
 modeSelect.addEventListener('change', switchMode)
 answerTextbox.addEventListener('keydown', textboxPlaceholderToggle)
