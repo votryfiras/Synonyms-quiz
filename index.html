@@ -6,7 +6,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Synonyms</title>
     <link rel="stylesheet" href="style.css" />
-    <script src="script.js" defer></script>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <script src="script.js" defer type="module"></script>
   </head>
   <body>
     <main>
@@ -23,12 +24,12 @@
           </div>
           <div class="question-segment__question">
             <p>
-              Which of these is a
+              <span class="question__format">Which of these is a</span>
               <span class="question__keyword">synonym</span> of Buy?
             </p>
           </div>
         </div>
-        <div class="answer-segment insert-mode">
+        <div class="answer-segment choice-mode">
           <div class="choice-container">
             <button class="choice">Choice 1</button>
             <button class="choice">Choice 2</button>

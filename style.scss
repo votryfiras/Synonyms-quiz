@@ -113,6 +113,7 @@ $offset-margin: 0.6rem;
     border-width: 2px;
     outline: 0;
     transition: border 50ms;
+    user-select: none;
     &:focus,
     &:focus-visible {
       border-color: $secondary-color;
@@ -126,7 +127,7 @@ $offset-margin: 0.6rem;
     transform: translateY(-50%);
     font-size: 1.2em;
     color: gray;
-    animation: placeholder-type 5s infinite;
+    animation: placeholder-type 7s infinite 2s;
   }
   &:focus-within::before {
     animation: unset;
@@ -155,7 +156,7 @@ $offset-margin: 0.6rem;
   button {
     font-size: 1.2em;
     padding: 0.5em 0.7em;
-    border-radius: 10px;
+    border-radius: 2px;
     border-color: $border-color;
     border-style: solid;
     cursor: pointer;
