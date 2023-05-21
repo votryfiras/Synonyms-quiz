@@ -15,15 +15,19 @@ main {
   font-family: "Roboto", sans-serif;
   display: flex;
   justify-content: center;
-  align-items: center;
+  // align-items: center;
   color: $text-color;
   background-image: url(quiz.svg);
   background-size: 80px 80px;
 }
 
+.app {
+  margin-top: 6rem;
+}
+
 $offset-margin: 0.6rem;
 .question-segment {
-  width: 60vw;
+  min-width: 55vw;
   margin-inline: $offset-margin;
   position: relative;
   font-size: 1.1em;
@@ -90,24 +94,22 @@ $offset-margin: 0.6rem;
       text-align: center;
       font-size: inherit;
       cursor: pointer;
-      transition: background 10ms;
+      transition: background 25ms;
       &:hover {
         border-color: $secondary-color;
-        background-color: $selected-bg;
       }
     }
   }
   .selected-choice .choice__button {
     border-color: $secondary-color;
     background-color: $selected-bg;
-    border-color: $secondary-color;
     outline: 0;
   }
 }
 
 .answer-textbox-container {
   margin-inline: $offset-margin;
-  margin-top: 2em;
+  margin-top: 1em;
   position: relative;
   .answer-textbox {
     box-sizing: border-box;
@@ -168,8 +170,9 @@ $offset-margin: 0.6rem;
     border-radius: 2px;
     border-color: $border-color;
     border-style: solid;
-    cursor: pointer;
     background-color: $primary-color;
+    color: $text-color;
+    cursor: pointer;
     &:hover {
       color: $secondary-color;
       border-color: $secondary-color;
@@ -179,22 +182,43 @@ $offset-margin: 0.6rem;
 }
 
 .answer-grade-segment {
-  width: 100%;
-  height: 60px;
-  margin-inline: $offset-margin;
-  margin-top: 1rem;
+  font-size: 1.4rem;
+  padding: 0.4em 0.5em;
   border-width: 2px;
   border-style: solid;
-  display: none;
+  margin-inline: $offset-margin;
+  margin-block: 1.5rem;
+  border-radius: $border-radius;
+  opacity: 0;
+  transition: opacity 100ms;
   &.correct {
-    display: block;
-    border-color: green;
-    background-color: lime;
+    opacity: 1;
+    border-color: darkgreen;
+    background-color: limegreen;
+    & .answer-grade__correct-image {
+      display: inline;
+    }
   }
   &.wrong {
-    display: block;
+    opacity: 1;
     border-color: maroon;
-    background-color: red;
+    background-color: lighten(firebrick, 5);
+    & .answer-grade__wrong-image {
+      display: inline;
+    }
+  }
+  .answer-grade {
+    color: #fff;
+    display: flex;
+    align-items: center;
+    &__text {
+      height: min-content;
+      margin: 0 0.5em;
+    }
+  }
+  .answer-grade__image {
+    width: 2.3em;
+    display: none;
   }
 }
 

@@ -48,6 +48,8 @@ function getSentences(str) {
 }
 
 const TOTAL_QUESTION_COUNT = 10
+const CORRECT_PHRASES = ['Good job!', "You've got it made!", 'Super!', 'Excellent!', 'Good work!', "You've got that down pat.", "Perfect!", "Fantastic!", "Tremendous!", "Great!", "Nice job!", "I'm impressed!", "Marvelous!", "You've got the hang of it!", "Super-Duper!", "Out of sight!", "You've got your brain in gear today."]
+const WRONG_PHRASES = ["You must have been a scavenger...", "You certainly did well today.", "Not bad.", "You are learning a lot though.", "Don't be upset, everything is okay!", "You did a lot of work today.", "Don't jump ship just yet.", "Never give up.", "Don't throw in the towel just yet.", "Keep the faith a while longer.", "Ah, what a loser!"]
 
 const modeSelect = document.querySelector('.mode-select')
 const questionCounter = document.querySelector('.question-segment__banner__question-counter')
@@ -59,6 +61,7 @@ const answerTextbox = document.querySelector('.answer-textbox')
 const nextButton = document.querySelector(".next-button")
 const submitButton = document.querySelector(".submit-button")
 const answerGrade = document.querySelector(".answer-grade-segment")
+const answerGradeText = document.querySelector(".answer-grade__text")
 
 function getRandomItem(arr) {
   const randomIndex = Math.floor(Math.random() * arr.length);
@@ -149,8 +152,16 @@ function checkAnswer() {
   else if (answerSegment.classList.contains("choice-mode")) {
     const correctChoice = questionPrompt.textContent;
     if (WORDS.find(wordObject => wordObject.word === correctChoice).syns.includes(selectedChoice)) {
+      const motivationalPhrase = getRandomItem(CORRECT_PHRASES)
+      answerGradeText.textContent = motivationalPhrase
       answerGrade.classList.add("correct")
       answerGrade.classList.remove("wrong")
+    }
+    else {
+      const motivationalPhrase = getRandomItem(WRONG_PHRASES)
+      answerGradeText.textContent = motivationalPhrase
+      answerGrade.classList.remove("correct")
+      answerGrade.classList.add("wrong")
     }
   }
 }
