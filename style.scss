@@ -145,6 +145,7 @@ $offset-margin: 0.6rem;
   }
   &.typing::before {
     content: "";
+    animation: none;
   }
 }
 
@@ -182,25 +183,36 @@ $offset-margin: 0.6rem;
 }
 
 .answer-grade-segment {
+  margin-inline: $offset-margin;
+  margin-block: 1.5rem;
+}
+
+.answer-grade-segment__bg {
+  color: #fff;
   font-size: 1.4rem;
   padding: 0.4em 0.5em;
   border-width: 2px;
   border-style: solid;
-  margin-inline: $offset-margin;
-  margin-block: 1.5rem;
   border-radius: $border-radius;
   opacity: 0;
   transition: opacity 100ms;
-  &.correct {
+  user-select: none;
+  &.correct,
+  &.wrong {
     opacity: 1;
+    user-select: auto;
+  }
+  &.correct {
     border-color: darkgreen;
     background-color: limegreen;
     & .answer-grade__correct-image {
       display: inline;
     }
+    .answer-grade .answer-grade__toggle-info {
+      display: block;
+    }
   }
   &.wrong {
-    opacity: 1;
     border-color: maroon;
     background-color: lighten(firebrick, 5);
     & .answer-grade__wrong-image {
@@ -208,17 +220,78 @@ $offset-margin: 0.6rem;
     }
   }
   .answer-grade {
-    color: #fff;
     display: flex;
     align-items: center;
+    position: relative;
     &__text {
       height: min-content;
       margin: 0 0.5em;
+    }
+    &__toggle-info {
+      position: absolute;
+      top: 50%;
+      transform: translateY(100%);
+
+      padding: 0;
+      border: 0;
+      margin: 0 4rem;
+
+      background-color: transparent;
+      color: #0000d6;
+      font-size: 0.5em;
+
+      display: none;
+      cursor: pointer;
+      img {
+        width: 1em;
+        vertical-align: middle;
+        transform: rotate(-90deg);
+      }
     }
   }
   .answer-grade__image {
     width: 2.3em;
     display: none;
+  }
+}
+
+.word-info.visible {
+  max-width: 55vmax;
+  display: block;
+}
+
+.word-info {
+  display: none;
+  margin-top: 1em;
+  font-size: 0.9em;
+  &.visible {
+    display: block;
+  }
+  hr {
+    border-color: darkgreen;
+  }
+  &__section {
+    margin-block: 1em;
+    &__keyword {
+      color: darkgreen;
+      text-decoration: underline;
+    }
+  }
+  &__level__level {
+    font-size: 0.7em;
+    padding: 0.25em;
+    background-color: $secondary-color;
+    border-radius: 5px;
+  }
+  &__def {
+    &__definition {
+      margin: 0 auto;
+    }
+  }
+  &__exm {
+    &__example {
+      margin: 0 auto;
+    }
   }
 }
 

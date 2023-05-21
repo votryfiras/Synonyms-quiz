@@ -24,14 +24,14 @@ const WORDS = [
     word: "conserve",
     def: ["protect (something, especially something of environmental or cultural importance) from harm or destruction."],
     syns: ["perserve"],
-    languageLevel: "",
+    languageLevel: "C1",
     examples: ['To conserve electricity, we are cutting down on our heating.', 'The nationalists are very eager to conserve their customs and language.', "I'm not being lazy - I'm just conserving my energy/strength for later."],
   },
   {
     word: "consume",
     def: ["to use fuel, energy, time, or a product, especially in large amounts", "to eat or drink something"],
     syns: ["eat", "devour", "swallow", "absorb"],
-    languageLevel: "C1",
+    languageLevel: "B1",
     examples: ["Our high living standards cause our current population to consume 25 percent of the world's oil.", 'Most of their manufactured products are consumed domestically.', 'The software consumes huge amounts of internet bandwidth.', "He consumes huge amounts of bread with every meal."]
   },
 ]
@@ -60,8 +60,10 @@ const answerSegment = document.querySelector('.answer-segment')
 const answerTextbox = document.querySelector('.answer-textbox')
 const nextButton = document.querySelector(".next-button")
 const submitButton = document.querySelector(".submit-button")
-const answerGrade = document.querySelector(".answer-grade-segment")
+const answerGradeSegment = document.querySelector(".answer-grade-segment__bg")
 const answerGradeText = document.querySelector(".answer-grade__text")
+const wordInfo = document.querySelector('.word-info')
+const toggleInfoButton = document.querySelector('.answer-grade__toggle-info')
 
 function getRandomItem(arr) {
   const randomIndex = Math.floor(Math.random() * arr.length);
@@ -105,8 +107,7 @@ function manipulateChoices(wordObject) {
     newChoices.push(randomSynonym)
   }
   const currentWordObject = WORDS.find(wordOject => wordOject.word === questionPrompt.textContent)
-  newChoices.push(getRandomItem(currentWordObject.syns))
-
+  newChoices.push(getRandomItem(wordObject.syns))
   const shuffledChoices = shuffleArray(newChoices)
   for (let i = 0; i < 4; i++) {
     choiceButtons[i].textContent = shuffledChoices[i]
@@ -147,22 +148,68 @@ function nextQuestion() {
 }
 
 function checkAnswer() {
+  function motivatingGrade() {
+    const motivationalPhrase = getRandomItem(CORRECT_PHRASES)
+    answerGradeText.textContent = motivationalPhrase
+    answerGradeSegment.classList.add("correct")
+    answerGradeSegment.classList.remove("wrong")
+  }
+  function wrongGrade() {
+    const wrongPhrase = getRandomItem(WRONG_PHRASES)
+    answerGradeText.textContent = wrongPhrase
+    //  + answerGradeText.textContent
+    answerGradeSegment.classList.remove("correct")
+    answerGradeSegment.classList.add("wrong")
+  }
+
+  const prompt = questionPrompt.textContent;
+  const correctSynonyms = WORDS.find(wordObject => wordObject.word === prompt).syns
   const selectedChoice = document.querySelector('.selected-choice')?.firstChild.textContent
-  if (!selectedChoice) { }
+  const writtenAnswer = answerTextbox.textContent
+
+  if (!selectedChoice && !writtenAnswer) { }
   else if (answerSegment.classList.contains("choice-mode")) {
-    const correctChoice = questionPrompt.textContent;
-    if (WORDS.find(wordObject => wordObject.word === correctChoice).syns.includes(selectedChoice)) {
-      const motivationalPhrase = getRandomItem(CORRECT_PHRASES)
-      answerGradeText.textContent = motivationalPhrase
-      answerGrade.classList.add("correct")
-      answerGrade.classList.remove("wrong")
+    if (correctSynonyms.includes(selectedChoice)) { motivatingGrade() }
+    else { wrongGrade() }
+  }
+  else {
+    if (correctSynonyms.includes(writtenAnswer)) { motivatingGrade() }
+  }
+}
+
+function displayWordInfo() {
+  wordInfo.classList.toggle('visible')
+  if (wordInfo.classList.contains('visible')) {
+    const currentWordObject = WORDS.find(wordOject => wordOject.word === questionPrompt.textContent)
+    const wordSpan = document.querySelector('.word-info__word__term')
+    const levelSpan = document.querySelector('.word-info__level__level')
+    const defSection = document.querySelector('.word-info__def')
+    const exmSection = document.querySelector('.word-info__exm')
+
+    toggleInfoButton.querySelector('span').textContent = "Hide"
+    toggleInfoButton.querySelector('img').setAttribute('style', 'transform: rotate(0deg)')
+
+    wordSpan.textContent = currentWordObject.word.charAt(0).toUpperCase() + currentWordObject.word.slice(1);
+    levelSpan.textContent = currentWordObject.languageLevel
+
+    for (const def of currentWordObject.def) {
+      const defListItem = document.createElement('li')
+      defListItem.className = "word-info__def__definition"
+      defListItem.textContent = def
+      defSection.querySelector('ul').appendChild(defListItem)
     }
-    else {
-      const motivationalPhrase = getRandomItem(WRONG_PHRASES)
-      answerGradeText.textContent = motivationalPhrase
-      answerGrade.classList.remove("correct")
-      answerGrade.classList.add("wrong")
+
+    for (const exm of currentWordObject.examples) {
+      const exmListItem = document.createElement('li')
+      exmListItem.className = "word-info__exm__example"
+      exmListItem.textContent = exm
+      exmSection.querySelector('ul').appendChild(exmListItem)
     }
+
+  }
+  else {
+    toggleInfoButton.querySelector('span').textContent = "More about the word"
+    toggleInfoButton.querySelector('img').setAttribute('style', 'transform: rotate(-90deg)')
   }
 }
 
@@ -178,3 +225,4 @@ modeSelect.addEventListener('change', switchMode)
 answerTextbox.addEventListener('keydown', textboxPlaceholderToggle)
 nextButton.addEventListener('click', nextQuestion)
 submitButton.addEventListener('click', checkAnswer)
+toggleInfoButton.addEventListener('click', displayWordInfo)

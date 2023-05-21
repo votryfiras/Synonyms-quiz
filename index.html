@@ -49,18 +49,44 @@
           <button class="next-button">Next Question</button>
         </div>
         <div class="answer-grade-segment">
-          <div class="answer-grade">
-            <img
-              class="answer-grade__image answer-grade__correct-image"
-              src="./circle-check-regular.svg"
-              alt="RIGHT!"
-            />
-            <img
-              class="answer-grade__image answer-grade__wrong-image"
-              src="circle-xmark-regular.svg"
-              alt="WRONG"
-            />
-            <p class="answer-grade__text"></p>
+          <div class="answer-grade-segment__bg">
+            <div class="answer-grade">
+              <img
+                class="answer-grade__image answer-grade__correct-image"
+                src="./circle-check-regular.svg"
+                alt="RIGHT!"
+              />
+              <img
+                class="answer-grade__image answer-grade__wrong-image"
+                src="circle-xmark-regular.svg"
+                alt="WRONG"
+              />
+              <p class="answer-grade__text"></p>
+
+              <button class="answer-grade__toggle-info">
+                <span>More about the word</span>
+                <img src="down-arrow.svg" alt="" />
+              </button>
+            </div>
+            <div class="word-info">
+              <hr />
+              <div class="word-info__word">
+                <span class="word-info__section__keyword">Word:</span>
+                <span class="word-info__word__term">Buy</span>
+              </div>
+              <div class="word-info__level word-info__section">
+                <span class="word-info__section__keyword">Language level:</span>
+                <span class="word-info__level__level">A1</span>
+              </div>
+              <div class="word-info__def word-info__section">
+                <span class="word-info__section__keyword">Definition(s):</span>
+                <ul></ul>
+              </div>
+              <div class="word-info__exm word-info__section">
+                <span class="word-info__section__keyword">Example(s):</span>
+                <ul></ul>
+              </div>
+            </div>
           </div>
         </div>
       </div>
