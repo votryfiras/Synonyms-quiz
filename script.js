@@ -47,10 +47,40 @@ function getSentences(str) {
   console.log(exmpls)
 }
 
-const TOTAL_QUESTION_COUNT = 10
+const TOTAL_QUESTION_COUNT = 10 // Temporary
 const CORRECT_PHRASES = ['Good job!', "You've got it made!", 'Super!', 'Excellent!', 'Good work!', "You've got that down pat.", "Perfect!", "Fantastic!", "Tremendous!", "Great!", "Nice job!", "I'm impressed!", "Marvelous!", "You've got the hang of it!", "Super-Duper!", "Out of sight!", "You've got your brain in gear today."]
 const WRONG_PHRASES = ["You must have been a scavenger...", "You certainly did well today.", "Not bad.", "You are learning a lot though.", "Don't be upset, everything is okay!", "You did a lot of work today.", "Don't jump ship just yet.", "Never give up.", "Don't throw in the towel just yet.", "Keep the faith a while longer.", "Ah, what a loser!"]
 
+const rounds = [
+  /*
+    {
+      roundNumber: 1,
+      correctAnswerCount: 3,
+      wrongAnswerCount: 4,
+      skippedAnswerCount: 1,
+      totalQuestionCount: 10,
+      terminatedAt: 8 (correntAnswerCount + wrongAnswerCount + skippedAnswerCount),
+      isRoundWon: false (correctAnswerCount > ( wrongAnswerCount + skippedAnswerCount ) ),
+      type: choice,
+      bestStreak: 2,
+      streaks: [1, 2],
+      prompts: [
+        {
+          word: buy,
+          choices: [pollution, container, acquire, bowl]
+          correctChoice: ["acquire"]
+        }
+        {
+          word: buy,
+          choices: [pollution, container, purchase, bowl],
+          correctChoice: ["purchase"] // Put into an array for the insert case
+        }
+      ]
+    }
+  */
+]
+
+const app = document.querySelector('.app')
 const modeSelect = document.querySelector('.mode-select')
 const questionCounter = document.querySelector('.question-segment__banner__question-counter')
 const questionScript = document.querySelector(".question__script")
@@ -64,6 +94,14 @@ const answerGradeSegment = document.querySelector(".answer-grade-segment__bg")
 const answerGradeText = document.querySelector(".answer-grade__text")
 const wordInfo = document.querySelector('.word-info')
 const toggleInfoButton = document.querySelector('.answer-grade__toggle-info')
+
+function initChoices() {
+  questionCounter.textContent = 1
+
+  const initialWord = getRandomItem(WORDS)
+  questionPrompt.textContent = initialWord.word;
+  manipulateChoices(initialWord)
+}
 
 function getRandomItem(arr) {
   const randomIndex = Math.floor(Math.random() * arr.length);
@@ -106,7 +144,6 @@ function manipulateChoices(wordObject) {
     }
     newChoices.push(randomSynonym)
   }
-  const currentWordObject = WORDS.find(wordOject => wordOject.word === questionPrompt.textContent)
   newChoices.push(getRandomItem(wordObject.syns))
   const shuffledChoices = shuffleArray(newChoices)
   for (let i = 0; i < 4; i++) {
@@ -114,10 +151,19 @@ function manipulateChoices(wordObject) {
   }
 }
 
-function selectChoice(e) {
+function resetChoices() {
   const selectedChoice = document.querySelector('.selected-choice')
   selectedChoice?.classList.remove('selected-choice')
-  e.target.parentElement.classList.add('selected-choice')
+  answerGradeSegment.classList.remove('correct')
+  answerGradeSegment.classList.remove('wrong')
+}
+
+function selectChoice(e) {
+  if (!e.target.classList.contains('disabled')) {
+    const selectedChoice = document.querySelector('.selected-choice')
+    selectedChoice?.classList.remove('selected-choice')
+    e.target.parentElement.classList.add('selected-choice')
+  }
 }
 
 function switchMode() {
@@ -139,12 +185,17 @@ function nextQuestion() {
     const count = parseInt(questionCounter.textContent)
     if (count < TOTAL_QUESTION_COUNT) questionCounter.textContent = count + 1
   }
+  function enableChoices() {
+    answerSegment.classList.remove('disabled')
+  }
 
   const newWordObject = pickRandomWordObject()
 
+  questionPrompt.textContent = newWordObject.word
   increaseCounter()
   manipulateChoices(newWordObject)
-  questionPrompt.textContent = newWordObject.word
+  resetChoices()
+  enableChoices()
 }
 
 function checkAnswer() {
@@ -157,19 +208,24 @@ function checkAnswer() {
   function wrongGrade() {
     const wrongPhrase = getRandomItem(WRONG_PHRASES)
     answerGradeText.textContent = wrongPhrase
-    //  + answerGradeText.textContent
     answerGradeSegment.classList.remove("correct")
     answerGradeSegment.classList.add("wrong")
+  }
+  function disableChoices() {
+    answerSegment.classList.add('disabled')
   }
 
   const prompt = questionPrompt.textContent;
   const correctSynonyms = WORDS.find(wordObject => wordObject.word === prompt).syns
   const selectedChoice = document.querySelector('.selected-choice')?.firstChild.textContent
-  const writtenAnswer = answerTextbox.textContent
+  const writtenAnswer = answerTextbox.value
 
   if (!selectedChoice && !writtenAnswer) { }
   else if (answerSegment.classList.contains("choice-mode")) {
-    if (correctSynonyms.includes(selectedChoice)) { motivatingGrade() }
+    if (correctSynonyms.includes(selectedChoice)) {
+      motivatingGrade()
+      disableChoices()
+    }
     else { wrongGrade() }
   }
   else {
@@ -213,13 +269,11 @@ function displayWordInfo() {
   }
 }
 
+initChoices()
+
 choiceButtons.forEach((choice => {
   choice.addEventListener('click', selectChoice)
 }))
-
-const initialWord = getRandomItem(WORDS)
-questionPrompt.textContent = initialWord.word;
-manipulateChoices(initialWord)
 
 modeSelect.addEventListener('change', switchMode)
 answerTextbox.addEventListener('keydown', textboxPlaceholderToggle)

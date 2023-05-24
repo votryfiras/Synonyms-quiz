@@ -5,6 +5,10 @@ $text-color: #444444;
 $border-radius: 8px;
 $border-color: darken($primary-color, 15);
 
+:root {
+  --offset-margin: 0.6rem;
+}
+
 body {
   margin: 0;
 }
@@ -15,7 +19,6 @@ main {
   font-family: "Roboto", sans-serif;
   display: flex;
   justify-content: center;
-  // align-items: center;
   color: $text-color;
   background-image: url(quiz.svg);
   background-size: 80px 80px;
@@ -25,10 +28,11 @@ main {
   margin-top: 6rem;
 }
 
-$offset-margin: 0.6rem;
+// START Question segment
+
 .question-segment {
   min-width: 55vw;
-  margin-inline: $offset-margin;
+  margin-inline: var(--offset-margin);
   position: relative;
   font-size: 1.1em;
   &__question {
@@ -59,14 +63,32 @@ $offset-margin: 0.6rem;
   }
 }
 
+// START Answer segment
+
 .answer-segment {
-  margin-top: 0.2rem;
   width: 100%;
+  margin-top: 0.2rem;
+  position: relative;
   &.choice-mode .answer-textbox-container {
     display: none;
   }
   &.insert-mode .choice-container {
     display: none;
+  }
+}
+
+.answer-segment.disabled {
+  .choice {
+    position: relative;
+    &::before {
+      content: "";
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.1);
+      border-radius: inherit;
+      cursor: not-allowed;
+    }
   }
 }
 
@@ -77,7 +99,7 @@ $offset-margin: 0.6rem;
   grid-template-columns: repeat(var(--repeat), minmax(200px, 1fr));
   .choice {
     box-sizing: border-box;
-    margin: $offset-margin;
+    margin: var(--offset-margin);
 
     font-size: 1.1rem;
     border-radius: $border-radius;
@@ -100,7 +122,7 @@ $offset-margin: 0.6rem;
       }
     }
   }
-  .selected-choice .choice__button {
+  .selected-choice .choice__button.choice__button {
     border-color: $secondary-color;
     background-color: $selected-bg;
     outline: 0;
@@ -108,7 +130,7 @@ $offset-margin: 0.6rem;
 }
 
 .answer-textbox-container {
-  margin-inline: $offset-margin;
+  margin-inline: var(--offset-margin);
   margin-top: 1em;
   position: relative;
   .answer-textbox {
@@ -149,21 +171,57 @@ $offset-margin: 0.6rem;
   }
 }
 
-.mode-select-segment {
+// START Function button segment
+
+.function-buttons-segment {
+  margin-bottom: 3rem;
   .mode-select {
-    background-color: $primary-color;
-    color: $text-color;
-    border-radius: 4px;
-    margin-bottom: 2rem;
     border: 0;
-    padding: 0.3em;
+    margin-inline: var(--offset-margin);
+  }
+  .mode-select,
+  .function-button {
+    padding: 0.3em 0.4em;
     font-size: 1rem;
-    margin-inline: $offset-margin;
+    color: $text-color;
+    background-color: $primary-color;
+    border-radius: 4px;
+  }
+  .function-button {
+    border-color: $border-color;
+    border-style: solid;
+    margin-inline: 0.1em;
+    cursor: pointer;
+    &:hover {
+      color: $secondary-color;
+      border-color: $secondary-color;
+      text-decoration: underline;
+    }
+  }
+  .restart-button {
+    background-color: $secondary-color;
+    color: white;
+    border-color: transparent;
+    &:hover {
+      color: white;
+      text-decoration: underline;
+      .restart-image {
+        transform: rotate(360deg);
+      }
+    }
+  }
+  .restart-image {
+    width: 1em;
+    margin-right: 0.3em;
+    vertical-align: middle;
+    transition: transform 600ms ease-out;
   }
 }
 
+// START Submit segment
+
 .submit-segment {
-  margin-inline: $offset-margin;
+  margin-inline: var(--offset-margin);
   margin-top: 1rem;
   button {
     font-size: 1.2em;
@@ -182,8 +240,10 @@ $offset-margin: 0.6rem;
   }
 }
 
+// START Answer grade segment
+
 .answer-grade-segment {
-  margin-inline: $offset-margin;
+  margin-inline: var(--offset-margin);
   margin-block: 1.5rem;
 }
 
@@ -256,12 +316,13 @@ $offset-margin: 0.6rem;
 }
 
 .word-info.visible {
-  max-width: 55vmax;
   display: block;
 }
 
 .word-info {
   display: none;
+  max-width: calc(55vmax - 2 * var(--offset-margin));
+  box-sizing: border-box;
   margin-top: 1em;
   font-size: 0.9em;
   &.visible {
