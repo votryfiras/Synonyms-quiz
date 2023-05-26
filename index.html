@@ -41,24 +41,33 @@
             </p>
           </div>
         </div>
-        <div class="answer-segment choice-mode disabled">
+        <div class="answer-segment choice-mode">
           <div class="choice-container">
-            <div class="choice"><button class="choice__button"></button></div>
-            <div class="choice"><button class="choice__button"></button></div>
-            <div class="choice"><button class="choice__button"></button></div>
-            <div class="choice"><button class="choice__button"></button></div>
+            <div class="choice disabled">
+              <button class="choice__button"></button>
+            </div>
+            <div class="choice disabled">
+              <button class="choice__button"></button>
+            </div>
+            <div class="choice disabled">
+              <button class="choice__button"></button>
+            </div>
+            <div class="choice disabled">
+              <button class="choice__button"></button>
+            </div>
           </div>
           <div class="answer-textbox-container">
             <input
               class="answer-textbox"
               placeholder="Write your answer"
+              autocomplete="off"
               disabled
             />
           </div>
         </div>
         <div class="submit-segment">
-          <button class="submit-button">Submit</button>
-          <button class="next-button">Next Question</button>
+          <button class="submit-button" disabled>Submit</button>
+          <button class="next-button" disabled>Next Question</button>
         </div>
         <div class="answer-grade-segment">
           <div class="answer-grade-segment__bg">

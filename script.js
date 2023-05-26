@@ -1,6 +1,7 @@
 import WORDS from './words.js';
 
 const TOTAL_QUESTION_COUNT = 10 // Temporary
+const EXCLUDED_INSERT_PROMPTS = ['pollution', 'pan', 'carbon footprint']
 const CORRECT_PHRASES = ['Good job!', "You've got it made!", 'Super!', 'Excellent!', 'Good work!', "You've got that down pat.", "Perfect!", "Fantastic!", "Tremendous!", "Great!", "Nice job!", "I'm impressed!", "Marvelous!", "You've got the hang of it!", "Super-Duper!", "Out of sight!", "You've got your brain in gear today."]
 const WRONG_PHRASES = ["You must have been a scavenger...", "You certainly did well today.", "Not bad.", "You are learning a lot though.", "Don't be upset, everything is okay!", "You did a lot of work today.", "Don't jump ship just yet.", "Never give up.", "Don't throw in the towel just yet.", "Keep the faith a while longer.", "Ah, what a loser!"]
 
@@ -50,7 +51,6 @@ const rounds = [
   */
 ]
 
-const app = document.querySelector('.app')
 const modeSelect = document.querySelector('.mode-select')
 const questionElement = document.querySelector('.question-segment__question')
 const questionCounter = document.querySelector('.question-segment__banner__question-counter')
@@ -59,6 +59,7 @@ const questionPrompt = document.querySelector('.question__prompt')
 const choiceButtons = document.querySelectorAll('.choice__button')
 const answerSegment = document.querySelector('.answer-segment')
 const answerTextbox = document.querySelector('.answer-textbox')
+const answerTextboxContainer = document.querySelector('.answer-textbox-container')
 const nextButton = document.querySelector(".next-button")
 const submitButton = document.querySelector(".submit-button")
 const answerGradeSegment = document.querySelector(".answer-grade-segment__bg")
@@ -83,20 +84,30 @@ function getRandomItem(arr) {
 
 function pickRandomWordObject(prompt) {
   let newWordObject = getRandomItem(WORDS);
-  const currentWordObject = WORDS.find(
-    wordObject => wordObject.syns.some(synObject => synObject.word === prompt)
-      || wordObject.word === prompt
-  )
+  const currentWordObject = WORDS.find(wordObject => {
+    return (wordObject.syns.some(synObject => synObject.word === prompt)
+      || wordObject.word === prompt)
+  })
 
-  if (newWordObject === currentWordObject) newWordObject = pickRandomWordObject()
+  if (newWordObject === currentWordObject) newWordObject = pickRandomWordObject(prompt)
   return newWordObject;
 }
 
 function getPossiblePrompts() {
+  let excludedPrompts = []
+  if (answerSegment.classList.contains('insert-mode')) {
+    excludedPrompts = EXCLUDED_INSERT_PROMPTS
+  }
   const synonymObjects = WORDS.map(wordObject => { return wordObject.syns })
   const possiblePrompts = []
-  synonymObjects.forEach(synsArray => { synsArray.forEach(synonym => possiblePrompts.push(synonym.word)) })
-  WORDS.forEach(wordObject => possiblePrompts.push(wordObject.word))
+  synonymObjects.forEach(synsArray => {
+    synsArray.forEach(synonymObject => {
+      if (!excludedPrompts.includes(synonymObject.word)) { possiblePrompts.push(synonymObject.word) }
+    })
+  })
+  WORDS.forEach(wordObject => {
+    if (!excludedPrompts.includes(wordObject.word)) possiblePrompts.push(wordObject.word)
+  })
   return possiblePrompts;
 }
 
@@ -123,7 +134,7 @@ function manipulateChoices(wordObject, newPrompt) {
 
   for (let i = 0; i < 3; i++) {
     let randomSynonym = pickRandomSynonym()
-    while (newChoices.find(syn => syn === randomSynonym)) {
+    while (newChoices.some(syn => syn === randomSynonym.word)) {
       randomSynonym = pickRandomSynonym()
     }
     newChoices.push(randomSynonym.word)
@@ -151,6 +162,17 @@ function resetChoices() {
   if (selectedChoice) selectedChoice.classList.remove('selected-choice')
 }
 
+function toggleChoicesAbility(disable = true) {
+  const choices = Array.from(document.querySelectorAll('.choice'))
+  if (!disable) {
+    choices.forEach(btn => btn.classList.remove('disabled'))
+  }
+  else {
+    choices.forEach(btn => btn.classList.add('disabled'))
+
+  }
+}
+
 function selectChoice(e) {
   if (!e.target.classList.contains('disabled')) {
     const selectedChoice = document.querySelector('.selected-choice')
@@ -166,11 +188,16 @@ function switchMode() {
   else questionScript.textContent = "Write"
 }
 
-function textboxPlaceholderToggle(e) {
+function textboxPlaceholderToggle() {
   setTimeout(() => {
-    if (e.target.value) e.target.offsetParent.classList.add('typing')
-    else e.target.offsetParent.classList.remove('typing')
+    if (answerTextbox.value) answerTextboxContainer.classList.add('typing')
+    else answerTextboxContainer.classList.remove('typing')
   }, 0)
+}
+
+function enableSubmitButtons() {
+  submitButton.removeAttribute('disabled')
+  nextButton.removeAttribute('disabled')
 }
 
 function nextQuestion() {
@@ -178,26 +205,34 @@ function nextQuestion() {
     const count = parseInt(questionCounter.textContent)
     if (count < TOTAL_QUESTION_COUNT) questionCounter.textContent = count + 1
   }
-  function enableChoices() {
-    answerSegment.classList.remove('disabled')
+  function enableTextbox() {
+    answerTextbox.removeAttribute('disabled')
+    textboxPlaceholderToggle()
   }
   function resetTextbox() {
     answerTextbox.value = ''
   }
 
-  const newPrompt = getRandomItem(getPossiblePrompts());
+  const newPrompt = getRandomItem(getPossiblePrompts())
   const newWordObject = WORDS.find(wordObj => {
     return (wordObj.word === newPrompt) || (wordObj.syns.find(synObject => synObject.word === newPrompt))
   })
 
   questionPrompt.textContent = newPrompt;
   answerTextbox.textContent = '';
+  if (answerSegment.classList.contains('choice-mode')) {
+    manipulateChoices(newWordObject, newPrompt)
+    resetChoices()
+    toggleChoicesAbility(false)
+  }
+  else {
+    resetTextbox()
+    enableTextbox()
+  }
+
   increaseCounter()
-  manipulateChoices(newWordObject, newPrompt)
-  resetChoices()
-  enableChoices()
-  resetTextbox()
   hideAnswerGrade()
+  enableSubmitButtons()
 }
 
 function checkAnswer() {
@@ -216,46 +251,68 @@ function checkAnswer() {
   function getPromptObject(prompt) {
     for (const wordObj of WORDS) {
       if (wordObj.word === prompt) { return wordObj }
-      for (const synonym of wordObj.syns) {
-        if (synonym.word === prompt) { return wordObj };
+      for (const synonymObject of wordObj.syns) {
+        if (synonymObject.word === prompt) { return wordObj };
       }
     }
   }
-  function disableChoices() {
-    answerSegment.classList.add('disabled')
+  function getCorrectSynonyms() {
+    const prompt = questionPrompt.textContent;
+    const promptObject = getPromptObject(prompt)
+    const synonymSynonyms = !WORDS.some(wordObject => prompt === wordObject.word) ?
+      promptObject.syns.find(synObject => synObject.word === prompt).additionalSyns : { additionalSyns: [] }
+
+    return promptObject.syns
+      .map(synObject => { return synObject.word })
+      .concat(synonymSynonyms)
+      .concat(promptObject.word)
+  }
+  function disableSubmitButton() {
+    submitButton.setAttribute('disabled', '')
   }
 
-  const prompt = questionPrompt.textContent;
-  const promptObject = getPromptObject(prompt)
-  const synonymSynonyms = promptObject.syns.find(synObject => synObject.word === prompt).additionalSyns
-  const correctSynonyms = promptObject.syns
-    .map(synObject => { return synObject.word })
-    .concat(synonymSynonyms)
-    .concat(promptObject.word)
-
-  console.log(correctSynonyms)
-
-  const selectedChoiceText = document.querySelector('.selected-choice')?.firstChild.textContent
+  const correctSynonyms = getCorrectSynonyms()
+  const selectedChoice = document.querySelector('.selected-choice')
+  const selectedChoiceButton = selectedChoice ? selectedChoice.querySelector('.choice__button') : null
+  const selectedChoiceText = selectedChoiceButton ? selectedChoiceButton.textContent : ''
   const writtenAnswer = answerTextbox.value
 
   if (!selectedChoiceText && !writtenAnswer) { return; }
   else if (answerSegment.classList.contains("choice-mode")) {
     if (correctSynonyms.includes(selectedChoiceText)) {
       motivatingGrade()
-      disableChoices()
+      toggleChoicesAbility()
+    }
+    else {
+      selectedChoice.classList.add('disabled')
+      wrongGrade()
+      resetChoices()
+    }
+  }
+  else {
+    if (correctSynonyms.includes(writtenAnswer.toLowerCase())) {
+      motivatingGrade()
+      answerTextbox.setAttribute('disabled', '')
     }
     else { wrongGrade() }
   }
-  else {
-    if (correctSynonyms.includes(writtenAnswer)) { motivatingGrade() }
-    else { wrongGrade() }
-  }
+
+  disableSubmitButton()
 }
 
 function displayWordInfo() {
+  function getActualPromptObject(prompt) { // Gets word object for both normal and synonym words
+    for (const wordObj of WORDS) {
+      if (wordObj.word === prompt) { return wordObj }
+      for (const synonymObject of wordObj.syns) {
+        if (synonymObject.word === prompt) { return synonymObject };
+      }
+    }
+  }
+
   wordInfo.classList.toggle('visible')
   if (wordInfo.classList.contains('visible')) {
-    const currentWordObject = WORDS.find(wordOject => wordOject.word === questionPrompt.textContent)
+    const currentWordObject = getActualPromptObject(questionPrompt.textContent)
     const wordSpan = document.querySelector('.word-info__word__term')
     const levelSpan = document.querySelector('.word-info__level__level')
     const defSection = document.querySelector('.word-info__def')
@@ -291,6 +348,7 @@ function displayWordInfo() {
 function hideAnswerGrade() {
   answerGradeSegment.classList.remove('correct', 'wrong')
   answerGradeText.textContent = ''
+  wordInfo.classList.remove('visible')
 }
 
 function startRound() {
@@ -306,14 +364,19 @@ function startRound() {
 
   questionPrompt.textContent = initialPrompt;
   questionElement.classList.remove('disabled')
-  answerSegment.classList.remove('disabled')
   restartButton.querySelector('[data-restart-text]').textContent = "Restart";
+  modeSelect.setAttribute('disabled', '')
 
 
-  if (answerSegment.classList.contains('choice-mode')) { initChoices(initialPrompt); resetChoices(); }
+  if (answerSegment.classList.contains('choice-mode')) {
+    toggleChoicesAbility(false);
+    initChoices(initialPrompt);
+    resetChoices();
+  }
   else { enableTextbox(); resetTextbox() }
 
   hideAnswerGrade()
+  enableSubmitButtons()
 }
 
 choiceButtons.forEach((choice => {

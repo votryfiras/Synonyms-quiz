@@ -28,6 +28,54 @@ main {
   margin-top: 6rem;
 }
 
+// START Function button segment
+
+.function-buttons-segment {
+  margin-bottom: 3rem;
+  .mode-select {
+    border: 0;
+    margin-inline: var(--offset-margin);
+  }
+  .mode-select,
+  .function-button {
+    padding: 0.3em 0.4em;
+    font-size: 1rem;
+    color: $text-color;
+    background-color: $primary-color;
+    border-radius: 4px;
+  }
+  .function-button {
+    border-color: $border-color;
+    border-style: solid;
+    margin-inline: 0.1em;
+    cursor: pointer;
+    &:hover {
+      color: $secondary-color;
+      border-color: $secondary-color;
+      text-decoration: underline;
+    }
+  }
+  .restart-button {
+    background-color: $secondary-color;
+    color: white;
+    border-color: transparent;
+    &:hover {
+      color: white;
+      text-decoration: underline;
+      .restart-image {
+        transform: rotate(270deg);
+      }
+    }
+  }
+  .restart-image {
+    width: 1em;
+    margin-right: 0.3em;
+    vertical-align: middle;
+    transition: transform 450ms ease-out;
+    user-select: none;
+  }
+}
+
 // START Question segment
 
 .question-segment {
@@ -72,6 +120,7 @@ main {
     background-color: $secondary-color;
     p {
       margin: 0;
+      text-align: center;
     }
   }
 }
@@ -90,18 +139,16 @@ main {
   }
 }
 
-.answer-segment.disabled {
-  .choice {
-    position: relative;
-    &::before {
-      content: "";
-      position: absolute;
-      width: 100%;
-      height: 100%;
-      background-color: rgba(0, 0, 0, 0.1);
-      border-radius: inherit;
-      cursor: not-allowed;
-    }
+.choice.disabled {
+  position: relative;
+  &::before {
+    content: "";
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.1);
+    border-radius: inherit;
+    cursor: not-allowed;
   }
 }
 
@@ -121,7 +168,7 @@ main {
     user-select: none;
     &__button {
       width: 100%;
-      padding: 1.3em 4em;
+      padding: 1.3em 3em;
       color: $text-color;
       border: 2px solid $border-color;
       border-radius: $border-radius;
@@ -164,6 +211,9 @@ main {
     &:focus-visible {
       border-color: $secondary-color;
     }
+    &[disabled] {
+      cursor: not-allowed;
+    }
   }
   &::before {
     content: "here.";
@@ -184,54 +234,6 @@ main {
   }
 }
 
-// START Function button segment
-
-.function-buttons-segment {
-  margin-bottom: 3rem;
-  .mode-select {
-    border: 0;
-    margin-inline: var(--offset-margin);
-  }
-  .mode-select,
-  .function-button {
-    padding: 0.3em 0.4em;
-    font-size: 1rem;
-    color: $text-color;
-    background-color: $primary-color;
-    border-radius: 4px;
-  }
-  .function-button {
-    border-color: $border-color;
-    border-style: solid;
-    margin-inline: 0.1em;
-    cursor: pointer;
-    &:hover {
-      color: $secondary-color;
-      border-color: $secondary-color;
-      text-decoration: underline;
-    }
-  }
-  .restart-button {
-    background-color: $secondary-color;
-    color: white;
-    border-color: transparent;
-    &:hover {
-      color: white;
-      text-decoration: underline;
-      .restart-image {
-        transform: rotate(360deg);
-      }
-    }
-  }
-  .restart-image {
-    width: 1em;
-    margin-right: 0.3em;
-    vertical-align: middle;
-    transition: transform 600ms ease-out;
-    user-select: none;
-  }
-}
-
 // START Submit segment
 
 .submit-segment {
@@ -245,11 +247,31 @@ main {
     border-style: solid;
     background-color: $primary-color;
     color: $text-color;
+    position: relative;
     cursor: pointer;
     &:hover {
       color: $secondary-color;
       border-color: $secondary-color;
       text-decoration: underline;
+    }
+    &:disabled {
+      &::before {
+        content: "";
+        width: 100%;
+        height: 100%;
+        position: absolute;
+        top: 0;
+        left: 0;
+        background-color: rgba(0, 0, 0, 0.1);
+        border-radius: inherit;
+        z-index: 1;
+        cursor: not-allowed;
+      }
+      &:hover {
+        color: $text-color;
+        border-color: $border-color;
+        text-decoration: none;
+      }
     }
   }
 }
