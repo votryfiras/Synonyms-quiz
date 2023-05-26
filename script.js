@@ -1,55 +1,25 @@
-const WORDS = [
-  {
-    word: "buy",
-    def: ["to get something by giving money for it"],
-    syns: ["purchase", "acquire", "obtain"],
-    languageLevel: "A1",
-    examples: ['Eventually she had saved enough money to buy a small car.', 'He bought his mother some flowers/He bought some flowers for his mother.', 'There are more people buying at this time of the year so prices are high.', 'The company was set up to buy and sell shares on behalf of investors.', 'I bought my camera from a friend of mine.']
-  },
-  {
-    word: "basin",
-    def: ["an open, round container shaped like a bowl with sloping sides, used for holding food or liquid", "a large, open bowl, or the amount such a container will hold"],
-    syns: ["bowl", "dish", "pan", "pot", 'container'],
-    languageLevel: "B1",
-    examples: ['Run some water into the basin and wash your hands and face properly.', 'When you have broken the eggs into a basin, whisk them together lightly with a fork.', 'The basin in the upstairs bathroom has gold taps! …eaning fluids under the basin in the back toilet.', 'In the auction there is a rather nice antique porcelain basin and jug.', 'I left the napkins soaking in a basin.']
-  },
-  {
-    word: "carbon footprint",
-    def: ["a measure of the amount of carbon dioxide released into the atmosphere as a result of the activities of a particular individual, organization, or community."],
-    syns: ["pollution"],
-    languageLevel: "B2",
-    examples: ['The four main areas that determine your carbon foo…tural gas usage, car mileage, and airplane trips.', 'We have partnered with nearby farms, hoping to reduce the carbon footprint of our delivery trucks.'],
-  },
-  {
-    word: "conserve",
-    def: ["protect (something, especially something of environmental or cultural importance) from harm or destruction."],
-    syns: ["perserve"],
-    languageLevel: "C1",
-    examples: ['To conserve electricity, we are cutting down on our heating.', 'The nationalists are very eager to conserve their customs and language.', "I'm not being lazy - I'm just conserving my energy/strength for later."],
-  },
-  {
-    word: "consume",
-    def: ["to use fuel, energy, time, or a product, especially in large amounts", "to eat or drink something"],
-    syns: ["eat", "devour", "swallow", "absorb"],
-    languageLevel: "B1",
-    examples: ["Our high living standards cause our current population to consume 25 percent of the world's oil.", 'Most of their manufactured products are consumed domestically.', 'The software consumes huge amounts of internet bandwidth.', "He consumes huge amounts of bread with every meal."]
-  },
-]
-
-function getSentences(str) {
-  let sentence = ''
-  const exmpls = []
-  for (const i in str) {
-    const letter = str[i]
-    if (letter !== '.') { sentence = sentence + letter }
-    else { exmpls.push(sentence.trim() + '.'); sentence = "" }
-  }
-  console.log(exmpls)
-}
+import WORDS from './words.js';
 
 const TOTAL_QUESTION_COUNT = 10 // Temporary
 const CORRECT_PHRASES = ['Good job!', "You've got it made!", 'Super!', 'Excellent!', 'Good work!', "You've got that down pat.", "Perfect!", "Fantastic!", "Tremendous!", "Great!", "Nice job!", "I'm impressed!", "Marvelous!", "You've got the hang of it!", "Super-Duper!", "Out of sight!", "You've got your brain in gear today."]
 const WRONG_PHRASES = ["You must have been a scavenger...", "You certainly did well today.", "Not bad.", "You are learning a lot though.", "Don't be upset, everything is okay!", "You did a lot of work today.", "Don't jump ship just yet.", "Never give up.", "Don't throw in the towel just yet.", "Keep the faith a while longer.", "Ah, what a loser!"]
+
+class Round {
+  constructor(roundNumber, totalQuestionCount, type) {
+    this.roundNumber = roundNumber
+    this.totalQuestionCount = totalQuestionCount
+    this.type = type
+    this.correctAnswerCount = 0
+    this.wrongAnswerCount = 0
+    this.skippedAnswerCount = 0
+    this.terminatedAt = null
+    this.isRoundWon = null
+    this.bestStreak = null
+    this.streaks = []
+    this.prompts = []
+
+  }
+}
 
 const rounds = [
   /*
@@ -82,6 +52,7 @@ const rounds = [
 
 const app = document.querySelector('.app')
 const modeSelect = document.querySelector('.mode-select')
+const questionElement = document.querySelector('.question-segment__question')
 const questionCounter = document.querySelector('.question-segment__banner__question-counter')
 const questionScript = document.querySelector(".question__script")
 const questionPrompt = document.querySelector('.question__prompt')
@@ -94,13 +65,14 @@ const answerGradeSegment = document.querySelector(".answer-grade-segment__bg")
 const answerGradeText = document.querySelector(".answer-grade__text")
 const wordInfo = document.querySelector('.word-info')
 const toggleInfoButton = document.querySelector('.answer-grade__toggle-info')
+const restartButton = document.querySelector('.restart-button')
 
-function initChoices() {
+function initChoices(initialPrompt) {
   questionCounter.textContent = 1
-
-  const initialWord = getRandomItem(WORDS)
-  questionPrompt.textContent = initialWord.word;
-  manipulateChoices(initialWord)
+  const initialPromptObj = WORDS.find(wordObj => {
+    return (wordObj.word === initialPrompt) || (wordObj.syns.find(synObject => synObject.word === initialPrompt))
+  })
+  manipulateChoices(initialPromptObj, initialPrompt)
 }
 
 function getRandomItem(arr) {
@@ -109,20 +81,32 @@ function getRandomItem(arr) {
   return wordObject
 }
 
-function pickRandomWordObject() {
+function pickRandomWordObject(prompt) {
   let newWordObject = getRandomItem(WORDS);
-  const currentWordObject = WORDS.find(wordOject => wordOject.word === questionPrompt.textContent)
+  const currentWordObject = WORDS.find(
+    wordObject => wordObject.syns.some(synObject => synObject.word === prompt)
+      || wordObject.word === prompt
+  )
 
   if (newWordObject === currentWordObject) newWordObject = pickRandomWordObject()
   return newWordObject;
 }
 
-function manipulateChoices(wordObject) {
+function getPossiblePrompts() {
+  const synonymObjects = WORDS.map(wordObject => { return wordObject.syns })
+  const possiblePrompts = []
+  synonymObjects.forEach(synsArray => { synsArray.forEach(synonym => possiblePrompts.push(synonym.word)) })
+  WORDS.forEach(wordObject => possiblePrompts.push(wordObject.word))
+  return possiblePrompts;
+}
+
+function manipulateChoices(wordObject, newPrompt) {
   function pickRandomSynonym() {
-    const randomWordObject = pickRandomWordObject()
+    const randomWordObject = pickRandomWordObject(newPrompt)
     const randomSynonym = getRandomItem(randomWordObject.syns)
     return randomSynonym
   }
+
   function shuffleArray(arr) {
     let currentIndex = arr.length, randomIndex;
     while (currentIndex != 0) {
@@ -142,9 +126,20 @@ function manipulateChoices(wordObject) {
     while (newChoices.find(syn => syn === randomSynonym)) {
       randomSynonym = pickRandomSynonym()
     }
-    newChoices.push(randomSynonym)
+    newChoices.push(randomSynonym.word)
   }
-  newChoices.push(getRandomItem(wordObject.syns))
+
+  if (wordObject.word !== newPrompt) {
+    newChoices.push(wordObject.word)
+  }
+  else {
+    let promptSynonym = getRandomItem(wordObject.syns)
+    while (promptSynonym.word === newPrompt) {
+      promptSynonym = getRandomItem(wordObject.syns)
+    }
+    newChoices.push(promptSynonym.word)
+  }
+
   const shuffledChoices = shuffleArray(newChoices)
   for (let i = 0; i < 4; i++) {
     choiceButtons[i].textContent = shuffledChoices[i]
@@ -153,15 +148,13 @@ function manipulateChoices(wordObject) {
 
 function resetChoices() {
   const selectedChoice = document.querySelector('.selected-choice')
-  selectedChoice?.classList.remove('selected-choice')
-  answerGradeSegment.classList.remove('correct')
-  answerGradeSegment.classList.remove('wrong')
+  if (selectedChoice) selectedChoice.classList.remove('selected-choice')
 }
 
 function selectChoice(e) {
   if (!e.target.classList.contains('disabled')) {
     const selectedChoice = document.querySelector('.selected-choice')
-    selectedChoice?.classList.remove('selected-choice')
+    if (selectedChoice) selectedChoice.classList.remove('selected-choice')
     e.target.parentElement.classList.add('selected-choice')
   }
 }
@@ -188,14 +181,23 @@ function nextQuestion() {
   function enableChoices() {
     answerSegment.classList.remove('disabled')
   }
+  function resetTextbox() {
+    answerTextbox.value = ''
+  }
 
-  const newWordObject = pickRandomWordObject()
+  const newPrompt = getRandomItem(getPossiblePrompts());
+  const newWordObject = WORDS.find(wordObj => {
+    return (wordObj.word === newPrompt) || (wordObj.syns.find(synObject => synObject.word === newPrompt))
+  })
 
-  questionPrompt.textContent = newWordObject.word
+  questionPrompt.textContent = newPrompt;
+  answerTextbox.textContent = '';
   increaseCounter()
-  manipulateChoices(newWordObject)
+  manipulateChoices(newWordObject, newPrompt)
   resetChoices()
   enableChoices()
+  resetTextbox()
+  hideAnswerGrade()
 }
 
 function checkAnswer() {
@@ -211,18 +213,34 @@ function checkAnswer() {
     answerGradeSegment.classList.remove("correct")
     answerGradeSegment.classList.add("wrong")
   }
+  function getPromptObject(prompt) {
+    for (const wordObj of WORDS) {
+      if (wordObj.word === prompt) { return wordObj }
+      for (const synonym of wordObj.syns) {
+        if (synonym.word === prompt) { return wordObj };
+      }
+    }
+  }
   function disableChoices() {
     answerSegment.classList.add('disabled')
   }
 
   const prompt = questionPrompt.textContent;
-  const correctSynonyms = WORDS.find(wordObject => wordObject.word === prompt).syns
-  const selectedChoice = document.querySelector('.selected-choice')?.firstChild.textContent
+  const promptObject = getPromptObject(prompt)
+  const synonymSynonyms = promptObject.syns.find(synObject => synObject.word === prompt).additionalSyns
+  const correctSynonyms = promptObject.syns
+    .map(synObject => { return synObject.word })
+    .concat(synonymSynonyms)
+    .concat(promptObject.word)
+
+  console.log(correctSynonyms)
+
+  const selectedChoiceText = document.querySelector('.selected-choice')?.firstChild.textContent
   const writtenAnswer = answerTextbox.value
 
-  if (!selectedChoice && !writtenAnswer) { }
+  if (!selectedChoiceText && !writtenAnswer) { return; }
   else if (answerSegment.classList.contains("choice-mode")) {
-    if (correctSynonyms.includes(selectedChoice)) {
+    if (correctSynonyms.includes(selectedChoiceText)) {
       motivatingGrade()
       disableChoices()
     }
@@ -230,6 +248,7 @@ function checkAnswer() {
   }
   else {
     if (correctSynonyms.includes(writtenAnswer)) { motivatingGrade() }
+    else { wrongGrade() }
   }
 }
 
@@ -269,7 +288,33 @@ function displayWordInfo() {
   }
 }
 
-initChoices()
+function hideAnswerGrade() {
+  answerGradeSegment.classList.remove('correct', 'wrong')
+  answerGradeText.textContent = ''
+}
+
+function startRound() {
+  function enableTextbox() {
+    answerTextbox.removeAttribute('disabled')
+  }
+  function resetTextbox() {
+    answerTextbox.value = ''
+  }
+
+  const possiblePrompts = getPossiblePrompts()
+  const initialPrompt = getRandomItem(possiblePrompts)
+
+  questionPrompt.textContent = initialPrompt;
+  questionElement.classList.remove('disabled')
+  answerSegment.classList.remove('disabled')
+  restartButton.querySelector('[data-restart-text]').textContent = "Restart";
+
+
+  if (answerSegment.classList.contains('choice-mode')) { initChoices(initialPrompt); resetChoices(); }
+  else { enableTextbox(); resetTextbox() }
+
+  hideAnswerGrade()
+}
 
 choiceButtons.forEach((choice => {
   choice.addEventListener('click', selectChoice)
@@ -280,3 +325,4 @@ answerTextbox.addEventListener('keydown', textboxPlaceholderToggle)
 nextButton.addEventListener('click', nextQuestion)
 submitButton.addEventListener('click', checkAnswer)
 toggleInfoButton.addEventListener('click', displayWordInfo)
+restartButton.addEventListener('click', startRound)

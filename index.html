@@ -16,14 +16,13 @@
             <option>Multiple Choice</option>
             <option>Insert</option>
           </select>
-          <button class="function-button">Stats</button>
           <button class="function-button">Options</button>
           <button class="function-button restart-button">
             <img
               class="restart-image"
               src="arrows-rotate-solid.svg"
               alt=""
-            />Restart
+            /><span data-restart-text>Start Game</span>
           </button>
         </div>
         <div class="question-segment">
@@ -34,7 +33,7 @@
               / <span class="question-segment__banner__question-total">10</span>
             </p>
           </div>
-          <div class="question-segment__question">
+          <div class="question-segment__question disabled">
             <p>
               <span class="question__script">Which of these is</span> a
               <span class="question__keyword">synonym</span> for
@@ -42,7 +41,7 @@
             </p>
           </div>
         </div>
-        <div class="answer-segment choice-mode">
+        <div class="answer-segment choice-mode disabled">
           <div class="choice-container">
             <div class="choice"><button class="choice__button"></button></div>
             <div class="choice"><button class="choice__button"></button></div>
@@ -50,7 +49,11 @@
             <div class="choice"><button class="choice__button"></button></div>
           </div>
           <div class="answer-textbox-container">
-            <input class="answer-textbox" placeholder="Write your answer" />
+            <input
+              class="answer-textbox"
+              placeholder="Write your answer"
+              disabled
+            />
           </div>
         </div>
         <div class="submit-segment">
