@@ -1,24 +1,23 @@
 import WORDS from './words.js';
 
-const TOTAL_QUESTION_COUNT = 10 // Temporary
 const EXCLUDED_INSERT_PROMPTS = ['pollution', 'pan', 'carbon footprint']
 const CORRECT_PHRASES = ['Good job!', "You've got it made!", 'Super!', 'Excellent!', 'Good work!', "You've got that down pat.", "Perfect!", "Fantastic!", "Tremendous!", "Great!", "Nice job!", "I'm impressed!", "Marvelous!", "You've got the hang of it!", "Super-Duper!", "Out of sight!", "You've got your brain in gear today."]
 const WRONG_PHRASES = ["You must have been a scavenger...", "You certainly did well today.", "Not bad.", "You are learning a lot though.", "Don't be upset, everything is okay!", "You did a lot of work today.", "Don't jump ship just yet.", "Never give up.", "Don't throw in the towel just yet.", "Keep the faith a while longer.", "Ah, what a loser!"]
 
 class Round {
-  constructor(roundNumber, totalQuestionCount, type) {
-    this.roundNumber = roundNumber
-    this.totalQuestionCount = totalQuestionCount
-    this.type = type
+  constructor(props) {
+    this.roundNumber = props.roundNumber
+    this.totalQuestionCount = props.totalQuestionCount
+    this.mode = props.mode
+    this.currentQuestionNumber = 1
     this.correctAnswerCount = 0
     this.wrongAnswerCount = 0
     this.skippedAnswerCount = 0
     this.terminatedAt = null
-    this.isRoundWon = null
+    this.isRoundWon = false
     this.bestStreak = null
     this.streaks = []
     this.prompts = []
-
   }
 }
 
@@ -38,7 +37,7 @@ const rounds = [
       prompts: [
         {
           word: buy,
-          choices: [pollution, container, acquire, bowl]
+          choices: [pollution, container, acquire, bowl],
           correctChoice: ["acquire"]
         }
         {
@@ -51,6 +50,7 @@ const rounds = [
   */
 ]
 
+const congratsSegment = document.querySelector('.congrats-segment')
 const modeSelect = document.querySelector('.mode-select')
 const questionElement = document.querySelector('.question-segment__question')
 const questionCounter = document.querySelector('.question-segment__banner__question-counter')
@@ -67,6 +67,51 @@ const answerGradeText = document.querySelector(".answer-grade__text")
 const wordInfo = document.querySelector('.word-info')
 const toggleInfoButton = document.querySelector('.answer-grade__toggle-info')
 const restartButton = document.querySelector('.restart-button')
+
+function startRound() {
+  function roundInit() {
+    function enableTextbox() {
+      answerTextbox.removeAttribute('disabled')
+    }
+    function resetTextbox() {
+      answerTextbox.value = ''
+    }
+
+    const possiblePrompts = getPossiblePrompts()
+    const initialPrompt = getRandomItem(possiblePrompts)
+
+    questionPrompt.textContent = initialPrompt;
+    questionElement.classList.remove('disabled')
+    restartButton.querySelector('[data-restart-text]').textContent = "Restart";
+    modeSelect.setAttribute('disabled', '')
+
+
+    if (answerSegment.classList.contains('choice-mode')) {
+      toggleChoicesAbility(false);
+      initChoices(initialPrompt);
+      resetChoices();
+    }
+    else { enableTextbox(); resetTextbox() }
+
+    hideAnswerGrade()
+    enableSubmitButtons()
+  }
+  function generateRoundObject() {
+    const round = new Round({
+      roundNumber: rounds.length + 1,
+      totalQuestionCount: 10,
+      mode: modeSelect.value.toLowerCase().replace(/\s/g, ""), // Removes whitespace
+    })
+
+    rounds.push(round)
+  }
+  generateRoundObject()
+  roundInit()
+}
+
+function endRound() {
+
+}
 
 function initChoices(initialPrompt) {
   questionCounter.textContent = 1
@@ -196,14 +241,26 @@ function textboxPlaceholderToggle() {
 }
 
 function enableSubmitButtons() {
+  const currentRound = rounds[rounds.length - 1]
   submitButton.removeAttribute('disabled')
-  nextButton.removeAttribute('disabled')
+  if (currentRound.currentQuestionNumber !== currentRound.totalQuestionCount) {
+    nextButton.removeAttribute('disabled')
+  }
+  else { nextButton.setAttribute('disabled', '') }
 }
 
 function nextQuestion() {
-  function increaseCounter() {
+  const currentRound = rounds[rounds.length - 1]
+  const SURE_TEXT = 'Are You Sure?'
+  const selectedChoice = document.querySelector('.selected-choice')
+  if ((!selectedChoice || currentRound.correctAnswerCount + currentRound.wrongAnswerCount + currentRound.skippedAnswerCount !== currentRound.currentQuestionNumber) && nextButton.textContent !== SURE_TEXT) {
+    nextButton.textContent = SURE_TEXT
+    return;
+  }
+
+  function increaseCounter(currentRound) {
     const count = parseInt(questionCounter.textContent)
-    if (count < TOTAL_QUESTION_COUNT) questionCounter.textContent = count + 1
+    if (count < currentRound.totalQuestionCount) questionCounter.textContent = count + 1
   }
   function enableTextbox() {
     answerTextbox.removeAttribute('disabled')
@@ -218,8 +275,17 @@ function nextQuestion() {
     return (wordObj.word === newPrompt) || (wordObj.syns.find(synObject => synObject.word === newPrompt))
   })
 
+  if (currentRound.correctAnswerCount + currentRound.wrongAnswerCount + currentRound.skippedAnswerCount < currentRound.currentQuestionNumber) { // Runs before currentQuestionNumber adiition, number of past question
+    currentRound.skippedAnswerCount++
+  }
+
+  const NEXT_BUTTON_TEXT = 'Next Question'
+  currentRound.currentQuestionNumber++
   questionPrompt.textContent = newPrompt;
   answerTextbox.textContent = '';
+  nextButton.textContent = NEXT_BUTTON_TEXT
+
+
   if (answerSegment.classList.contains('choice-mode')) {
     manipulateChoices(newWordObject, newPrompt)
     resetChoices()
@@ -230,9 +296,10 @@ function nextQuestion() {
     enableTextbox()
   }
 
-  increaseCounter()
+  increaseCounter(currentRound)
   hideAnswerGrade()
   enableSubmitButtons()
+  resetAnswerGradeInfo()
 }
 
 function checkAnswer() {
@@ -270,7 +337,14 @@ function checkAnswer() {
   function disableSubmitButton() {
     submitButton.setAttribute('disabled', '')
   }
+  function isRoundWon() {
+    return currentRound.correctAnswerCount > (currentRound.wrongAnswerCount + currentRound.skippedAnswerCount)
+  }
+  function displayCongrats() {
+    congratsSegment.classList.add('visible')
+  }
 
+  const currentRound = rounds[rounds.length - 1]
   const correctSynonyms = getCorrectSynonyms()
   const selectedChoice = document.querySelector('.selected-choice')
   const selectedChoiceButton = selectedChoice ? selectedChoice.querySelector('.choice__button') : null
@@ -278,26 +352,58 @@ function checkAnswer() {
   const writtenAnswer = answerTextbox.value
 
   if (!selectedChoiceText && !writtenAnswer) { return; }
-  else if (answerSegment.classList.contains("choice-mode")) {
+  else if (currentRound.mode === 'multiplechoice') {
     if (correctSynonyms.includes(selectedChoiceText)) {
       motivatingGrade()
       toggleChoicesAbility()
+      disableSubmitButton()
+      if (currentRound.currentQuestionNumber === currentRound.totalQuestionCount) {
+        displayCongrats()
+        console.log(isRoundWon(), currentRound)
+      }
+      if (currentRound.correctAnswerCount + currentRound.wrongAnswerCount + currentRound.skippedAnswerCount !== currentRound.currentQuestionNumber) {
+        currentRound.correctAnswerCount++
+      }
+      const NEXT_BUTTON_TEXT = 'Next Question';
+      nextButton.textContent = NEXT_BUTTON_TEXT;
     }
     else {
       selectedChoice.classList.add('disabled')
       wrongGrade()
       resetChoices()
+      if (currentRound.correctAnswerCount + currentRound.wrongAnswerCount + currentRound.skippedAnswerCount < currentRound.currentQuestionNumber) {
+        currentRound.wrongAnswerCount++
+      }
     }
   }
   else {
     if (correctSynonyms.includes(writtenAnswer.toLowerCase())) {
       motivatingGrade()
       answerTextbox.setAttribute('disabled', '')
+      if (currentRound.correctAnswerCount + currentRound.wrongAnswerCount + currentRound.skippedAnswerCount === currentRound.currentQuestionNumber) {
+        return;
+      }
+      else { currentRound.correctAnswerCount++ }
     }
-    else { wrongGrade() }
+    else {
+      wrongGrade();
+      if (currentRound.correctAnswerCount + currentRound.wrongAnswerCount + currentRound.skippedAnswerCount < currentRound.currentQuestionNumber) {
+        currentRound.wrongAnswerCount++
+      }
+    }
   }
 
-  disableSubmitButton()
+  if (document.querySelectorAll('.choice.disabled').length === 3) {
+    const unselectedChoice = Array.from(document.querySelectorAll('.choice'))
+      .find(choice => !choice.classList.contains('disabled'))
+
+    unselectedChoice.classList.add('selected-choice')
+    unselectedChoice.classList.add('disabled')
+    disableSubmitButton()
+    wrongGrade()
+    displayCongrats()
+  }
+
 }
 
 function displayWordInfo() {
@@ -342,41 +448,23 @@ function displayWordInfo() {
   else {
     toggleInfoButton.querySelector('span').textContent = "More about the word"
     toggleInfoButton.querySelector('img').setAttribute('style', 'transform: rotate(-90deg)')
+    resetAnswerGradeInfo()
   }
 }
 
 function hideAnswerGrade() {
   answerGradeSegment.classList.remove('correct', 'wrong')
   answerGradeText.textContent = ''
+  toggleInfoButton.querySelector('span').textContent = "More about the word"
+  toggleInfoButton.querySelector('img').setAttribute('style', 'transform: rotate(-90deg)')
   wordInfo.classList.remove('visible')
 }
 
-function startRound() {
-  function enableTextbox() {
-    answerTextbox.removeAttribute('disabled')
-  }
-  function resetTextbox() {
-    answerTextbox.value = ''
-  }
-
-  const possiblePrompts = getPossiblePrompts()
-  const initialPrompt = getRandomItem(possiblePrompts)
-
-  questionPrompt.textContent = initialPrompt;
-  questionElement.classList.remove('disabled')
-  restartButton.querySelector('[data-restart-text]').textContent = "Restart";
-  modeSelect.setAttribute('disabled', '')
-
-
-  if (answerSegment.classList.contains('choice-mode')) {
-    toggleChoicesAbility(false);
-    initChoices(initialPrompt);
-    resetChoices();
-  }
-  else { enableTextbox(); resetTextbox() }
-
-  hideAnswerGrade()
-  enableSubmitButtons()
+function resetAnswerGradeInfo() {
+  const definitionSection = document.querySelector('.word-info__def')
+  const exampleSection = document.querySelector('.word-info__exm')
+  exampleSection.querySelectorAll('li').forEach(liElem => liElem.remove())
+  definitionSection.querySelectorAll('li').forEach(liElem => liElem.remove())
 }
 
 choiceButtons.forEach((choice => {

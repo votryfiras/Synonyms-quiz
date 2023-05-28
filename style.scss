@@ -25,7 +25,71 @@ main {
 }
 
 .app {
-  margin-top: 6rem;
+  padding-top: 6rem;
+  position: relative;
+}
+
+.backdrop.visible {
+  position: absolute;
+  min-height: 100vh;
+  width: 100vw;
+  background-color: rgba(0, 0, 0, 0.2);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 100;
+  .modal {
+    background-color: white;
+    min-width: 55vw;
+  }
+}
+
+// START Congrats segment
+
+.congrats-segment {
+  background-color: rgb(50, 205, 50);
+  padding: 0.4em 0.5em;
+  border-width: 2px;
+  border-style: solid;
+  border-color: darkgreen;
+  border-radius: 2px;
+  width: max-content;
+
+  position: fixed;
+  top: 0;
+  left: 50%;
+  transform: translate(-50%);
+
+  font-size: 1.4rem;
+  color: white;
+
+  display: flex;
+  align-items: center;
+
+  visibility: hidden;
+
+  &.visible {
+    animation: show-congrats 10s;
+    .congrats__grade::before {
+      animation: ellipsis 1s 200ms 3;
+    }
+  }
+  .congrats__tickmark {
+    width: 3em;
+    margin-right: 1em;
+  }
+  .congrats__grade {
+    margin: 0;
+    position: relative;
+    &::before {
+      content: "";
+      width: 100%;
+      color: white;
+      position: absolute;
+      bottom: 0;
+      left: 4ch;
+    }
+  }
 }
 
 // START Function button segment
@@ -35,6 +99,9 @@ main {
   .mode-select {
     border: 0;
     margin-inline: var(--offset-margin);
+    &:disabled {
+      cursor: not-allowed;
+    }
   }
   .mode-select,
   .function-button {
@@ -440,6 +507,73 @@ main {
   }
   80% {
     content: "in this spot.";
+  }
+}
+
+@keyframes ellipsis {
+  25% {
+    content: ".";
+  }
+  50% {
+    content: "..";
+  }
+  75% {
+    content: "...";
+  }
+  100% {
+    content: "";
+  }
+}
+
+@keyframes rainbow {
+  100%,
+  0% {
+    color: rgb(255, 0, 0);
+  }
+  8% {
+    color: rgb(255, 127, 0);
+  }
+  16% {
+    color: rgb(255, 255, 0);
+  }
+  25% {
+    color: rgb(127, 255, 0);
+  }
+  33% {
+    color: rgb(0, 255, 0);
+  }
+  41% {
+    color: rgb(0, 255, 127);
+  }
+  50% {
+    color: rgb(0, 255, 255);
+  }
+  58% {
+    color: rgb(0, 127, 255);
+  }
+  66% {
+    color: rgb(0, 0, 255);
+  }
+  75% {
+    color: rgb(127, 0, 255);
+  }
+  83% {
+    color: rgb(255, 0, 255);
+  }
+  91% {
+    color: rgb(255, 0, 127);
+  }
+}
+
+@keyframes show-congrats {
+  0% {
+    opacity: 0;
+    visibility: hidden;
+  }
+  3%,
+  100% {
+    opacity: 1;
+    visibility: visible;
   }
 }
 
