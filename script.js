@@ -1,4 +1,5 @@
 import WORDS from './words.js';
+import { startStopwatch, stopStopwatch, resetStopwatch } from './stopwatch.js';
 
 const EXCLUDED_INSERT_PROMPTS = ['pollution', 'pan', 'carbon footprint']
 const CORRECT_PHRASES = ['Good job!', "You've got it made!", 'Super!', 'Excellent!', 'Good work!', "You've got that down pat.", "Perfect!", "Fantastic!", "Tremendous!", "Great!", "Nice job!", "I'm impressed!", "Marvelous!", "You've got the hang of it!", "Super-Duper!", "Out of sight!", "You've got your brain in gear today."]
@@ -16,6 +17,7 @@ class Round {
     this.terminatedAt = null
     this.isRoundWon = false
     this.bestStreak = null
+    this.quizCompletionTime = 0
     this.streaks = []
     this.prompts = []
   }
@@ -50,8 +52,19 @@ const rounds = [
   */
 ]
 
+const DEFAULT_OPTIONS = {
+  questionCount: 10,
+}
+
+const options = DEFAULT_OPTIONS
+
 const congratsSegment = document.querySelector('.congrats-segment')
+const backdrop = document.querySelector('.backdrop')
+const modal = document.querySelector('.modal')
 const modeSelect = document.querySelector('.mode-select')
+const optionsButton = document.querySelector('.options-button')
+// const statsButton = document.querySelector('.stats-button')
+const restartButton = document.querySelector('.restart-button')
 const questionElement = document.querySelector('.question-segment__question')
 const questionCounter = document.querySelector('.question-segment__banner__question-counter')
 const questionScript = document.querySelector(".question__script")
@@ -66,7 +79,6 @@ const answerGradeSegment = document.querySelector(".answer-grade-segment__bg")
 const answerGradeText = document.querySelector(".answer-grade__text")
 const wordInfo = document.querySelector('.word-info')
 const toggleInfoButton = document.querySelector('.answer-grade__toggle-info')
-const restartButton = document.querySelector('.restart-button')
 
 function startRound() {
   function roundInit() {
@@ -107,10 +119,22 @@ function startRound() {
   }
   generateRoundObject()
   roundInit()
+  resetStopwatch()
+  startStopwatch()
 }
 
 function endRound() {
-
+  function isRoundWon() {
+    return currentRound.correctAnswerCount > (currentRound.wrongAnswerCount + currentRound.skippedAnswerCount)
+  }
+  function displayCongrats() {
+    congratsSegment.classList.add('visible')
+  }
+  const currentRound = rounds[rounds.length - 1];
+  modeSelect.removeAttribute('disabled');
+  currentRound.isRoundWon = isRoundWon();
+  displayCongrats();
+  stopStopwatch();
 }
 
 function initChoices(initialPrompt) {
@@ -226,11 +250,116 @@ function selectChoice(e) {
   }
 }
 
+function outsideClickCloser(e) {
+  e.stopPropagation()
+  if (!e.target.closest('.modal')) {
+    backdrop.classList.remove('visible')
+    while (modal.firstChild) {
+      modal.removeChild(modal.firstChild)
+    }
+  }
+}
+
 function switchMode() {
   answerSegment.classList.toggle('choice-mode')
   answerSegment.classList.toggle('insert-mode')
   if (answerSegment.classList.contains("choice-mode")) questionScript.textContent = "Which of these is"
   else questionScript.textContent = "Write"
+}
+
+function openOptionsEditor() {
+  function createModalPortion(option, inputType, inputProps = [], inputEvents = []) {
+    const modalPortion = document.createElement('div')
+    const modalPortionTitle = document.createElement('div')
+    const modalPortionTitleHr = document.createElement('hr')
+    const modalPortionTitleText = document.createElement('span')
+    const modalPortionInputContainer = document.createElement('div')
+    let modalPortionInput;
+    if (inputType !== 'select') {
+      modalPortionInput = document.createElement('input')
+      modalPortionInput.type = inputType
+      for (const propObject of inputProps) {
+        modalPortionInput.setAttribute(propObject.name, propObject.value)
+        modalPortionInput.setAttribute('value', 10)
+      }
+      for (const eventObject of inputEvents) {
+        modalPortionInput.addEventListener(eventObject.name, eventObject.handler)
+      }
+    }
+    else {
+      modalPortionInput = document.createElement('select')
+      for (const option of inputProps) {
+        const modalPortionInputOption = document.createElement('option')
+        modalPortionInputOption.textContent = option
+        modalPortionInput.appendChild(modalPortionInputOption)
+      }
+    }
+
+    modalPortion.classList.add('modal__portion')
+    modalPortionTitle.classList.add('modal__portion__title')
+    modalPortionTitleHr.classList.add('modal__portion__title__hr-line')
+    modalPortionTitleText.classList.add('modal__portion__title__text')
+    modalPortionInputContainer.classList.add('modal__portion__input-container')
+    modalPortionInput.classList.add('modal__portion__input')
+
+    modalPortionTitleText.textContent = option
+
+    modalPortionTitle.appendChild(modalPortionTitleHr)
+    modalPortionTitle.appendChild(modalPortionTitleText)
+
+    modalPortionInputContainer.appendChild(modalPortionInput)
+
+    modalPortion.appendChild(modalPortionTitle)
+    modalPortion.appendChild(modalPortionInputContainer)
+
+    modalPortionContainer.appendChild(modalPortion)
+  }
+  function enforceValidValue(e) {
+    const modalPortionInput = document.querySelector(
+      ".modal__portion__input"
+    );
+
+    const inputValue = parseFloat(modalPortionInput.value);
+    const maxValue = parseFloat(modalPortionInput.max);
+    const minValue = parseFloat(modalPortionInput.min);
+    const NUMBERS = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"]
+
+    if (inputValue > maxValue) {
+      modalPortionInput.value = maxValue;
+    }
+    if (inputValue < minValue) {
+      modalPortionInput.value = minValue;
+    }
+    if (!NUMBERS.includes(e.data)) {
+      modalPortionInput.value = modalPortionInput.value.replace(e.data, '')
+    }
+  }
+
+  const modalHeader = document.createElement('h2')
+  const modalPortionContainer = document.createElement('div')
+  const modalButtonContainer = document.createElement('div')
+  const modalApplyButton = document.createElement('button')
+
+  modalHeader.textContent = 'Options'
+  modalApplyButton.textContent = 'Apply'
+
+  modalHeader.classList.add('modal__header')
+  modalPortionContainer.classList.add('modal__portion-container')
+  modalButtonContainer.classList.add('modal__button-container')
+  modalApplyButton.classList.add('modal__apply-button')
+
+  modal.appendChild(modalHeader)
+  modal.appendChild(modalPortionContainer)
+  modalButtonContainer.appendChild(modalApplyButton)
+  modal.appendChild(modalButtonContainer)
+
+  backdrop.classList.add('visible')
+
+  createModalPortion('Question Count', 'number',
+    [{ name: "max", value: "30" }, { name: "min", value: "1" }, { name: "value", value: "10" }],
+    [{ name: "input", handler: enforceValidValue }])
+  createModalPortion('Stopwatch', 'select', ['On', 'Off'])
+  createModalPortion('Stopwatch Counting Centiseconds', 'select', ['Yes', 'No'])
 }
 
 function textboxPlaceholderToggle() {
@@ -337,12 +466,6 @@ function checkAnswer() {
   function disableSubmitButton() {
     submitButton.setAttribute('disabled', '')
   }
-  function isRoundWon() {
-    return currentRound.correctAnswerCount > (currentRound.wrongAnswerCount + currentRound.skippedAnswerCount)
-  }
-  function displayCongrats() {
-    congratsSegment.classList.add('visible')
-  }
 
   const currentRound = rounds[rounds.length - 1]
   const correctSynonyms = getCorrectSynonyms()
@@ -357,9 +480,8 @@ function checkAnswer() {
       motivatingGrade()
       toggleChoicesAbility()
       disableSubmitButton()
-      if (currentRound.currentQuestionNumber === currentRound.totalQuestionCount) {
-        displayCongrats()
-        console.log(isRoundWon(), currentRound)
+      if (currentRound.currentQuestionNumber === currentRound.totalQuestionCount) { // Round ended
+        endRound()
       }
       if (currentRound.correctAnswerCount + currentRound.wrongAnswerCount + currentRound.skippedAnswerCount !== currentRound.currentQuestionNumber) {
         currentRound.correctAnswerCount++
@@ -401,7 +523,9 @@ function checkAnswer() {
     unselectedChoice.classList.add('disabled')
     disableSubmitButton()
     wrongGrade()
-    displayCongrats()
+    if (currentRound.currentQuestionNumber === currentRound.totalQuestionCount) {
+      endRound()
+    }
   }
 
 }
@@ -477,3 +601,5 @@ nextButton.addEventListener('click', nextQuestion)
 submitButton.addEventListener('click', checkAnswer)
 toggleInfoButton.addEventListener('click', displayWordInfo)
 restartButton.addEventListener('click', startRound)
+optionsButton.addEventListener('click', openOptionsEditor)
+backdrop.addEventListener('click', outsideClickCloser)

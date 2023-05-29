@@ -11,7 +11,9 @@
   <body>
     <main>
       <div class="app">
-        <div class="backdrop"><div class="modal"></div></div>
+        <div class="backdrop">
+          <div class="modal"></div>
+        </div>
         <div class="congrats-segment">
           <img
             src="circle-check-regular.svg"
@@ -31,7 +33,8 @@
             <option>Multiple Choice</option>
             <option>Insert</option>
           </select>
-          <button class="function-button">Options</button>
+          <button class="function-button stats-button">Stats</button>
+          <button class="function-button options-button">Options</button>
           <button class="function-button restart-button">
             <img
               class="restart-image"
@@ -41,6 +44,14 @@
           </button>
         </div>
         <div class="question-segment">
+          <div class="question-segment__stopwatch">
+            <img
+              src="stopwatch.svg"
+              alt=""
+              class="question-segment__stopwatch__image"
+            />
+            <div class="question-segment__stopwatch__display">00:00:00</div>
+          </div>
           <div class="question-segment__banner">
             <p>
               Question
