@@ -1,5 +1,5 @@
 import WORDS from './words.js';
-import { startStopwatch, stopStopwatch, resetStopwatch } from './stopwatch.js';
+import { startStopwatch, stopStopwatch, resetStopwatch, continueStopwatch } from './stopwatch.js';
 
 const EXCLUDED_INSERT_PROMPTS = ['pollution', 'pan', 'carbon footprint']
 const CORRECT_PHRASES = ['Good job!', "You've got it made!", 'Super!', 'Excellent!', 'Good work!', "You've got that down pat.", "Perfect!", "Fantastic!", "Tremendous!", "Great!", "Nice job!", "I'm impressed!", "Marvelous!", "You've got the hang of it!", "Super-Duper!", "Out of sight!", "You've got your brain in gear today."]
@@ -14,7 +14,6 @@ class Round {
     this.correctAnswerCount = 0
     this.wrongAnswerCount = 0
     this.skippedAnswerCount = 0
-    this.terminatedAt = null
     this.isRoundWon = false
     this.bestStreak = null
     this.quizCompletionTime = 0
@@ -31,7 +30,6 @@ const rounds = [
       wrongAnswerCount: 4,
       skippedAnswerCount: 1,
       totalQuestionCount: 10,
-      terminatedAt: 8 (correntAnswerCount + wrongAnswerCount + skippedAnswerCount),
       isRoundWon: false (correctAnswerCount > ( wrongAnswerCount + skippedAnswerCount ) ),
       type: choice,
       bestStreak: 2,
@@ -54,9 +52,13 @@ const rounds = [
 
 const DEFAULT_OPTIONS = {
   questionCount: 10,
+  isStopwatchOn: true,
+  stopwatchTimingMechanism: 'centiseconds',
+  stopwatchWhileGrading: false,
 }
 
-const options = DEFAULT_OPTIONS
+const options = {}
+Object.assign(options, DEFAULT_OPTIONS)
 
 const congratsSegment = document.querySelector('.congrats-segment')
 const backdrop = document.querySelector('.backdrop')
@@ -67,6 +69,7 @@ const optionsButton = document.querySelector('.options-button')
 const restartButton = document.querySelector('.restart-button')
 const questionElement = document.querySelector('.question-segment__question')
 const questionCounter = document.querySelector('.question-segment__banner__question-counter')
+const questionTotal = document.querySelector('.question-segment__banner__question-total')
 const questionScript = document.querySelector(".question__script")
 const questionPrompt = document.querySelector('.question__prompt')
 const choiceButtons = document.querySelectorAll('.choice__button')
@@ -96,7 +99,7 @@ function startRound() {
     questionElement.classList.remove('disabled')
     restartButton.querySelector('[data-restart-text]').textContent = "Restart";
     modeSelect.setAttribute('disabled', '')
-
+    optionsButton.setAttribute('disabled', '')
 
     if (answerSegment.classList.contains('choice-mode')) {
       toggleChoicesAbility(false);
@@ -106,12 +109,12 @@ function startRound() {
     else { enableTextbox(); resetTextbox() }
 
     hideAnswerGrade()
-    enableSubmitButtons()
+    dependentSubmitButtonsEnable()
   }
   function generateRoundObject() {
     const round = new Round({
       roundNumber: rounds.length + 1,
-      totalQuestionCount: 10,
+      totalQuestionCount: options.questionCount,
       mode: modeSelect.value.toLowerCase().replace(/\s/g, ""), // Removes whitespace
     })
 
@@ -119,8 +122,8 @@ function startRound() {
   }
   generateRoundObject()
   roundInit()
-  resetStopwatch()
-  startStopwatch()
+  resetStopwatch(options.stopwatchTimingMechanism)
+  startStopwatch(options.stopwatchTimingMechanism)
 }
 
 function endRound() {
@@ -132,6 +135,7 @@ function endRound() {
   }
   const currentRound = rounds[rounds.length - 1];
   modeSelect.removeAttribute('disabled');
+  optionsButton.removeAttribute('disabled')
   currentRound.isRoundWon = isRoundWon();
   displayCongrats();
   stopStopwatch();
@@ -268,6 +272,56 @@ function switchMode() {
 }
 
 function openOptionsEditor() {
+  function addOptionElements() {
+    function applyOptions() {
+      const modalPortions = document.querySelectorAll(".modal__portion")
+      for (const modalPortion of modalPortions) {
+        const modalPortionTitle = modalPortion.querySelector('.modal__portion__title__text').textContent
+        const modalPortionInput = modalPortion.querySelector('.modal__portion__input').value
+
+        if (modalPortionTitle === questionCountText) {
+          options.questionCount = parseInt(modalPortionInput)
+          questionTotal.textContent = options.questionCount
+        }
+        else if (modalPortionTitle === isStopwatchOnText) {
+          options.isStopwatchOn = modalPortionInput === 'On'
+          const stopwatchElem = document.querySelector('.question-segment__stopwatch')
+          if (options.isStopwatchOn) {
+            stopwatchElem.classList.add('visible')
+          }
+          else {
+            stopwatchElem.classList.remove('visible')
+          }
+        }
+        else if (modalPortionTitle === stopwatchTimingMechanismText) {
+          options.stopwatchTimingMechanism = modalPortionInput.toLowerCase()
+        }
+        else if (modalPortionTitle === stopwatchWhileGradingText) {
+          options.stopwatchWhileGrading = modalPortionInput === 'On'
+        }
+      }
+    }
+    const modalHeader = document.createElement('h2')
+    const modalPortionContainer = document.createElement('div')
+    const modalButtonContainer = document.createElement('div')
+    const modalApplyButton = document.createElement('button')
+
+    modalHeader.textContent = 'Options'
+    modalApplyButton.textContent = 'Apply'
+
+    modalHeader.classList.add('modal__header')
+    modalPortionContainer.classList.add('modal__portion-container')
+    modalButtonContainer.classList.add('modal__button-container')
+    modalApplyButton.classList.add('modal__apply-button')
+
+    modalApplyButton.addEventListener('click', applyOptions);
+
+    modal.appendChild(modalHeader)
+    modal.appendChild(modalPortionContainer)
+    modalButtonContainer.appendChild(modalApplyButton)
+    modal.appendChild(modalButtonContainer)
+
+  }
   function createModalPortion(option, inputType, inputProps = [], inputEvents = []) {
     const modalPortion = document.createElement('div')
     const modalPortionTitle = document.createElement('div')
@@ -312,7 +366,29 @@ function openOptionsEditor() {
     modalPortion.appendChild(modalPortionTitle)
     modalPortion.appendChild(modalPortionInputContainer)
 
+    const modalPortionContainer = document.querySelector('.modal__portion-container')
     modalPortionContainer.appendChild(modalPortion)
+  }
+  function setModalPortionInputValues() {
+    const modalPortions = document.querySelectorAll(".modal__portion")
+    for (const modalPortion of modalPortions) {
+      const modalPortionTitle = modalPortion.querySelector('.modal__portion__title__text').textContent
+      const modalPortionInput = modalPortion.querySelector('.modal__portion__input')
+
+      if (modalPortionTitle === questionCountText) {
+        modalPortionInput.value = options.questionCount
+      }
+      else if (modalPortionTitle === isStopwatchOnText) {
+        modalPortionInput.value = options.isStopwatchOn ? 'On' : 'Off'
+      }
+      else if (modalPortionTitle === stopwatchTimingMechanismText) {
+        const timingMechanism = options.stopwatchTimingMechanism
+        modalPortionInput.value = timingMechanism.charAt(0).toUpperCase() + timingMechanism.slice(1)
+      }
+      else if (modalPortionTitle === stopwatchWhileGradingText) {
+        modalPortionInput.value = options.stopwatchElementWhileGrading ? 'On' : 'Off'
+      }
+    }
   }
   function enforceValidValue(e) {
     const modalPortionInput = document.querySelector(
@@ -335,31 +411,21 @@ function openOptionsEditor() {
     }
   }
 
-  const modalHeader = document.createElement('h2')
-  const modalPortionContainer = document.createElement('div')
-  const modalButtonContainer = document.createElement('div')
-  const modalApplyButton = document.createElement('button')
+  const questionCountText = 'Question Count'
+  const isStopwatchOnText = 'Stopwatch'
+  const stopwatchTimingMechanismText = 'Stopwatch Timing Mechanism'
+  const stopwatchWhileGradingText = 'Stopwatch While Answer Grading'
 
-  modalHeader.textContent = 'Options'
-  modalApplyButton.textContent = 'Apply'
-
-  modalHeader.classList.add('modal__header')
-  modalPortionContainer.classList.add('modal__portion-container')
-  modalButtonContainer.classList.add('modal__button-container')
-  modalApplyButton.classList.add('modal__apply-button')
-
-  modal.appendChild(modalHeader)
-  modal.appendChild(modalPortionContainer)
-  modalButtonContainer.appendChild(modalApplyButton)
-  modal.appendChild(modalButtonContainer)
-
+  addOptionElements()
   backdrop.classList.add('visible')
 
-  createModalPortion('Question Count', 'number',
+  createModalPortion(questionCountText, 'number',
     [{ name: "max", value: "30" }, { name: "min", value: "1" }, { name: "value", value: "10" }],
-    [{ name: "input", handler: enforceValidValue }])
-  createModalPortion('Stopwatch', 'select', ['On', 'Off'])
-  createModalPortion('Stopwatch Counting Centiseconds', 'select', ['Yes', 'No'])
+    [{ name: "input", handler: enforceValidValue }, { name: 'click', handler: e => e.target.select() }])
+  createModalPortion(isStopwatchOnText, 'select', ['On', 'Off'])
+  createModalPortion(stopwatchTimingMechanismText, 'select', ['Centiseconds', 'Deciseconds', 'Seconds'])
+  createModalPortion(stopwatchWhileGradingText, 'select', ['On', 'Off'])
+  setModalPortionInputValues()
 }
 
 function textboxPlaceholderToggle() {
@@ -369,7 +435,7 @@ function textboxPlaceholderToggle() {
   }, 0)
 }
 
-function enableSubmitButtons() {
+function dependentSubmitButtonsEnable() {
   const currentRound = rounds[rounds.length - 1]
   submitButton.removeAttribute('disabled')
   if (currentRound.currentQuestionNumber !== currentRound.totalQuestionCount) {
@@ -382,14 +448,14 @@ function nextQuestion() {
   const currentRound = rounds[rounds.length - 1]
   const SURE_TEXT = 'Are You Sure?'
   const selectedChoice = document.querySelector('.selected-choice')
-  if ((!selectedChoice || currentRound.correctAnswerCount + currentRound.wrongAnswerCount + currentRound.skippedAnswerCount !== currentRound.currentQuestionNumber) && nextButton.textContent !== SURE_TEXT) {
+  if ((!selectedChoice && answerSegment.classList.contains('choice-mode') || currentRound.correctAnswerCount + currentRound.wrongAnswerCount + currentRound.skippedAnswerCount !== currentRound.currentQuestionNumber) && nextButton.textContent !== SURE_TEXT) {
     nextButton.textContent = SURE_TEXT
     return;
   }
 
-  function increaseCounter(currentRound) {
+  function increaseCounter() {
     const count = parseInt(questionCounter.textContent)
-    if (count < currentRound.totalQuestionCount) questionCounter.textContent = count + 1
+    questionCounter.textContent = count + 1
   }
   function enableTextbox() {
     answerTextbox.removeAttribute('disabled')
@@ -404,9 +470,10 @@ function nextQuestion() {
     return (wordObj.word === newPrompt) || (wordObj.syns.find(synObject => synObject.word === newPrompt))
   })
 
-  if (currentRound.correctAnswerCount + currentRound.wrongAnswerCount + currentRound.skippedAnswerCount < currentRound.currentQuestionNumber) { // Runs before currentQuestionNumber adiition, number of past question
-    currentRound.skippedAnswerCount++
+  if (!(currentRound.correctAnswerCount + currentRound.wrongAnswerCount + currentRound.skippedAnswerCount < currentRound.currentQuestionNumber)) { // Runs before currentQuestionNumber adiition, number of past question
+    if (!options.stopwatchWhileGrading) { continueStopwatch(options.stopwatchTimingMechanism) }
   }
+  else { currentRound.skippedAnswerCount++ }
 
   const NEXT_BUTTON_TEXT = 'Next Question'
   currentRound.currentQuestionNumber++
@@ -425,9 +492,9 @@ function nextQuestion() {
     enableTextbox()
   }
 
-  increaseCounter(currentRound)
+  increaseCounter()
   hideAnswerGrade()
-  enableSubmitButtons()
+  dependentSubmitButtonsEnable()
   resetAnswerGradeInfo()
 }
 
@@ -501,13 +568,17 @@ function checkAnswer() {
   else {
     if (correctSynonyms.includes(writtenAnswer.toLowerCase())) {
       motivatingGrade()
+      disableSubmitButton()
+      if (currentRound.currentQuestionNumber === currentRound.totalQuestionCount) { // Round ended
+        endRound()
+      }
       answerTextbox.setAttribute('disabled', '')
       if (currentRound.correctAnswerCount + currentRound.wrongAnswerCount + currentRound.skippedAnswerCount === currentRound.currentQuestionNumber) {
         return;
       }
-      else { currentRound.correctAnswerCount++ }
+      currentRound.correctAnswerCount++
     }
-    else {
+    else { // If wrong answer
       wrongGrade();
       if (currentRound.correctAnswerCount + currentRound.wrongAnswerCount + currentRound.skippedAnswerCount < currentRound.currentQuestionNumber) {
         currentRound.wrongAnswerCount++
@@ -528,6 +599,7 @@ function checkAnswer() {
     }
   }
 
+  if (!options.stopwatchWhileGrading) { stopStopwatch() }
 }
 
 function displayWordInfo() {

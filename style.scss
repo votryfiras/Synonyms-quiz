@@ -24,6 +24,10 @@ $border-color: darken($primary-color, 15);
   --offset-margin: 0.6rem;
 }
 
+html {
+  overflow-x: hidden;
+}
+
 body {
   margin: 0;
 }
@@ -51,7 +55,7 @@ main {
   padding: 2em 0;
   background-color: rgba(0, 0, 0, 0.2);
   box-sizing: border-box;
-  position: absolute;
+  position: fixed;
   top: 0;
   left: 0;
   display: flex;
@@ -59,9 +63,21 @@ main {
   align-items: center;
   z-index: 100;
   .modal {
-    min-width: 55vw;
+    min-width: 280px;
+    width: 55vw;
+    max-height: 80vh;
+    overflow-y: scroll;
     background-color: $primary-color;
     border-radius: 4px;
+    position: relative;
+    &::before {
+      content: 'MUST press "Apply" to apply changes';
+      width: 100%;
+      position: absolute;
+      top: 3em;
+      text-align: center;
+      color: crimson;
+    }
     &__header {
       width: 100%;
       text-align: center;
@@ -82,14 +98,17 @@ main {
 .backdrop.visible .modal__portion {
   margin-bottom: 3em;
   &__title {
+    height: max-content;
     position: relative;
     margin-bottom: 1.5em;
     &__hr-line {
+      width: 100%;
       border: none;
       position: relative;
       height: 1px;
       &::before {
         content: "";
+        width: 100%;
         position: absolute;
         top: 0;
         left: 0;
@@ -101,6 +120,7 @@ main {
     &__text {
       background-color: $primary-color;
       padding: 0 0.5em;
+      width: auto;
       position: absolute;
       top: 50%;
       left: 2em;
@@ -194,7 +214,26 @@ main {
   .function-button {
     @include button;
     margin-inline: 0.1em;
+    position: relative;
+    border-radius: 0;
     cursor: pointer;
+    &:disabled {
+      cursor: not-allowed;
+      &::before {
+        content: "";
+        height: 100%;
+        width: 100%;
+        position: absolute;
+        top: 0;
+        left: 0;
+        background-color: rgba(0, 0, 0, 0.2);
+      }
+      &:hover {
+        color: $text-color;
+        border-color: $border-color;
+        text-decoration: none;
+      }
+    }
     &:hover {
       color: $secondary-color;
       border-color: $secondary-color;
@@ -274,8 +313,11 @@ main {
     top: 0.4em;
     right: 0.6em;
     color: $secondary-color;
-    display: flex;
+    display: none;
     z-index: 1;
+    &.visible {
+      display: flex;
+    }
     &__image {
       width: 1.2em;
       color: $secondary-color;
