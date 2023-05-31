@@ -9,7 +9,9 @@ class Round {
   constructor(props) {
     this.roundNumber = props.roundNumber
     this.totalQuestionCount = props.totalQuestionCount
+    this.terminatedAt = props.totalQuestionCount
     this.mode = props.mode
+    this.isRunning = true
     this.currentQuestionNumber = 1
     this.correctAnswerCount = 0
     this.wrongAnswerCount = 0
@@ -94,6 +96,12 @@ function convertToSeconds(time) {
 }
 
 function startRound() {
+  if (restartButton.hasAttribute('data-end')) {
+    restartButton.removeAttribute('data-end')
+    restartButton.querySelector('[data-restart-text]').textContent = 'Start Game'
+    endRound()
+    return;
+  }
   function roundInit() {
     function enableTextbox() {
       answerTextbox.removeAttribute('disabled')
@@ -107,7 +115,8 @@ function startRound() {
 
     questionPrompt.textContent = initialPrompt;
     questionElement.classList.remove('disabled')
-    restartButton.querySelector('[data-restart-text]').textContent = "Restart";
+    restartButton.querySelector('[data-restart-text]').textContent = "End Game";
+    restartButton.setAttribute('data-end', '')
     modeSelect.setAttribute('disabled', '')
     optionsButton.setAttribute('disabled', '')
 
@@ -142,24 +151,63 @@ function startRound() {
   }
   roundInit()
   generateRoundObject()
-  dependentSubmitButtonsEnable()
+  enableSubmitButtons()
   resetStopwatch(options.stopwatchTimingMechanism)
   startStopwatch(options.stopwatchTimingMechanism)
 }
 
 function endRound() {
-  function isRoundWon() {
-    return currentRound.correctAnswerCount > (currentRound.wrongAnswerCount + currentRound.skippedAnswerCount)
+  function disableSubmitButtons() {
+    nextButton.setAttribute('disabled', '')
+    submitButton.setAttribute('disabled', '')
   }
-  function displayCongrats() {
-    congratsSegment.classList.add('visible')
-  }
+
   const currentRound = rounds[rounds.length - 1];
   modeSelect.removeAttribute('disabled');
   optionsButton.removeAttribute('disabled')
-  currentRound.isRoundWon = isRoundWon();
   currentRound.completionTime = convertToSeconds(stopwatchDisplay.textContent)
-  displayCongrats();
+  if (currentRound.currentQuestionNumber === currentRound.totalQuestionCount) { // If round not terminated
+    function resetRestartButton() {
+      restartButton.removeAttribute('data-end')
+      restartButton.querySelector('[data-restart-text]').textContent = 'Start Game'
+    }
+    function isRoundWon() {
+      return currentRound.correctAnswerCount > (currentRound.wrongAnswerCount + currentRound.skippedAnswerCount)
+    }
+    function displayCongrats() {
+      congratsSegment.classList.add('visible')
+    }
+    currentRound.isRoundWon = isRoundWon();
+    nextButton.setAttribute('disabled', '')
+    resetRestartButton()
+    displayCongrats();
+  }
+  else {
+    function pushRoundPromptObject() {
+      const choices = currentRound.mode === "multiplechoice"
+        ? Array.from(choiceButtons).map(btn => btn.textContent)
+        : []
+      const correctAnswers = currentRound.mode === 'multiplechoice' ?
+        getCorrectSynonyms(prompt).filter(syn => choices.includes(syn))
+        : getCorrectSynonyms(prompt)
+
+      const promptRoundObject = {
+        word: prompt,
+        choices,
+        selectedChoices: [],
+        correctAnswers,
+      }
+      currentRound.prompts.push(promptRoundObject)
+    }
+    const prompt = questionPrompt.textContent
+    if (currentRound.prompts[currentRound.prompts.length - 1].word !== prompt) {
+      pushRoundPromptObject()
+    }
+    currentRound.terminatedAt = currentRound.currentQuestionNumber
+    restartButton.querySelector('[data-restart-text]').textContent = 'Start Game';
+    toggleChoicesAbility();
+  };
+  disableSubmitButtons();
   stopStopwatch();
 }
 
@@ -260,7 +308,7 @@ function resetChoices() {
 }
 
 function toggleChoicesAbility(disable = true) {
-  const choices = Array.from(document.querySelectorAll('.choice'))
+  const choices = document.querySelectorAll('.choice')
   if (!disable) {
     choices.forEach(btn => btn.classList.remove('disabled'))
   }
@@ -459,13 +507,9 @@ function textboxPlaceholderToggle() {
   }, 0)
 }
 
-function dependentSubmitButtonsEnable() {
-  const currentRound = rounds[rounds.length - 1]
+function enableSubmitButtons() {
   submitButton.removeAttribute('disabled')
-  if (currentRound.currentQuestionNumber !== currentRound.totalQuestionCount) {
-    nextButton.removeAttribute('disabled')
-  }
-  else { nextButton.setAttribute('disabled', '') }
+  nextButton.removeAttribute('disabled')
 }
 
 function getCorrectSynonyms(prompt) {
@@ -488,14 +532,6 @@ function getCorrectSynonyms(prompt) {
 }
 
 function nextQuestion() {
-  const currentRound = rounds[rounds.length - 1]
-  const SURE_TEXT = 'Are You Sure?'
-  const selectedChoice = document.querySelector('.selected-choice')
-  if ((!selectedChoice && currentRound.mode === 'multiplechoice' || currentRound.correctAnswerCount + currentRound.wrongAnswerCount + currentRound.skippedAnswerCount !== currentRound.currentQuestionNumber) && nextButton.textContent !== SURE_TEXT) {
-    nextButton.textContent = SURE_TEXT
-    return;
-  }
-
   function pushRoundPromptObject() {
     const choices = currentRound.mode === "multiplechoice"
       ? Array.from(choiceButtons).map(btn => btn.textContent)
@@ -512,6 +548,26 @@ function nextQuestion() {
     }
     currentRound.prompts.push(promptRoundObject)
   }
+  const currentRound = rounds[rounds.length - 1];
+  const NEXT_BUTTON_TEXT = 'Next Question'
+  const SURE_TEXT = 'Are You Sure?';
+  const SKIP_TEXT = 'Skip Question';
+  const prompt = questionPrompt.textContent;
+  const selectedChoice = document.querySelector('.selected-choice')
+  if ((!selectedChoice && currentRound.mode === 'multiplechoice' || currentRound.correctAnswerCount + currentRound.wrongAnswerCount + currentRound.skippedAnswerCount !== currentRound.currentQuestionNumber) && nextButton.textContent !== SURE_TEXT) {
+    nextButton.textContent = SURE_TEXT
+    return;
+  }
+  if (nextButton.hasAttribute('data-skip')) {
+    currentRound.skippedAnswerCount++
+    nextButton.textContent = NEXT_BUTTON_TEXT
+    nextButton.removeAttribute('data-skip')
+    pushRoundPromptObject()
+    toggleChoicesAbility()
+    endRound()
+    return;
+  }
+
   function increaseCounter() {
     const count = parseInt(questionCounter.textContent)
     questionCounter.textContent = count + 1
@@ -539,21 +595,29 @@ function nextQuestion() {
   const newWordObject = WORDS.find(wordObj => {
     return (wordObj.word === newPrompt) || (wordObj.syns.find(synObject => synObject.word === newPrompt))
   })
-  const prompt = questionPrompt.textContent;
 
   if (!(currentRound.correctAnswerCount + currentRound.wrongAnswerCount + currentRound.skippedAnswerCount < currentRound.currentQuestionNumber)) { // Runs before currentQuestionNumber adiition, number of past question
-    if (!options.stopwatchWhileGrading) {
+    const choices = document.querySelectorAll('.choice')
+    const areChoiceButtonsDisabled = Array.from(choices).every(choice => {
+      return choice.classList.contains('disabled')
+    })
+    if (!options.stopwatchWhileGrading && areChoiceButtonsDisabled) {
       continueStopwatch(options.stopwatchTimingMechanism)
     }
   }
   else { currentRound.skippedAnswerCount++ }
 
-  const NEXT_BUTTON_TEXT = 'Next Question'
   currentRound.currentQuestionNumber++
   questionPrompt.textContent = newPrompt;
   answerTextbox.textContent = '';
   nextButton.textContent = NEXT_BUTTON_TEXT
 
+  if (currentRound.prompts[currentRound.prompts.length - 1]) {
+    const currentRoundWordObject = currentRound.prompts[currentRound.prompts.length - 1]
+    if (currentRoundWordObject.word !== prompt) {
+      pushRoundPromptObject()
+    }
+  }
 
   if (currentRound.mode === 'multiplechoice') {
     manipulateChoices(newWordObject, newPrompt)
@@ -565,19 +629,14 @@ function nextQuestion() {
     enableTextbox()
   }
 
-  if (currentRound.prompts[currentRound.prompts.length - 1]) {
-    const currentRoundWordObject = currentRound.prompts[currentRound.prompts.length - 1]
-    if (currentRoundWordObject.word !== prompt) {
-      pushRoundPromptObject()
-    }
-  }
-  else {
-    pushRoundPromptObject()
+  if (currentRound.currentQuestionNumber === currentRound.totalQuestionCount) {
+    nextButton.textContent = SKIP_TEXT
+    nextButton.setAttribute('data-skip', '')
   }
 
   increaseCounter()
   hideAnswerGrade()
-  dependentSubmitButtonsEnable()
+  enableSubmitButtons()
   resetAnswerGradeInfo()
 }
 
@@ -594,6 +653,22 @@ function checkAnswer() {
     answerGradeSegment.classList.remove("correct")
     answerGradeSegment.classList.add("wrong")
   }
+  function pushRoundPromptObject() {
+    const choices = currentRound.mode === "multiplechoice"
+      ? Array.from(choiceButtons).map(btn => btn.textContent)
+      : []
+    const correctAnswers = currentRound.mode === 'multiplechoice' ?
+      getCorrectSynonyms(prompt).filter(syn => choices.includes(syn))
+      : getCorrectSynonyms(prompt)
+
+    const promptRoundObject = {
+      word: prompt,
+      choices,
+      selectedChoices: [],
+      correctAnswers,
+    }
+    currentRound.prompts.push(promptRoundObject)
+  }
   function disableSubmitButton() {
     submitButton.setAttribute('disabled', '')
   }
@@ -608,8 +683,13 @@ function checkAnswer() {
 
   if (selectedChoice) {
     const currentRoundPromptsObject = currentRound.prompts[currentRound.prompts.length - 1]
-    if (currentRoundPromptsObject) {
+    if (currentRoundPromptsObject && currentRoundPromptsObject.word === prompt) {
       currentRoundPromptsObject.selectedChoices.push(selectedChoiceButton.textContent)
+    }
+    else if (currentRoundPromptsObject) {
+      pushRoundPromptObject()
+      const updatedCurrentRoundPromptsObject = currentRound.prompts[currentRound.prompts.length - 1]
+      updatedCurrentRoundPromptsObject.selectedChoices.push(selectedChoiceButton.textContent)
     }
   }
 
