@@ -11,7 +11,6 @@ class Round {
     this.totalQuestionCount = props.totalQuestionCount
     this.terminatedAt = props.totalQuestionCount
     this.mode = props.mode
-    this.isRunning = true
     this.currentQuestionNumber = 1
     this.correctAnswerCount = 0
     this.wrongAnswerCount = 0
@@ -19,7 +18,7 @@ class Round {
     this.isRoundWon = false
     this.bestStreak = null
     this.completionTime = 0
-    this.streaks = []
+    this.streaks = [0]
     this.prompts = []
     this.prompts.push(props.initialPromptObject)
   }
@@ -69,9 +68,11 @@ const backdrop = document.querySelector('.backdrop')
 const modal = document.querySelector('.modal')
 const modeSelect = document.querySelector('.mode-select')
 const optionsButton = document.querySelector('.options-button')
-// const statsButton = document.querySelector('.stats-button')
+const statsButton = document.querySelector('.stats-button')
 const restartButton = document.querySelector('.restart-button')
 const questionElement = document.querySelector('.question-segment__question')
+const correctCounter = document.querySelector('[data-correct-counter]')
+const streakCounter = document.querySelector('[data-streak-counter]')
 const stopwatchDisplay = document.querySelector('.question-segment__stopwatch__display')
 const questionCounter = document.querySelector('.question-segment__banner__question-counter')
 const questionTotal = document.querySelector('.question-segment__banner__question-total')
@@ -119,6 +120,7 @@ function startRound() {
     restartButton.setAttribute('data-end', '')
     modeSelect.setAttribute('disabled', '')
     optionsButton.setAttribute('disabled', '')
+    statsButton.setAttribute('disabled', '')
 
     if (modeSelect.value.toLowerCase().replace(/\s/g, "") === 'multiplechoice') {
       toggleChoicesAbility(false);
@@ -165,6 +167,7 @@ function endRound() {
   const currentRound = rounds[rounds.length - 1];
   modeSelect.removeAttribute('disabled');
   optionsButton.removeAttribute('disabled')
+  statsButton.removeAttribute('disabled')
   currentRound.completionTime = convertToSeconds(stopwatchDisplay.textContent)
   if (currentRound.currentQuestionNumber === currentRound.totalQuestionCount) { // If round not terminated
     function resetRestartButton() {
@@ -175,7 +178,27 @@ function endRound() {
       return currentRound.correctAnswerCount > (currentRound.wrongAnswerCount + currentRound.skippedAnswerCount)
     }
     function displayCongrats() {
+      function setGradeTerm() {
+        if (currentRound.isRoundWon) {
+          congratsGradeTerm.textContent = 'WON! Well Done!'
+          congratsGradeTerm.classList.add('won')
+        }
+        else {
+          console.log(currentRound.isRoundWon)
+          congratsGradeTerm.textContent = 'Lost. Better luck next time!'
+          congratsGradeTerm.classList.add('lost')
+        }
+      }
+      const ELLIPSIS_ANIMATION_DURATION = 3200
+      const CONGRATS_VISIBILITY_ANIMATION_DURATION = 10000
+      const congratsGradeTerm = document.querySelector('.congrats__grade__term')
+
       congratsSegment.classList.add('visible')
+      setTimeout(setGradeTerm, ELLIPSIS_ANIMATION_DURATION)
+      setTimeout(() => {
+        congratsSegment.classList.remove('visible')
+        congratsGradeTerm.textContent = ''
+      }, CONGRATS_VISIBILITY_ANIMATION_DURATION)
     }
     currentRound.isRoundWon = isRoundWon();
     nextButton.setAttribute('disabled', '')
@@ -199,6 +222,7 @@ function endRound() {
       }
       currentRound.prompts.push(promptRoundObject)
     }
+
     const prompt = questionPrompt.textContent
     if (currentRound.prompts[currentRound.prompts.length - 1].word !== prompt) {
       pushRoundPromptObject()
@@ -310,10 +334,16 @@ function resetChoices() {
 function toggleChoicesAbility(disable = true) {
   const choices = document.querySelectorAll('.choice')
   if (!disable) {
-    choices.forEach(btn => btn.classList.remove('disabled'))
+    choices.forEach(choice => {
+      choice.classList.remove('disabled')
+      choice.querySelector('.choice__button').removeAttribute('disabled', '')
+    })
   }
   else {
-    choices.forEach(btn => btn.classList.add('disabled'))
+    choices.forEach(choice => {
+      choice.classList.add('disabled')
+      choice.querySelector('.choice__button').setAttribute('disabled', '')
+    })
 
   }
 }
@@ -548,6 +578,13 @@ function nextQuestion() {
     }
     currentRound.prompts.push(promptRoundObject)
   }
+  function cutStreak() {
+    const streaks = currentRound.streaks
+    if (streaks[streaks.length - 1] !== 0) {
+      streaks.push(0)
+    }
+  }
+
   const currentRound = rounds[rounds.length - 1];
   const NEXT_BUTTON_TEXT = 'Next Question'
   const SURE_TEXT = 'Are You Sure?';
@@ -589,8 +626,6 @@ function nextQuestion() {
     answerTextbox.value = ''
   }
 
-  console.log(rounds)
-
   const newPrompt = pickNewPrompt()
   const newWordObject = WORDS.find(wordObj => {
     return (wordObj.word === newPrompt) || (wordObj.syns.find(synObject => synObject.word === newPrompt))
@@ -601,11 +636,15 @@ function nextQuestion() {
     const areChoiceButtonsDisabled = Array.from(choices).every(choice => {
       return choice.classList.contains('disabled')
     })
-    if (!options.stopwatchWhileGrading && areChoiceButtonsDisabled) {
+    if (!options.stopwatchWhileGrading && areChoiceButtonsDisabled) { // && Question not skipped
       continueStopwatch(options.stopwatchTimingMechanism)
     }
   }
-  else { currentRound.skippedAnswerCount++ }
+  else {
+    currentRound.skippedAnswerCount++;
+    cutStreak();
+    streakCounter.textContent = 0
+  }
 
   currentRound.currentQuestionNumber++
   questionPrompt.textContent = newPrompt;
@@ -669,6 +708,27 @@ function checkAnswer() {
     }
     currentRound.prompts.push(promptRoundObject)
   }
+  function increaseStreak() {
+    const streaks = currentRound.streaks
+    streaks[streaks.length - 1]++
+    const largestStreak = Math.max(...streaks)
+    currentRound.bestStreak = largestStreak
+  }
+  function cutStreak() {
+    const streaks = currentRound.streaks
+    if (streaks[streaks.length - 1] !== 0) {
+      streaks.push(0)
+    }
+  }
+  function increaseCounters() {
+    const correctCount = parseInt(correctCounter.textContent)
+    const streakCount = parseInt(streakCounter.textContent)
+    correctCounter.textContent = correctCount + 1
+    streakCounter.textContent = streakCount + 1
+  }
+  function resetStreakCounter() {
+    streakCounter.textContent = 0
+  }
   function disableSubmitButton() {
     submitButton.setAttribute('disabled', '')
   }
@@ -704,6 +764,8 @@ function checkAnswer() {
       }
       if (currentRound.correctAnswerCount + currentRound.wrongAnswerCount + currentRound.skippedAnswerCount !== currentRound.currentQuestionNumber) {
         currentRound.correctAnswerCount++
+        increaseStreak()
+        increaseCounters()
       }
       if (!options.stopwatchWhileGrading) { stopStopwatch() }
       const NEXT_BUTTON_TEXT = 'Next Question';
@@ -711,7 +773,10 @@ function checkAnswer() {
     }
     else {
       selectedChoice.classList.add('disabled')
+      selectedChoiceButton.setAttribute('disabled', '')
       wrongGrade()
+      cutStreak()
+      resetStreakCounter()
       resetChoices()
       if (currentRound.correctAnswerCount + currentRound.wrongAnswerCount + currentRound.skippedAnswerCount < currentRound.currentQuestionNumber) {
         currentRound.wrongAnswerCount++
@@ -722,6 +787,7 @@ function checkAnswer() {
     if (correctSynonyms.includes(writtenAnswer.toLowerCase())) { // If correct answer
       motivatingGrade()
       disableSubmitButton()
+      increaseStreak()
       if (currentRound.currentQuestionNumber === currentRound.totalQuestionCount) { // Round ended
         endRound()
       }
@@ -734,6 +800,8 @@ function checkAnswer() {
     }
     else { // If wrong answer
       wrongGrade();
+      cutStreak()
+      resetStreakCounter()
       if (currentRound.correctAnswerCount + currentRound.wrongAnswerCount + currentRound.skippedAnswerCount < currentRound.currentQuestionNumber) {
         currentRound.wrongAnswerCount++
       }
@@ -746,6 +814,7 @@ function checkAnswer() {
 
     unselectedChoice.classList.add('selected-choice')
     unselectedChoice.classList.add('disabled')
+    unselectedChoice.querySelector('.choice__button').setAttribute('disabled', '')
     disableSubmitButton()
     wrongGrade()
     if (currentRound.currentQuestionNumber === currentRound.totalQuestionCount) {

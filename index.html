@@ -25,7 +25,7 @@
               Well done, you completed the quiz!
             </span>
             <br />
-            You &nbsp; &nbsp; &nbsp; <span class="congrats__grade__term"></span>
+            You &nbsp;<span class="congrats__grade__term"></span>
           </p>
         </div>
         <div class="function-buttons-segment">
@@ -44,6 +44,39 @@
           </button>
         </div>
         <div class="question-segment">
+          <div
+            class="question-segment__stats"
+            title="Totally not stolen from somebody else.."
+          >
+            <div
+              class="question-segment__stats__item question-segment__stats__item--correct"
+            >
+              <img
+                src="checkmark.svg"
+                alt="Correct: "
+                class="question-segment__stats__item__img"
+              />
+              <span
+                class="question-segment__stats__item__counter"
+                data-correct-counter
+                >0</span
+              >
+            </div>
+            <div
+              class="question-segment__stats__item question-segment__stats__item--streak"
+            >
+              <img
+                src="streak.svg"
+                alt="Streak:"
+                class="question-segment__stats__item__img"
+              />
+              <span
+                class="question-segment__stats__item__counter"
+                data-streak-counter=""
+                >0</span
+              >
+            </div>
+          </div>
           <div class="question-segment__stopwatch visible">
             <img
               src="stopwatch.svg"
@@ -56,7 +89,8 @@
             <p>
               Question
               <span class="question-segment__banner__question-counter">1</span>
-              / <span class="question-segment__banner__question-total">10</span>
+              /
+              <span class="question-segment__banner__question-total">10</span>
             </p>
           </div>
           <div class="question-segment__question disabled">
@@ -70,16 +104,16 @@
         <div class="answer-segment choice-mode">
           <div class="choice-container">
             <div class="choice disabled">
-              <button class="choice__button"></button>
+              <button class="choice__button" disabled></button>
             </div>
             <div class="choice disabled">
-              <button class="choice__button"></button>
+              <button class="choice__button" disabled></button>
             </div>
             <div class="choice disabled">
-              <button class="choice__button"></button>
+              <button class="choice__button" disabled></button>
             </div>
             <div class="choice disabled">
-              <button class="choice__button"></button>
+              <button class="choice__button" disabled></button>
             </div>
           </div>
           <div class="answer-textbox-container">
