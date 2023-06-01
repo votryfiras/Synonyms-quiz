@@ -9,7 +9,7 @@ class Round {
   constructor(props) {
     this.roundNumber = props.roundNumber
     this.totalQuestionCount = props.totalQuestionCount
-    this.terminatedAt = props.totalQuestionCount
+    this.terminatedAt = null
     this.mode = props.mode
     this.currentQuestionNumber = 1
     this.correctAnswerCount = 0
@@ -96,10 +96,24 @@ function convertToSeconds(time) {
   return parseFloat(totalSeconds.toFixed(2));
 }
 
+function convertToFormattedTime(seconds) {
+  const minutes = Math.floor(seconds / 60);
+  const remainingSeconds = Math.floor(seconds % 60);
+  const centiseconds = Math.floor((seconds % 1) * 100);
+
+  const formattedMinutes = String(minutes).padStart(2, '0');
+  const formattedSeconds = String(remainingSeconds).padStart(2, '0');
+  const formattedCentiseconds = String(centiseconds).padStart(2, '0');
+
+  return `${formattedMinutes}:${formattedSeconds}.${formattedCentiseconds}`;
+}
+
 function startRound() {
   if (restartButton.hasAttribute('data-end')) {
+    const currentRound = rounds[rounds.length - 1]
     restartButton.removeAttribute('data-end')
     restartButton.querySelector('[data-restart-text]').textContent = 'Start Game'
+    currentRound.terminatedAt = currentRound.currentQuestionNumber
     endRound()
     return;
   }
@@ -169,7 +183,7 @@ function endRound() {
   optionsButton.removeAttribute('disabled')
   statsButton.removeAttribute('disabled')
   currentRound.completionTime = convertToSeconds(stopwatchDisplay.textContent)
-  if (currentRound.currentQuestionNumber === currentRound.totalQuestionCount) { // If round not terminated
+  if (!currentRound.terminatedAt) { // If round not terminated
     function resetRestartButton() {
       restartButton.removeAttribute('data-end')
       restartButton.querySelector('[data-restart-text]').textContent = 'Start Game'
@@ -227,7 +241,6 @@ function endRound() {
     if (currentRound.prompts[currentRound.prompts.length - 1].word !== prompt) {
       pushRoundPromptObject()
     }
-    currentRound.terminatedAt = currentRound.currentQuestionNumber
     restartButton.querySelector('[data-restart-text]').textContent = 'Start Game';
     toggleChoicesAbility();
   };
@@ -373,6 +386,107 @@ function switchMode() {
   else questionScript.textContent = "Write"
 }
 
+function displayStats() {
+  function addOptionElements() {
+    const modalHeader = document.createElement("header")
+    const modalHeaderTitle = document.createElement('h2')
+    const modalPortionContainer = document.createElement('div')
+    const modalButtonContainer = document.createElement('div')
+
+    modalHeaderTitle.textContent = 'Round Stats'
+
+    modalHeader.classList.add('modal__header')
+    modalHeaderTitle.classList.add('modal__header__title')
+    modalPortionContainer.classList.add('modal__portion-container')
+    modalButtonContainer.classList.add('modal__button-container')
+
+    modalHeader.appendChild(modalHeaderTitle)
+    modal.appendChild(modalHeader)
+    modal.appendChild(modalPortionContainer)
+    modal.appendChild(modalButtonContainer)
+
+  }
+  function createModalPortion(round) {
+    function createStatElement(statTitle, statValue) {
+      if (!Array.isArray(statValue)) {
+        const modalPortionStatListItem = document.createElement('li')
+        const modalPortionStatListItemTitle = document.createElement('span')
+        const modalPortionStatListItemValue = document.createElement('span')
+
+        modalPortionStatListItemTitle.textContent = statTitle
+        modalPortionStatListItemValue.textContent = statValue
+
+        modalPortionStatList.classList.add('modal__portion__stat-list')
+        modalPortionStatListItem.classList.add('modal__portion__stat-list__item')
+        modalPortionStatListItemValue.classList.add('modal__portion__stat-list__item__value')
+
+        modalPortion.appendChild(modalPortionStatList)
+        modalPortionStatList.appendChild(modalPortionStatListItem)
+        modalPortionStatListItem.appendChild(modalPortionStatListItemTitle)
+        modalPortionStatListItem.appendChild(modalPortionStatListItemValue)
+      }
+      else {
+        const modalPortionStatListItem = document.createElement('li')
+        const modalPortionStatListItemTitle = document.createElement('p')
+        const modalPortionSubList = document.createElement('ul')
+
+        modalPortionSubList.classList.add('modal__portion__stat-list__item--sublist-container__sublist')
+        modalPortionStatListItem.classList.add('modal__portion__stat-list__item--sublist-container')
+        modalPortionStatListItemTitle.classList.add('modal__portion__stat-list__item--sublist-container__title')
+
+        modalPortionStatListItemTitle.textContent = statTitle
+
+        statValue.forEach(subStatValue => {
+          if (!Array.isArray(subStatValue)) {
+            const modalPortionSubListItem = document.createElement('li')
+            const modalPortionSubListItemValue = document.createElement('span')
+            modalPortionSubListItem.classList.add('modal__portion__stat-list__item--sublist-container__sublist__item')
+            modalPortionSubListItemValue.classList.add('modal__portion__stat-list__item--sublist-container__sublist__item__value')
+            modalPortionSubListItemValue.textContent = subStatValue
+            modalPortionSubListItem.appendChild(modalPortionSubListItemValue)
+            modalPortionSubList.appendChild(modalPortionSubListItem)
+          }
+        })
+        modalPortionStatListItem.appendChild(modalPortionStatListItemTitle)
+        modalPortionStatListItem.appendChild(modalPortionSubList)
+        modalPortionStatList.appendChild(modalPortionStatListItem)
+      }
+    }
+
+    const modalPortion = document.createElement('div')
+    const modalPortionTitle = document.createElement('div')
+    const modalPortionTitleHr = document.createElement('hr')
+    const modalPortionTitleText = document.createElement('span')
+    const modalPortionStatList = document.createElement('ul')
+
+    modalPortion.classList.add('modal__portion')
+    modalPortionTitle.classList.add('modal__portion__title')
+    modalPortionTitleHr.classList.add('modal__portion__title__hr-line')
+    modalPortionTitleText.classList.add('modal__portion__title__text')
+
+    modalPortionTitleText.textContent = 'Round ' + round.roundNumber.toString()
+
+    modalPortionTitle.appendChild(modalPortionTitleHr)
+    modalPortionTitle.appendChild(modalPortionTitleText)
+    modalPortion.appendChild(modalPortionTitle)
+
+    const modalPortionContainer = document.querySelector('.modal__portion-container')
+    modalPortionContainer.appendChild(modalPortion)
+    createStatElement('Mode', round.mode === 'multiplechoice' ? 'Multiple Choice' : 'Insert')
+    createStatElement('Total question count', round.totalQuestionCount.toString())
+    createStatElement('Correct answers', round.correctAnswerCount.toString())
+    createStatElement('Wrong answers', round.wrongAnswerCount.toString())
+    createStatElement('Skipped answers', round.skippedAnswerCount.toString())
+    createStatElement('Terminated at question', round.terminatedAt ? round.terminatedAt.toString() : 'Not terminated')
+    createStatElement('Completion time', convertToFormattedTime(round.completionTime))
+    createStatElement('Streaks', round.streaks)
+  }
+
+  addOptionElements()
+  rounds.forEach(round => createModalPortion(round))
+  backdrop.classList.add('visible')
+}
+
 function openOptionsEditor() {
   function addOptionElements() {
     function applyOptions() {
@@ -403,21 +517,24 @@ function openOptionsEditor() {
         }
       }
     }
-    const modalHeader = document.createElement('h2')
+    const modalHeader = document.createElement("header")
+    const modalHeaderTitle = document.createElement('h2')
     const modalPortionContainer = document.createElement('div')
     const modalButtonContainer = document.createElement('div')
     const modalApplyButton = document.createElement('button')
 
-    modalHeader.textContent = 'Options'
+    modalHeaderTitle.textContent = 'Options'
     modalApplyButton.textContent = 'Apply'
 
     modalHeader.classList.add('modal__header')
+    modalHeaderTitle.classList.add('modal__header__title', 'options-header')
     modalPortionContainer.classList.add('modal__portion-container')
     modalButtonContainer.classList.add('modal__button-container')
     modalApplyButton.classList.add('modal__apply-button')
 
     modalApplyButton.addEventListener('click', applyOptions);
 
+    modalHeader.appendChild(modalHeaderTitle)
     modal.appendChild(modalHeader)
     modal.appendChild(modalPortionContainer)
     modalButtonContainer.appendChild(modalApplyButton)
@@ -894,5 +1011,6 @@ nextButton.addEventListener('click', nextQuestion)
 submitButton.addEventListener('click', checkAnswer)
 toggleInfoButton.addEventListener('click', displayWordInfo)
 restartButton.addEventListener('click', startRound)
+statsButton.addEventListener('click', displayStats)
 optionsButton.addEventListener('click', openOptionsEditor)
 backdrop.addEventListener('click', outsideClickCloser)

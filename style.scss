@@ -63,35 +63,44 @@ main {
   justify-content: center;
   align-items: center;
   z-index: 100;
-  .modal {
-    min-width: 280px;
-    width: 55vw;
-    max-height: 80vh;
-    overflow-y: scroll;
-    background-color: $primary-color;
-    border-radius: 4px;
+}
+
+.backdrop.visible .modal {
+  min-width: 280px;
+  width: 55vw;
+  max-height: 80vh;
+  padding: 0 1em;
+  background-color: $primary-color;
+  overflow-y: auto;
+  border-radius: 4px;
+  &__header {
+    padding: 2em 2em 1em 1em;
+    margin-bottom: 1em;
     position: relative;
-    &::before {
+    &.options-header::before {
       content: 'MUST press "Apply" to apply changes';
-      width: 100%;
       position: absolute;
-      top: 3em;
+      top: 100%;
+      left: 50%;
+      transform: translate(-50%);
+      font-size: 1rem;
       text-align: center;
       color: crimson;
     }
-    &__header {
-      width: 100%;
-      text-align: center;
+    &__title {
+      margin: 0;
+      padding-bottom: 0.5em;
+      border-bottom: 4px solid #d8dbe2;
     }
-    &__portion-container {
-      padding: 2em 0.6em;
-    }
-    &__button-container {
-      margin: 0 1em 1em 1em;
-      .modal__apply-button {
-        @include button;
-        font-size: 1rem;
-      }
+  }
+  &__portion-container {
+    padding: 2em 0.6em;
+  }
+  &__button-container {
+    margin: 0 1em 1em 1em;
+    .modal__apply-button {
+      @include button;
+      font-size: 1rem;
     }
   }
 }
@@ -106,7 +115,7 @@ main {
       width: 100%;
       border: none;
       position: relative;
-      height: 1px;
+      height: 2px;
       &::before {
         content: "";
         width: 100%;
@@ -115,7 +124,7 @@ main {
         left: 0;
         right: 0;
         height: 100%;
-        border-top: 1px solid black;
+        border-top: 2px solid #d8dbe2;
       }
     }
     &__text {
@@ -142,6 +151,60 @@ main {
     &:focus-visible {
       border-color: $secondary-color;
     }
+  }
+  &__stat-list {
+    list-style: none;
+    &__item {
+      display: flex;
+      justify-content: space-between;
+      &:first-child::before {
+        border-top: none;
+      }
+      &__value {
+        color: $secondary-color;
+      }
+    }
+  }
+}
+
+.modal__portion__stat-list__item,
+.modal__portion__stat-list__item--sublist-container {
+  margin: 3em 0;
+  margin-right: 1em;
+  position: relative;
+  &::before {
+    content: "";
+    width: 100%;
+    position: absolute;
+    top: -1.5em;
+    left: 0;
+    border-top: 1px solid lightgray;
+  }
+}
+
+.modal__portion__stat-list__item--sublist-container {
+  &__sublist {
+    list-style: decimal;
+    &__item {
+      margin: 1.5em 0;
+      position: relative;
+      &::after {
+        content: ":";
+        width: 95%;
+        position: absolute;
+        text-align: center;
+        font-weight: 800;
+        font-family: monospace;
+      }
+      &__value {
+        position: absolute;
+        right: 0;
+        color: $secondary-color;
+      }
+    }
+  }
+  &__title {
+    margin: 0;
   }
 }
 
@@ -208,7 +271,7 @@ main {
   margin-bottom: 3rem;
   .mode-select {
     border: 0;
-    margin-inline: var(--offset-margin);
+    margin: 0 var(--offset-margin);
     padding: 0.3em 0.4em;
     color: $text-color;
     background-color: $primary-color;
@@ -223,7 +286,7 @@ main {
   }
   .function-button {
     @include button;
-    margin-inline: 0.1em;
+    margin: 0 0.1em;
     position: relative;
     border-radius: 0;
     cursor: pointer;
@@ -275,7 +338,7 @@ main {
 
 .question-segment {
   min-width: 55vw;
-  margin-inline: var(--offset-margin);
+  margin: 0 var(--offset-margin);
   position: relative;
   font-size: 1.1em;
   &__question {
@@ -419,7 +482,7 @@ main {
 }
 
 .answer-textbox-container {
-  margin-inline: var(--offset-margin);
+  margin: 0 var(--offset-margin);
   margin-top: 1em;
   position: relative;
   .answer-textbox {
@@ -466,8 +529,8 @@ main {
 // START Submit segment
 
 .submit-segment {
-  margin-inline: var(--offset-margin);
-  margin-top: 1rem;
+  margin: 0 var(--offset-margin);
+  margin-top: 0.2rem;
   button {
     font-size: 1.2em;
     padding: 0.5em 0.7em;
@@ -508,8 +571,7 @@ main {
 // START Answer grade segment
 
 .answer-grade-segment {
-  margin-inline: var(--offset-margin);
-  margin-block: 1.5rem;
+  margin: 1.5rem var(--offset-margin);
 }
 
 .answer-grade-segment__bg {
@@ -597,7 +659,7 @@ main {
     border-color: darkgreen;
   }
   &__section {
-    margin-block: 1em;
+    margin: 1em 0;
     &__keyword {
       color: darkgreen;
       text-decoration: underline;
