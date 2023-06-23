@@ -5,8 +5,8 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Synonyms</title>
-    <link rel="stylesheet" href="style.css" />
-    <script src="script.js" defer type="module"></script>
+    <link rel="stylesheet" href="./styles/style.css" />
+    <script src="./scripts/script.js" defer type="module"></script>
   </head>
   <body>
     <main>
@@ -18,7 +18,7 @@
       <div class="app">
         <div class="congrats-segment">
           <img
-            src="circle-check-regular.svg"
+            src="./icons/circle-check-regular.svg"
             alt="Congratulations!"
             class="congrats__tickmark"
           />
@@ -35,12 +35,16 @@
             <option>Multiple Choice</option>
             <option>Insert</option>
           </select>
-          <button class="function-button stats-button">Stats</button>
-          <button class="function-button options-button">Options</button>
-          <button class="function-button restart-button">
+          <button class="function-button function-button--stats-button">
+            Stats
+          </button>
+          <button class="function-button function-button--options-button">
+            Options
+          </button>
+          <button class="function-button function-button--restart-button">
             <img
-              class="restart-image"
-              src="arrows-rotate-solid.svg"
+              class="function-button--restart-button__restart-image"
+              src="./icons/arrows-rotate-solid.svg"
               alt=""
             /><span data-restart-text>Start Game</span>
           </button>
@@ -54,7 +58,7 @@
               class="question-segment__stats__item question-segment__stats__item--correct"
             >
               <img
-                src="checkmark.svg"
+                src="./icons/checkmark.svg"
                 alt="Correct: "
                 class="question-segment__stats__item__img"
               />
@@ -68,7 +72,7 @@
               class="question-segment__stats__item question-segment__stats__item--streak"
             >
               <img
-                src="streak.svg"
+                src="./icons/streak.svg"
                 alt="Streak:"
                 class="question-segment__stats__item__img"
               />
@@ -81,8 +85,8 @@
           </div>
           <div class="question-segment__stopwatch visible">
             <img
-              src="stopwatch.svg"
-              alt=""
+              src="./icons/stopwatch.svg"
+              alt="Time"
               class="question-segment__stopwatch__image"
             />
             <div class="question-segment__stopwatch__display">00:00.00</div>
@@ -96,7 +100,7 @@
             </p>
           </div>
           <div class="question-segment__question disabled">
-            <p>
+            <p class="question-segment__question-content">
               <span class="question__script">Which of these is</span> a
               <span class="question__keyword">synonym</span> for
               <span class="question__prompt">buy</span>?
@@ -136,19 +140,19 @@
             <div class="answer-grade">
               <img
                 class="answer-grade__image answer-grade__correct-image"
-                src="./circle-check-regular.svg"
+                src="./icons/circle-check-regular.svg"
                 alt="RIGHT!"
               />
               <img
                 class="answer-grade__image answer-grade__wrong-image"
-                src="circle-xmark-regular.svg"
+                src="./icons/circle-xmark-regular.svg"
                 alt="WRONG"
               />
               <p class="answer-grade__text"></p>
 
               <button class="answer-grade__toggle-info">
                 <span>More about the word</span>
-                <img src="down-arrow.svg" alt="" />
+                <img src="./icons/down-arrow.svg" alt="" />
               </button>
             </div>
             <div class="word-info">

@@ -1,0 +1,54 @@
+.congrats-segment {
+  background-color: rgb(50, 205, 50);
+  padding: 0.4em 0.5em;
+  border-width: 2px;
+  border-style: solid;
+  border-color: darkgreen;
+  border-radius: 2px;
+  width: max-content;
+
+  position: fixed;
+  top: 0;
+  left: 50%;
+  transform: translate(-50%);
+
+  font-size: 1.4rem;
+  color: white;
+
+  display: flex;
+  align-items: center;
+
+  visibility: hidden;
+
+  &.visible {
+    animation: show-congrats 10s;
+    .congrats__grade::before {
+      animation: ellipsis 1s 200ms 3;
+    }
+  }
+  .congrats__tickmark {
+    width: 3em;
+    margin-right: 1em;
+  }
+  .congrats__grade {
+    margin: 0;
+    position: relative;
+    &::before {
+      content: "";
+      width: 100%;
+      color: white;
+      position: absolute;
+      bottom: 0;
+      left: 4ch;
+    }
+    &__term {
+      &.won {
+        font-size: 1.3em;
+        animation: rainbow 250ms infinite;
+      }
+      &.lost {
+        color: lighten(#c72626, 10);
+      }
+    }
+  }
+}

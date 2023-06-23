@@ -1,0 +1,92 @@
+@use "./partials/variables";
+@use "./partials/mixins";
+@import url("https://fonts.googleapis.com/css2?family=Ubuntu:wght@400&display=swap");
+
+.question-segment {
+  min-width: 55vw;
+  margin: 0 var(--offset-margin);
+  position: relative;
+  font-size: 1.1em;
+}
+
+.question-segment__question {
+  box-sizing: border-box;
+  width: 100%;
+  padding: 1.8em 1em 1em 1em;
+
+  text-align: center;
+
+  background-color: variables.$primary-color;
+  border-radius: variables.$border-radius;
+  border: 2px solid variables.$border-color;
+  &::before {
+    content: "";
+    height: 0;
+    width: 90%;
+    @include mixins.absolute-center;
+    background-color: inherit;
+  }
+  &.disabled::before {
+    height: 60%;
+  }
+  &-content {
+    padding: 0 2.5em;
+    font-family: "Ubuntu", sans-serif;
+    font-weight: 500;
+    font-size: 1.05em;
+  }
+  .question__prompt {
+    color: variables.$secondary-color;
+    font-weight: 800;
+  }
+}
+
+.question-segment__banner {
+  position: absolute;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  border-radius: 1000000000000px;
+  padding: 0.7em 1em;
+  color: white;
+  background-color: variables.$secondary-color;
+  p {
+    margin: 0;
+    text-align: center;
+  }
+}
+
+.question-segment__stopwatch {
+  position: absolute;
+  top: 0.4em;
+  right: 0.6em;
+  color: variables.$secondary-color;
+  display: none;
+  z-index: 1;
+  &.visible {
+    display: flex;
+  }
+  &__image {
+    width: 1.2em;
+    color: variables.$secondary-color;
+    margin-right: 0.4em;
+  }
+}
+
+.question-segment__stats {
+  position: absolute;
+  top: 0.4em;
+  left: 0.6em;
+  z-index: 1;
+  &__item {
+    font-size: 1.1em;
+    &__img {
+      vertical-align: middle;
+    }
+    &__counter {
+      vertical-align: middle;
+    }
+  }
+  &__item--streak {
+    margin-top: 0.6em;
+  }
+}

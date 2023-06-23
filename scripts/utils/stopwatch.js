@@ -17,7 +17,7 @@ function updateStopwatch(mechanism) {
     const formattedMinutes = padNumber(minutes);
 
     document.querySelector('.question-segment__stopwatch__display').textContent = `${formattedMinutes}:${formattedSeconds}${mechanism !== 'seconds' ? '.' + formattedCentiseconds : ''}`;
-  }
+  };
 }
 
 function padNumber(number) {
@@ -25,7 +25,7 @@ function padNumber(number) {
 }
 
 export function startStopwatch(mechanism) {
-  const timeout = mechanism === 'centiseconds' ? 10 : (mechanism === 'deciseconds' ? 100 : 1000)
+  const timeout = mechanism === 'centiseconds' ? 10 : (mechanism === 'deciseconds' ? 100 : 1000);
   startTime = Date.now();
   stopwatchInterval = setInterval(updateStopwatch(mechanism), timeout);
 }
@@ -44,7 +44,7 @@ export function resetStopwatch(mechanism = 'centiseconds') {
 }
 
 export function continueStopwatch(mechanism = 'centiseconds') {
-  const timeout = mechanism === 'centiseconds' ? 10 : (mechanism === 'deciseconds' ? 100 : 1000)
+  const timeout = mechanism === 'centiseconds' ? 10 : (mechanism === 'deciseconds' ? 100 : 1000);
   startTime = Date.now();
   stopwatchInterval = setInterval(updateStopwatch(mechanism), timeout);
 }

@@ -1,0 +1,23 @@
+@use "./variables";
+
+@mixin button {
+  border-color: variables.$border-color;
+  border-style: solid;
+  padding: 0.3em 0.4em;
+  color: variables.$text-color;
+  background-color: variables.$primary-color;
+  border-radius: 4px;
+  cursor: pointer;
+  &:hover {
+    color: variables.$secondary-color;
+    border-color: variables.$secondary-color;
+    text-decoration: underline;
+  }
+}
+
+@mixin absolute-center {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}

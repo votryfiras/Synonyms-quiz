@@ -1,0 +1,22 @@
+{
+  "name": "synonyms",
+  "version": "1.0.0",
+  "description": "An experimental novice quiz application that is designed as a project. It, in simple terms, tests someone's knowledge about synonyms of words. The project additionally sets it's sight on boosting client's knowledge about vocabulary.",
+  "main": "scripts/script.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/votryfiras/Synonyms-quiz.git"
+  },
+  "author": "Firas",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/votryfiras/Synonyms-quiz/issues"
+  },
+  "homepage": "https://github.com/votryfiras/Synonyms-quiz#readme",
+  "devDependencies": {
+    "eslint": "^8.43.0"
+  }
+}
