@@ -30,18 +30,29 @@ function pushRoundPromptObject(prompt, currentRound) {
   currentRound.prompts.push(promptRoundObject);
 }
 
+function cutStreak(currentRound) {
+  const streaks = currentRound.streaks;
+  if (streaks[streaks.length - 1] !== 0) {
+    streaks.push(0);
+  }
+}
+
+function visualCounterDisablerSwitch(doEnable = false) {
+  const statsContainer = document.querySelector('.question-segment__stats');
+  if (doEnable) {
+    statsContainer.classList.remove('disabled')
+  }
+  else {
+    statsContainer.classList.add('disabled')
+  }
+}
+
 export function submitClickHandle(rounds, options) {
   function increaseStreak() {
     const streaks = currentRound.streaks;
     streaks[streaks.length - 1]++;
     const largestStreak = Math.max(...streaks);
     currentRound.bestStreak = largestStreak;
-  }
-  function cutStreak() {
-    const streaks = currentRound.streaks;
-    if (streaks[streaks.length - 1] !== 0) {
-      streaks.push(0);
-    }
   }
   function increaseCounters() {
     const correctCounter = document.querySelector('[data-correct-counter]');
@@ -64,7 +75,9 @@ export function submitClickHandle(rounds, options) {
   const selectedChoice = document.querySelector('.selected-choice');
   const selectedChoiceButton = selectedChoice ? selectedChoice.querySelector('.choice__button') : null;
   const selectedChoiceText = selectedChoiceButton ? selectedChoiceButton.textContent : '';
-  const writtenAnswer = answerTextbox.value;
+  const writtenAnswer = answerTextbox.value.trim();
+  const isAnswerCorrect = correctSynonyms.includes(selectedChoiceText) ||
+    correctSynonyms.includes(writtenAnswer.toLowerCase().trim()) && writtenAnswer.toLowerCase().trim() !== currentPrompt
 
   if (selectedChoice || writtenAnswer) {
     const currentRoundPromptsObject = currentRound.prompts[currentRound.prompts.length - 1];
@@ -77,65 +90,57 @@ export function submitClickHandle(rounds, options) {
       updatedCurrentRoundPromptsObject.selectedChoices.push(writtenAnswer || selectedChoiceButton.textContent);
     }
   }
-
   else {
     warnGrade()
     return;
   }
 
+  if (isAnswerCorrect) {
+    if (currentRound.currentQuestionNumber === currentRound.totalQuestionCount) { // Round ended
+      endRound(rounds);
+    }
 
-  if (currentRound.mode === 'multiplechoice') {
-    if (correctSynonyms.includes(selectedChoiceText)) { // If correct answer
-      motivatingGrade();
+    nextButton.textContent = NEXT_BUTTON_TEXT;
+
+    if (!options.stopwatchWhileGrading) { stopStopwatch(); }
+
+    motivatingGrade();
+    disableSubmitButton();
+
+    if (currentRound.mode === "multiplechoice") {
       toggleChoicesAbility();
-      disableSubmitButton();
-      if (currentRound.currentQuestionNumber === currentRound.totalQuestionCount) { // Round ended
-        endRound(rounds);
-      }
       if (currentRound.correctAnswerCount + currentRound.wrongAnswerCount + currentRound.skippedAnswerCount !== currentRound.currentQuestionNumber) {
         currentRound.correctAnswerCount++;
         increaseStreak();
         increaseCounters();
       }
-      if (!options.stopwatchWhileGrading) { stopStopwatch(); }
-      nextButton.textContent = NEXT_BUTTON_TEXT;
     }
-    else {
-      selectedChoice.classList.add('disabled');
-      selectedChoiceButton.setAttribute('disabled', '');
-      wrongGrade();
-      cutStreak();
-      resetStreakCounter();
-      resetChoices();
-      if (currentRound.correctAnswerCount + currentRound.wrongAnswerCount + currentRound.skippedAnswerCount < currentRound.currentQuestionNumber) {
-        currentRound.wrongAnswerCount++;
-      }
-    }
-  }
-  else if (currentRound.mode === "insert") {
-    if (correctSynonyms.includes(writtenAnswer.toLowerCase().trim()) && writtenAnswer.toLowerCase().trim() !== currentPrompt) { // If correct answer
-      motivatingGrade();
-      disableSubmitButton();
-      increaseStreak();
+    else if (currentRound.mode === "insert") {
       disableTextbox();
 
-      if (currentRound.currentQuestionNumber === currentRound.totalQuestionCount) { // Round ended
-        endRound(rounds);
-      }
-      if (!options.stopwatchWhileGrading) { stopStopwatch(); }
       if (currentRound.correctAnswerCount + currentRound.wrongAnswerCount + currentRound.skippedAnswerCount === currentRound.currentQuestionNumber) {
         return;
       }
+      increaseStreak();
+      increaseCounters();
       currentRound.correctAnswerCount++;
     }
-    else { // If wrong answer
-      wrongGrade();
-      cutStreak();
-      resetStreakCounter();
-      if (currentRound.correctAnswerCount + currentRound.wrongAnswerCount + currentRound.skippedAnswerCount < currentRound.currentQuestionNumber) {
-        currentRound.wrongAnswerCount++;
-      }
+  }
+  else {
+    if (currentRound.correctAnswerCount + currentRound.wrongAnswerCount + currentRound.skippedAnswerCount < currentRound.currentQuestionNumber) {
+      currentRound.wrongAnswerCount++;
+      visualCounterDisablerSwitch();
     }
+
+    if (currentRound.mode === "multiplechoice") {
+      selectedChoice.classList.add('disabled');
+      selectedChoiceButton.setAttribute('disabled', '');
+      resetChoices();
+    }
+
+    cutStreak(currentRound);
+    resetStreakCounter();
+    wrongGrade();
   }
 
   if (document.querySelectorAll('.choice.disabled').length === 3) {
@@ -156,13 +161,15 @@ export function submitClickHandle(rounds, options) {
 
 export function nextClickHandle(rounds, options) {
   const currentRound = rounds[rounds.length - 1];
+  const currentRoundPrompts = currentRound.prompts[currentRound.prompts.length - 1];
   const NEXT_BUTTON_TEXT = 'Next Question';
   const SURE_TEXT = 'Are You Sure?';
   const SKIP_TEXT = 'Skip Question';
   const prompt = questionPromptElem.textContent;
   const selectedChoice = document.querySelector('.selected-choice');
+  const writtenAnswer = answerTextbox.value.trim();
 
-  if ((!selectedChoice && currentRound.mode === 'multiplechoice' || currentRound.correctAnswerCount + currentRound.wrongAnswerCount + currentRound.skippedAnswerCount !== currentRound.currentQuestionNumber) && nextButton.textContent !== SURE_TEXT) {
+  if (((!selectedChoice && currentRound.mode === 'multiplechoice') || ((!writtenAnswer || !getCorrectSynonyms(prompt).includes(currentRoundPrompts.selectedChoices[currentRoundPrompts.selectedChoices.length - 1])) && currentRound.mode === 'insert') || (currentRound.correctAnswerCount + currentRound.wrongAnswerCount + currentRound.skippedAnswerCount !== currentRound.currentQuestionNumber)) && nextButton.textContent !== SURE_TEXT) {
     nextButton.textContent = SURE_TEXT;
     return;
   }
@@ -182,7 +189,7 @@ export function nextClickHandle(rounds, options) {
     questionCounter.textContent = count + 1;
   }
   function pickNewPrompt() {
-    const currentPrompt = currentRound.prompts[currentRound.prompts.length - 1].word;
+    const currentPrompt = questionPromptElem.textContent;
     const excludedPrompts = currentRound.prompts.map(promptObject => promptObject.word);
     if (!excludedPrompts.includes(currentPrompt)) { excludedPrompts.push(currentPrompt); }
     const newPrompt = getRandomItem(getPossiblePrompts(excludedPrompts));
@@ -195,12 +202,6 @@ export function nextClickHandle(rounds, options) {
   function resetTextbox() {
     answerTextbox.value = '';
   }
-  function cutStreak() {
-    const streaks = currentRound.streaks;
-    if (streaks[streaks.length - 1] !== 0) {
-      streaks.push(0);
-    }
-  }
 
   const newPrompt = pickNewPrompt();
   const newWordObject = WORDS.find(wordObj => {
@@ -212,13 +213,14 @@ export function nextClickHandle(rounds, options) {
     const areChoiceButtonsDisabled = Array.from(choices).every(choice => {
       return choice.classList.contains('disabled');
     });
-    if (!options.stopwatchWhileGrading && areChoiceButtonsDisabled) { // && Question not skipped
+    const isTextboxDisabled = answerTextbox.hasAttribute('disabled');
+    if (!options.stopwatchWhileGrading && (areChoiceButtonsDisabled && isTextboxDisabled)) { // && Question not skipped
       continueStopwatch(options.stopwatchTimingMechanism);
     }
   }
   else {
     currentRound.skippedAnswerCount++;
-    cutStreak();
+    cutStreak(currentRound);
     streakCounter.textContent = 0;
   }
 
@@ -250,6 +252,7 @@ export function nextClickHandle(rounds, options) {
   }
 
   increaseCounter();
+  visualCounterDisablerSwitch(true);
   enableSubmitButtons();
   hideAnswerGrade();
   resetAnswerGradeInfo();

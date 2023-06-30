@@ -1,7 +1,5 @@
 import WORDS from "../shared/words.js";
 
-// Mainly focusing on pure util functions
-
 export function getRandomItem(arr) {
   const randomIndex = Math.floor(Math.random() * arr.length);
   const wordObject = arr[randomIndex];
@@ -9,7 +7,7 @@ export function getRandomItem(arr) {
 }
 
 export function getPossiblePrompts(additionalExcludedPrompts = []) {
-  const EXCLUDED_INSERT_PROMPTS = ['pollution', 'pan', 'carbon footprint'];
+  const EXCLUDED_INSERT_PROMPTS = ['pollution', 'pan', 'carbon footprint', 'conserve'];
   const answerSegment = document.querySelector('.answer-segment');
   let excludedPrompts = [];
   if (answerSegment.classList.contains('insert-mode')) {
@@ -41,7 +39,7 @@ export function getCorrectSynonyms(prompt) {
   }
   const promptObject = getPromptObject();
   const synonymSynonyms = !WORDS.some(wordObject => prompt === wordObject.word) ?
-    promptObject.syns.find(synObject => synObject.word === prompt).additionalSyns : { additionalSyns: [] };
+    promptObject.syns.find(synObject => synObject.word === prompt).additionalSyns : [];
 
   return promptObject.syns
     .map(synObject => { return synObject.word; })

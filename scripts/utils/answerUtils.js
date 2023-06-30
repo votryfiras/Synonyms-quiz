@@ -89,6 +89,11 @@ export function textboxPlaceholderToggle() {
   }, 0);
 }
 
+export function resetTextbox() {
+  const answerTextbox = document.querySelector('.answer-textbox');
+  answerTextbox.value = '';
+}
+
 export function disableTextbox() {
   answerTextbox.setAttribute('disabled', '');
 }

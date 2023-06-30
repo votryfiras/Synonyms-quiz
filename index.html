@@ -26,7 +26,8 @@
               Well done, you completed the quiz!
             </span>
             <br />
-            You &nbsp;<span class="congrats__grade__term"></span>
+            You &nbsp;
+            <span class="congrats__grade__term"></span>
           </p>
         </section>
         <section class="function-buttons-segment">
@@ -67,8 +68,9 @@
               <span
                 class="question-segment__stats__item__counter"
                 data-correct-counter
-                >0</span
               >
+                0
+              </span>
             </div>
             <div
               class="question-segment__stats__item question-segment__stats__item--streak"
@@ -78,8 +80,9 @@
               <span
                 class="question-segment__stats__item__counter"
                 data-streak-counter=""
-                >0</span
               >
+                0
+              </span>
             </div>
           </div>
           <div class="question-segment__stopwatch visible">
@@ -97,9 +100,12 @@
           </div>
           <div class="question-segment__question disabled">
             <p class="question-segment__question-content">
-              <span class="question__script">Which of these is</span> a
-              <span class="question__keyword">synonym</span> for
-              <span class="question__prompt">buy</span>?
+              <span class="question__script">Which of these is</span>
+              a
+              <span class="question__keyword">synonym</span>
+              for
+              <span class="question__prompt">buy</span>
+              ?
             </p>
           </div>
         </section>
@@ -126,7 +132,14 @@
               autocomplete="off"
               disabled
             />
-            <label class="answer-textbox-label" for="answer-textbox"></label>
+            <label
+              class="answer-textbox-label answer-textbox-label--transformer-placeholder"
+              for="answer-textbox"
+            ></label>
+            <label
+              class="answer-textbox-label answer-textbox-label--wrapper"
+              for="answer-textbox"
+            ></label>
           </div>
         </section>
         <section class="submit-segment">

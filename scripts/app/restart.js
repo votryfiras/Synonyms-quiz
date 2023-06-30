@@ -1,7 +1,7 @@
 import WORDS from '../shared/words.js';
 import { startStopwatch, resetStopwatch } from '../utils/stopwatch.js';
 import { getRandomItem, getPossiblePrompts, getCorrectSynonyms } from '../utils/utils.js';
-import { manipulateChoices, toggleChoicesAbility, resetChoices, enableSubmitButtons } from '../utils/answerUtils.js';
+import { manipulateChoices, toggleChoicesAbility, resetChoices, enableSubmitButtons, resetTextbox, textboxPlaceholderToggle } from '../utils/answerUtils.js';
 import { hideAnswerGrade } from "../utils/gradeUtils.js";
 import endRound from '../utils/endRound.js';
 
@@ -45,15 +45,17 @@ export function restartClickHandle(rounds, options) {
     function enableTextbox() {
       answerTextboxElem.removeAttribute('disabled');
     }
-    function resetTextbox() {
-      answerTextboxElem.value = '';
-    }
     function resetStatCounters() {
       const correctCounter = document.querySelector('[data-correct-counter]');
       const streakCounter = document.querySelector('[data-streak-counter]');
       correctCounter.textContent = '0';
       streakCounter.textContent = '0';
     }
+    function resetQuestionCounter() {
+      const questionCounter = document.querySelector('.question-segment__banner__question-counter');
+      questionCounter.textContent = 1;
+    }
+
 
     const possiblePrompts = getPossiblePrompts();
     const initialPrompt = getRandomItem(possiblePrompts);
@@ -67,15 +69,20 @@ export function restartClickHandle(rounds, options) {
     optionsButton.setAttribute('disabled', '');
     statsButton.setAttribute('disabled', '');
 
-    if (modeSelectElem.value.toLowerCase().replace(/\s/g, "") === 'multiplechoice') {
+    if (modeSelectElem.value.toLowerCase().replace(/\s/g, "") === 'multiplechoice') { // replace() removes whitespace
       toggleChoicesAbility(false);
       initChoices(initialPrompt);
-      resetChoices();
     }
-    else { enableTextbox(); resetTextbox(); }
+    else { enableTextbox(); resetTextbox(); textboxPlaceholderToggle() }
 
+    resetChoices();
+    resetTextbox()
     hideAnswerGrade();
+    resetQuestionCounter();
     resetStatCounters();
+    enableSubmitButtons();
+    resetStopwatch(options.stopwatchTimingMechanism);
+    startStopwatch(options.stopwatchTimingMechanism);
   }
   function generateRoundObject() {
     const choices = modeSelectElem.value.toLowerCase().replace(/\s/g, "") === 'multiplechoice'
@@ -100,16 +107,11 @@ export function restartClickHandle(rounds, options) {
 
   roundInit();
   generateRoundObject();
-  enableSubmitButtons();
-  resetStopwatch(options.stopwatchTimingMechanism);
-  startStopwatch(options.stopwatchTimingMechanism);
 }
 
 function initChoices(initialPrompt) {
-  const questionCounter = document.querySelector('.question-segment__banner__question-counter');
   const initialPromptObj = WORDS.find(wordObj => {
     return (wordObj.word === initialPrompt) || (wordObj.syns.find(synObject => synObject.word === initialPrompt));
   });
-  questionCounter.textContent = 1;
   manipulateChoices(initialPromptObj, initialPrompt);
 }

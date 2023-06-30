@@ -53,7 +53,7 @@
 }
 .backdrop.visible .modal__button-container .modal__apply-button {
   padding: 0.3em 0.4em;
-  border-color: #d6d6d6;
+  border-color: #cccccc;
   border-style: solid;
   outline-color: #0287c3;
   color: #444444;
@@ -102,7 +102,7 @@
   transform: translateY(-50%);
 }
 .backdrop.visible .modal__portion__input {
-  border-color: #d6d6d6;
+  border-color: #cccccc;
   border-style: solid;
   padding: 0.2em 0.3em;
   color: #444444;
@@ -203,7 +203,7 @@
 .choice-container .choice__button {
   width: 100%;
   padding: 1.3em 3em;
-  border: 2px solid #d6d6d6;
+  border: 2px solid #cccccc;
   border-radius: 8px;
   outline-color: #0287c3;
   color: #444444;
@@ -242,46 +242,57 @@
   box-sizing: border-box;
   width: 100%;
   padding: 0.2em 0.4em;
-  font-size: 1.2em;
-  border-radius: 8px;
-  border-style: solid;
-  border-color: #d6d6d6;
   border-width: 2px;
+  border-style: solid;
+  border-color: #cccccc;
+  border-radius: 8px;
   outline: 0;
+  background-color: #fcfcfc;
+  font-size: 1.2em;
   transition: border 50ms;
   user-select: none;
 }
 .answer-textbox-container .answer-textbox:focus, .answer-textbox-container .answer-textbox:focus-visible {
   border-color: #8f00ff;
 }
-.answer-textbox-container .answer-textbox:disabled, .answer-textbox-container .answer-textbox:disabled + .answer-textbox-label {
+.answer-textbox-container .answer-textbox:disabled,
+.answer-textbox-container .answer-textbox:disabled ~ .answer-textbox-label {
+  background-color: initial;
   cursor: not-allowed;
 }
 .answer-textbox-container .answer-textbox-label {
   height: 100%;
-  width: 100%;
   position: absolute;
-  top: 0;
-  left: 0;
-  font-size: 1.2em;
-  color: gray;
+  top: 50%;
+  transform: translateY(-50%);
   cursor: text;
 }
-.answer-textbox-container .answer-textbox-label::before {
+.answer-textbox-container .answer-textbox-label--transformer-placeholder {
+  left: 16ch;
+  font-size: 1.2em;
+  color: gray;
+}
+.answer-textbox-container .answer-textbox-label--transformer-placeholder::before {
   content: "here.";
   width: max-content;
   position: absolute;
   top: 50%;
-  left: 16ch;
   transform: translateY(-50%);
   animation: placeholder-type 7s infinite;
 }
-.answer-textbox-container:focus-within .answer-textbox-label::before {
+.answer-textbox-container .answer-textbox-label--wrapper {
+  width: 100%;
+  left: 0;
+}
+.answer-textbox-container:focus-within .answer-textbox-label--transformer-placeholder::before {
   animation: unset;
 }
-.answer-textbox-container.typing .answer-textbox-label::before {
+.answer-textbox-container.typing .answer-textbox-label--transformer-placeholder::before {
   content: "";
   animation: none;
+}
+.answer-textbox-container.typing .answer-textbox-label--wrapper {
+  z-index: -1;
 }
 
 .congrats-segment {
@@ -361,7 +372,7 @@
 }
 .function-button-container .function-button {
   padding: 0.3em 0.4em;
-  border-color: #d6d6d6;
+  border-color: #cccccc;
   border-style: solid;
   outline-color: #0287c3;
   color: #444444;
@@ -389,7 +400,7 @@
 }
 .function-button-container .function-button:disabled:hover {
   color: #444444;
-  border-color: #d6d6d6;
+  border-color: #cccccc;
   text-decoration: none;
 }
 .function-button-container .function-button:hover {
@@ -424,7 +435,7 @@
   font-size: 1.2em;
   padding: 0.5em 0.7em;
   border-radius: 6px;
-  border-color: #d6d6d6;
+  border-color: #cccccc;
   border-style: solid;
   outline-color: #0287c3;
   background-color: #fcfcfc;
@@ -451,7 +462,7 @@
 }
 .submit-segment button:disabled:hover {
   color: #444444;
-  border-color: #d6d6d6;
+  border-color: #cccccc;
   text-decoration: none;
 }
 
@@ -467,7 +478,7 @@
   text-align: center;
   background-color: #fcfcfc;
   border-radius: 8px;
-  border: 2px solid #d6d6d6;
+  border: 2px solid #cccccc;
 }
 .question-segment__question::before {
   content: "";
@@ -532,6 +543,15 @@
   top: 0.4em;
   left: 0.6em;
   z-index: 1;
+}
+.question-segment__stats.disabled::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  right: -5%;
+  height: 50%;
+  width: 110%;
+  background-color: rgba(255, 0, 0, 0.2);
 }
 .question-segment__stats__item {
   font-size: 1.1em;

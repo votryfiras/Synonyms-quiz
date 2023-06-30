@@ -75,48 +75,59 @@
     width: 100%;
     padding: 0.2em 0.4em;
 
-    font-size: 1.2em;
-
-    border-radius: variables.$border-radius;
+    border-width: 2px;
     border-style: solid;
     border-color: variables.$border-color;
-    border-width: 2px;
+    border-radius: variables.$border-radius;
     outline: 0;
+    background-color: variables.$primary-color;
+
+    font-size: 1.2em;
+
     transition: border 50ms;
     user-select: none;
     &:focus,
     &:focus-visible {
       border-color: variables.$secondary-color;
     }
-    &:disabled,
-    &:disabled + .answer-textbox-label {
-      cursor: not-allowed;
-    }
+  }
+  .answer-textbox:disabled,
+  .answer-textbox:disabled ~ .answer-textbox-label {
+    background-color: initial;
+    cursor: not-allowed;
   }
   .answer-textbox-label {
     height: 100%;
-    width: 100%;
     position: absolute;
-    top: 0;
-    left: 0;
-    font-size: 1.2em;
-    color: gray;
+    top: 50%;
+    transform: translateY(-50%);
     cursor: text;
-    &::before {
-      content: "here.";
-      width: max-content;
-      position: absolute;
-      top: 50%;
+    &--transformer-placeholder {
       left: 16ch;
-      transform: translateY(-50%);
-      animation: placeholder-type 7s infinite;
+      font-size: 1.2em;
+      color: gray;
+      &::before {
+        content: "here.";
+        width: max-content;
+        position: absolute;
+        top: 50%;
+        transform: translateY(-50%);
+        animation: placeholder-type 7s infinite;
+      }
+    }
+    &--wrapper {
+      width: 100%;
+      left: 0;
     }
   }
-  &:focus-within .answer-textbox-label::before {
+  &:focus-within .answer-textbox-label--transformer-placeholder::before {
     animation: unset;
   }
-  &.typing .answer-textbox-label::before {
+  &.typing .answer-textbox-label--transformer-placeholder::before {
     content: "";
     animation: none;
+  }
+  &.typing .answer-textbox-label--wrapper {
+    z-index: -1;
   }
 }
