@@ -19,6 +19,7 @@
   align-items: center;
 
   visibility: hidden;
+  z-index: 99;
 
   &.visible {
     animation: show-congrats 10s;
@@ -29,6 +30,7 @@
   .congrats__tickmark {
     width: 3em;
     margin-right: 1em;
+    color: darkgreen;
   }
   .congrats__grade {
     margin: 0;

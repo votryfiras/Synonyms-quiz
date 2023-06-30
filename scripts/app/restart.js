@@ -30,7 +30,7 @@ const statsButton = document.querySelector('.function-button--stats-button');
 const restartButtonElem = document.querySelector('.function-button--restart-button');
 const questionPromptElem = document.querySelector('.question__prompt');
 const choiceButtons = document.querySelectorAll('.choice__button');
-const answerTextboxElem = document.querySelector('.answer-textbox');
+const answerTextboxElem = document.querySelector('#answer-textbox');
 
 export function restartClickHandle(rounds, options) {
   if (restartButtonElem.hasAttribute('data-end')) {

@@ -24,7 +24,7 @@ const restartButton = document.querySelector('.function-button--restart-button')
 const questionScript = document.querySelector(".question__script");
 const choiceButtons = document.querySelectorAll('.choice__button');
 const answerSegment = document.querySelector('.answer-segment');
-const answerTextbox = document.querySelector('.answer-textbox');
+const answerTextbox = document.querySelector('#answer-textbox');
 const nextButton = document.querySelector(".next-button");
 const submitButton = document.querySelector(".submit-button");
 const toggleInfoButton = document.querySelector('.answer-grade__toggle-info');
@@ -49,7 +49,7 @@ choiceButtons.forEach((choice => {
 }));
 
 modeSelect.addEventListener('change', switchMode);
-answerTextbox.addEventListener('keypress', textboxPlaceholderToggle);
+answerTextbox.addEventListener('keydown', textboxPlaceholderToggle);
 nextButton.addEventListener('click', () => nextClickHandle(rounds, options));
 submitButton.addEventListener('click', () => submitClickHandle(rounds, options));
 toggleInfoButton.addEventListener('click', displayWordInfo);

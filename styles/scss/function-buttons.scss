@@ -4,11 +4,13 @@
 // Function buttons
 
 .function-buttons-segment {
+  display: flex;
+  flex-wrap: wrap;
   margin-bottom: 3rem;
   .mode-select {
-    border: 0;
-    margin: 0 var(--offset-margin);
     padding: 0.3em 0.4em;
+    border: 0;
+    outline-color: variables.$focus-outline-color;
     color: variables.$text-color;
     background-color: variables.$primary-color;
     border-radius: 4px;
@@ -20,12 +22,14 @@
   .function-button {
     font-size: 1rem;
   }
+}
+
+.function-button-container {
+  padding: 0.4em 0;
+  margin: 0 0.2em;
   .function-button {
     @include mixins.button;
-    margin: 0 0.1em;
     position: relative;
-    border-radius: 0;
-    cursor: pointer;
     &:disabled {
       cursor: not-allowed;
       &::before {
@@ -55,7 +59,7 @@
     border-color: transparent;
     &__restart-image {
       width: 1em;
-      margin-right: 0.3em;
+      margin-right: 0.1em;
       vertical-align: middle;
       transition: transform 450ms ease-out;
       user-select: none;
@@ -73,14 +77,14 @@
 // Submit buttons
 
 .submit-segment {
-  margin: 0 var(--offset-margin);
   margin-top: 0.2rem;
   button {
     font-size: 1.2em;
     padding: 0.5em 0.7em;
-    border-radius: 2px;
+    border-radius: 6px;
     border-color: variables.$border-color;
     border-style: solid;
+    outline-color: variables.$focus-outline-color;
     background-color: variables.$primary-color;
     color: variables.$text-color;
     position: relative;

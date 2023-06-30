@@ -1,7 +1,7 @@
 @use "./partials/variables";
 
 .answer-grade-segment {
-  margin: 1.5rem var(--offset-margin);
+  margin: 1.5rem 0;
 }
 
 .answer-grade-segment__bg {
@@ -13,29 +13,53 @@
   border-radius: variables.$border-radius;
   opacity: 0;
   transition: opacity 100ms;
-  user-select: none;
   &.correct,
-  &.wrong {
+  &.wrong,
+  &.warn {
     opacity: 1;
     user-select: auto;
   }
-  &.correct {
-    border-color: darkgreen;
-    background-color: limegreen;
-    & .answer-grade__correct-image {
-      display: inline;
-    }
-    .answer-grade .answer-grade__toggle-info {
-      display: block;
+
+  @each $type in ("correct", "wrong", "warn") {
+    &.#{$type} {
+      & .answer-grade__#{$type}-image {
+        display: inline;
+        @if $type == "correct" {
+          color: darkgreen;
+          border-color: darkgreen;
+          background-color: limegreen;
+          .answer-grade .answer-grade__toggle-info {
+            display: block;
+          }
+        } @else if ($type == "wrong") {
+          color: maroon;
+          border-color: maroon;
+          background-color: lighten(firebrick, 5);
+        } @else if ($type == "warn") {
+          color: darkgoldenrod;
+          border-color: darkgoldenrod;
+          background-color: goldenrod;
+        }
+      }
+
+      &.#{$type} {
+        @if $type == "correct" {
+          border-color: darkgreen;
+          background-color: limegreen;
+          .answer-grade .answer-grade__toggle-info {
+            display: block;
+          }
+        } @else if ($type == "wrong") {
+          border-color: maroon;
+          background-color: lighten(firebrick, 5);
+        } @else if ($type == "warn") {
+          border-color: darkgoldenrod;
+          background-color: goldenrod;
+        }
+      }
     }
   }
-  &.wrong {
-    border-color: maroon;
-    background-color: lighten(firebrick, 5);
-    & .answer-grade__wrong-image {
-      display: inline;
-    }
-  }
+
   .answer-grade {
     display: flex;
     align-items: center;
@@ -45,13 +69,14 @@
       margin: 0 0.5em;
     }
     &__toggle-info {
-      position: absolute;
-      top: 50%;
-      transform: translateY(100%);
-
       padding: 0;
       border: 0;
       margin: 0 4rem;
+      outline-color: variables.$focus-outline-color;
+
+      position: absolute;
+      top: 50%;
+      transform: translateY(100%);
 
       background-color: transparent;
       color: #0000d6;
@@ -59,7 +84,7 @@
 
       display: none;
       cursor: pointer;
-      img {
+      .answer-grade__toggle-info__image {
         width: 1em;
         vertical-align: middle;
         transform: rotate(-90deg);

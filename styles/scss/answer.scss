@@ -1,8 +1,7 @@
 @use "./partials/variables.scss";
 
 .answer-segment {
-  width: 100%;
-  margin-top: 0.2rem;
+  padding-top: 0.2rem;
   position: relative;
   &.choice-mode .answer-textbox-container {
     display: none;
@@ -12,41 +11,35 @@
   }
 }
 
-.choice.disabled {
-  position: relative;
-  &::before {
-    content: "";
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.1);
-    border-radius: inherit;
-    cursor: not-allowed;
-  }
-}
-
 .choice-container {
   --repeat: 2;
   $selected-bg: transparentize(variables.$secondary-color, 0.8);
   display: grid;
-  grid-template-columns: repeat(var(--repeat), minmax(200px, 1fr));
+  grid-template-columns: repeat(var(--repeat), 1fr);
   .choice {
+    $offset-margin: 0.6rem;
     box-sizing: border-box;
-    margin: var(--offset-margin);
-
+    margin: $offset-margin;
+    margin-left: 0;
     font-size: 1.1rem;
     border-radius: variables.$border-radius;
     background-color: variables.$primary-color;
-
     user-select: none;
+    &:nth-child(2n) {
+      margin-right: 0;
+      margin-left: $offset-margin;
+    }
     &__button {
       width: 100%;
       padding: 1.3em 3em;
-      color: variables.$text-color;
       border: 2px solid variables.$border-color;
       border-radius: variables.$border-radius;
-      background-color: transparent;
+      outline-color: variables.$focus-outline-color;
+
+      color: variables.$text-color;
       text-align: center;
+
+      background-color: transparent;
       font-size: inherit;
       cursor: pointer;
       transition: background 25ms;
@@ -55,16 +48,27 @@
       }
     }
   }
-  .selected-choice .choice__button.choice__button {
+  .selected-choice .choice__button {
     border-color: variables.$secondary-color;
     background-color: $selected-bg;
     outline: 0;
   }
+  .choice.disabled {
+    position: relative;
+    &::before {
+      content: "";
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.1);
+      border-radius: inherit;
+      cursor: not-allowed;
+    }
+  }
 }
 
 .answer-textbox-container {
-  margin: 0 var(--offset-margin);
-  margin-top: 1em;
+  margin: 0.8em var(--offset-margin);
   position: relative;
   .answer-textbox {
     box-sizing: border-box;
@@ -84,24 +88,34 @@
     &:focus-visible {
       border-color: variables.$secondary-color;
     }
-    &[disabled] {
+    &:disabled,
+    &:disabled + .answer-textbox-label {
       cursor: not-allowed;
     }
   }
-  &::before {
-    content: "here.";
+  .answer-textbox-label {
+    height: 100%;
+    width: 100%;
     position: absolute;
-    left: 15.9ch;
-    top: 50%;
-    transform: translateY(-50%);
+    top: 0;
+    left: 0;
     font-size: 1.2em;
     color: gray;
-    animation: placeholder-type 7s infinite;
+    cursor: text;
+    &::before {
+      content: "here.";
+      width: max-content;
+      position: absolute;
+      top: 50%;
+      left: 16ch;
+      transform: translateY(-50%);
+      animation: placeholder-type 7s infinite;
+    }
   }
-  &:focus-within::before {
+  &:focus-within .answer-textbox-label::before {
     animation: unset;
   }
-  &.typing::before {
+  &.typing .answer-textbox-label::before {
     content: "";
     animation: none;
   }

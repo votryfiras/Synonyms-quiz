@@ -10,9 +10,9 @@ export function hideAnswerGrade() {
   const answerGradeText = document.querySelector(".answer-grade__text");
   const wordInfo = document.querySelector('.word-info');
   const toggleInfoButton = document.querySelector('.answer-grade__toggle-info');
-  answerGradeSegment.classList.remove('correct', 'wrong');
+  answerGradeSegment.classList.remove('correct', 'wrong', 'warn');
   answerGradeText.textContent = '';
   toggleInfoButton.querySelector('span').textContent = "More about the word";
-  toggleInfoButton.querySelector('img').setAttribute('style', 'transform: rotate(-90deg)');
+  toggleInfoButton.querySelector('.answer-grade__toggle-info__image').style.transform = "rotate(-90deg)"
   wordInfo.classList.remove('visible');
 }

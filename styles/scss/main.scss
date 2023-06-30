@@ -6,10 +6,6 @@
 @use "question";
 @use "answer-grade";
 
-:root {
-  --offset-margin: 0.6rem;
-}
-
 html {
   background-color: variables.$page-bg-color;
   overflow-x: hidden;
@@ -23,16 +19,16 @@ main {
   min-height: 100vh;
   background-color: variables.$page-bg-color;
   font-family: "Roboto", sans-serif;
-  display: flex;
-  justify-content: center;
   color: variables.$text-color;
   background-image: url(../icons/quiz.svg);
   background-size: 80px 80px;
 }
 
-.app {
-  padding-top: 6rem;
-  position: relative;
+#game {
+  max-width: 748px;
+  padding: 0 1.5rem;
+  padding-top: 8%;
+  margin: 0 auto;
 }
 
 @keyframes placeholder-type {
@@ -153,11 +149,30 @@ main {
   }
 }
 
-@media (max-width: 648px) {
+@media screen and (max-width: 648px) {
   .choice-container {
     --repeat: 1;
-    .choice {
+    .choice.choice {
       font-size: 1rem;
+      margin-left: 0;
+      margin-right: 0;
     }
+  }
+}
+
+@media screen and (max-width: 485px) {
+  .question-segment__question {
+    padding: 2.4em 0.8em 0.8em 0.4em;
+  }
+  .question-segment__stopwatch {
+    top: 1.6em;
+    right: 50%;
+    transform: translate(50%);
+  }
+}
+
+@media screen and (min-height: 768px) {
+  .app {
+    padding-top: 20vh;
   }
 }

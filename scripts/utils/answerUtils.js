@@ -1,6 +1,8 @@
 import WORDS from "../shared/words.js";
 import { getRandomItem } from "./utils.js";
 
+const answerTextbox = document.querySelector('#answer-textbox');
+
 export function manipulateChoices(wordObject, newPrompt) {
   function pickRandomWordObject(prompt) {
     let newWordObject = getRandomItem(WORDS);
@@ -80,20 +82,18 @@ export function resetChoices() {
 }
 
 export function textboxPlaceholderToggle() {
-  const answerTextbox = document.querySelector('.answer-textbox');
   const answerTextboxContainer = document.querySelector('.answer-textbox-container');
   setTimeout(() => {
-    if (answerTextbox.value) answerTextboxContainer.classList.add('typing');
-    else answerTextboxContainer.classList.remove('typing');
+    if (answerTextbox.value) { answerTextboxContainer.classList.add('typing'); }
+    else { answerTextboxContainer.classList.remove('typing'); }
   }, 0);
 }
 
 export function disableTextbox() {
-  const answerTextbox = document.querySelector('.answer-textbox');
   answerTextbox.setAttribute('disabled', '');
 }
 
-// Put to avoid putting in the utils.js file and creating a new file for such a function, Despite it not fitting.
+// Put to avoid putting in the utils.js file or creating a new file for such a function, Despite it not being appropriate.
 
 export function enableSubmitButtons() {
   const nextButton = document.querySelector(".next-button");

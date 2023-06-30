@@ -3,8 +3,6 @@
 @import url("https://fonts.googleapis.com/css2?family=Ubuntu:wght@400&display=swap");
 
 .question-segment {
-  min-width: 55vw;
-  margin: 0 var(--offset-margin);
   position: relative;
   font-size: 1.1em;
 }
@@ -24,13 +22,15 @@
     height: 0;
     width: 90%;
     @include mixins.absolute-center;
+    transform: translate(-50%, -20%);
     background-color: inherit;
   }
   &.disabled::before {
-    height: 60%;
+    height: 50%;
   }
   &-content {
-    padding: 0 2.5em;
+    text-align: center;
+    padding: 0 1em 0 2.5em;
     font-family: "Ubuntu", sans-serif;
     font-weight: 500;
     font-size: 1.05em;
@@ -47,9 +47,10 @@
   transform: translate(-50%, -50%);
   border-radius: 1000000000000px;
   padding: 0.7em 1em;
+  white-space: nowrap;
   color: white;
   background-color: variables.$secondary-color;
-  p {
+  .question-segment__banner__content {
     margin: 0;
     text-align: center;
   }
@@ -80,13 +81,20 @@
   &__item {
     font-size: 1.1em;
     &__img {
+      width: 1.2em;
       vertical-align: middle;
+      &--correct {
+        color: #33b864;
+      }
+      &--streak {
+        color: #d0312d;
+      }
     }
     &__counter {
       vertical-align: middle;
     }
   }
   &__item--streak {
-    margin-top: 0.6em;
+    margin-top: 0.7em;
   }
 }

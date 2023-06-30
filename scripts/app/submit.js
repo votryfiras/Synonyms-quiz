@@ -1,5 +1,5 @@
 import WORDS from "../shared/words.js";
-import { motivatingGrade, wrongGrade } from "./grade.js";
+import { motivatingGrade, warnGrade, wrongGrade } from "./grade.js";
 import { stopStopwatch, continueStopwatch } from "../utils/stopwatch.js";
 import { getRandomItem, getPossiblePrompts, getCorrectSynonyms } from "../utils/utils.js";
 import { manipulateChoices, toggleChoicesAbility, resetChoices, textboxPlaceholderToggle, enableSubmitButtons, disableTextbox } from "../utils/answerUtils.js";
@@ -7,10 +7,10 @@ import { hideAnswerGrade, resetAnswerGradeInfo } from "../utils/gradeUtils.js";
 import endRound from '../utils/endRound.js';
 
 const NEXT_BUTTON_TEXT = 'Next Question';
-const questionPrompt = document.querySelector('.question__prompt');
+const questionPromptElem = document.querySelector('.question__prompt');
 const nextButton = document.querySelector(".next-button");
 const streakCounter = document.querySelector('[data-streak-counter]');
-const answerTextbox = document.querySelector('.answer-textbox');
+const answerTextbox = document.querySelector('#answer-textbox');
 
 function pushRoundPromptObject(prompt, currentRound) {
   const choiceButtons = document.querySelectorAll('.choice__button');
@@ -59,27 +59,32 @@ export function submitClickHandle(rounds, options) {
   }
 
   const currentRound = rounds[rounds.length - 1];
-  const currentPrompt = questionPrompt.textContent;
+  const currentPrompt = questionPromptElem.textContent;
   const correctSynonyms = getCorrectSynonyms(currentPrompt);
   const selectedChoice = document.querySelector('.selected-choice');
   const selectedChoiceButton = selectedChoice ? selectedChoice.querySelector('.choice__button') : null;
   const selectedChoiceText = selectedChoiceButton ? selectedChoiceButton.textContent : '';
   const writtenAnswer = answerTextbox.value;
 
-  if (selectedChoice) {
+  if (selectedChoice || writtenAnswer) {
     const currentRoundPromptsObject = currentRound.prompts[currentRound.prompts.length - 1];
     if (currentRoundPromptsObject && currentRoundPromptsObject.word === currentPrompt) {
-      currentRoundPromptsObject.selectedChoices.push(selectedChoiceButton.textContent);
+      currentRoundPromptsObject.selectedChoices.push(writtenAnswer || selectedChoiceButton.textContent);
     }
     else if (currentRoundPromptsObject) {
       pushRoundPromptObject(currentPrompt, currentRound);
       const updatedCurrentRoundPromptsObject = currentRound.prompts[currentRound.prompts.length - 1];
-      updatedCurrentRoundPromptsObject.selectedChoices.push(selectedChoiceButton.textContent);
+      updatedCurrentRoundPromptsObject.selectedChoices.push(writtenAnswer || selectedChoiceButton.textContent);
     }
   }
 
-  if (!selectedChoiceText && !writtenAnswer) { return; }
-  else if (currentRound.mode === 'multiplechoice') {
+  else {
+    warnGrade()
+    return;
+  }
+
+
+  if (currentRound.mode === 'multiplechoice') {
     if (correctSynonyms.includes(selectedChoiceText)) { // If correct answer
       motivatingGrade();
       toggleChoicesAbility();
@@ -108,7 +113,7 @@ export function submitClickHandle(rounds, options) {
     }
   }
   else if (currentRound.mode === "insert") {
-    if (correctSynonyms.includes(writtenAnswer.toLowerCase().trim())) { // If correct answer
+    if (correctSynonyms.includes(writtenAnswer.toLowerCase().trim()) && writtenAnswer.toLowerCase().trim() !== currentPrompt) { // If correct answer
       motivatingGrade();
       disableSubmitButton();
       increaseStreak();
@@ -150,18 +155,11 @@ export function submitClickHandle(rounds, options) {
 }
 
 export function nextClickHandle(rounds, options) {
-  function cutStreak() {
-    const streaks = currentRound.streaks;
-    if (streaks[streaks.length - 1] !== 0) {
-      streaks.push(0);
-    }
-  }
-
   const currentRound = rounds[rounds.length - 1];
   const NEXT_BUTTON_TEXT = 'Next Question';
   const SURE_TEXT = 'Are You Sure?';
   const SKIP_TEXT = 'Skip Question';
-  const prompt = questionPrompt.textContent;
+  const prompt = questionPromptElem.textContent;
   const selectedChoice = document.querySelector('.selected-choice');
 
   if ((!selectedChoice && currentRound.mode === 'multiplechoice' || currentRound.correctAnswerCount + currentRound.wrongAnswerCount + currentRound.skippedAnswerCount !== currentRound.currentQuestionNumber) && nextButton.textContent !== SURE_TEXT) {
@@ -197,6 +195,12 @@ export function nextClickHandle(rounds, options) {
   function resetTextbox() {
     answerTextbox.value = '';
   }
+  function cutStreak() {
+    const streaks = currentRound.streaks;
+    if (streaks[streaks.length - 1] !== 0) {
+      streaks.push(0);
+    }
+  }
 
   const newPrompt = pickNewPrompt();
   const newWordObject = WORDS.find(wordObj => {
@@ -219,7 +223,7 @@ export function nextClickHandle(rounds, options) {
   }
 
   currentRound.currentQuestionNumber++;
-  questionPrompt.textContent = newPrompt;
+  questionPromptElem.textContent = newPrompt;
   answerTextbox.textContent = '';
   nextButton.textContent = NEXT_BUTTON_TEXT;
 

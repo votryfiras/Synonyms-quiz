@@ -6,6 +6,8 @@
   width: 100vw;
   padding: 2em 0;
   background-color: rgba(0, 0, 0, 0.2);
+  color: variables.$text-color;
+  font-family: "Roboto", sans-serif;
   box-sizing: border-box;
   position: fixed;
   top: 0;

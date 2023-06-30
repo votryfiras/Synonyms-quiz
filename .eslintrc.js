@@ -21,7 +21,7 @@ module.exports = {
         "ecmaVersion": "latest",
         "sourceType": "module"
     },
-    "ignorePatterns": ["scripts/shared"],
+    "ignorePatterns": ["src/js/shared"],
     "rules": {
         "no-console": "warn",
         "operator-assignment": "warn",
