@@ -8,7 +8,8 @@
 
 html {
   background-color: variables.$page-bg-color;
-  overflow-x: hidden;
+  background-image: url("../icons/quiz.svg");
+  background-size: 80px 80px;
 }
 
 body {
@@ -16,11 +17,11 @@ body {
 }
 
 main {
-  min-height: 100vh;
+  // min-height: 100vh;
   background-color: variables.$page-bg-color;
   font-family: "Roboto", sans-serif;
   color: variables.$text-color;
-  background-image: url(../icons/quiz.svg);
+  background-image: url("../icons/quiz.svg");
   background-size: 80px 80px;
 }
 

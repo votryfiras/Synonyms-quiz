@@ -193,7 +193,7 @@ export function openOptionsEditor(options) {
     function applyOptions() {
       const modalPortions = document.querySelectorAll(".modal__portion");
       for (const modalPortion of modalPortions) {
-        const modalPortionTitle = modalPortion.querySelector('.modal__portion__title__text').textContent;
+        const modalPortionTitle = modalPortion.querySelector('.modal__portion__fieldset__legend').textContent;
         const modalPortionInput = modalPortion.querySelector('.modal__portion__input').value;
 
         if (modalPortionTitle === questionCountText) {
@@ -221,37 +221,49 @@ export function openOptionsEditor(options) {
     }
     const modalHeader = document.createElement("header");
     const modalHeaderTitle = document.createElement('h2');
+    const modalCloseButton = document.createElement('button')
     const modalPortionContainer = document.createElement('div');
+    const modalForm = document.createElement('form');
     const modalButtonContainer = document.createElement('div');
     const modalApplyButton = document.createElement('button');
 
     modalHeaderTitle.textContent = 'Options';
+    modalCloseButton.innerHTML = "&times;";
     modalApplyButton.textContent = 'Apply';
 
-    modalHeader.classList.add('modal__header');
-    modalHeaderTitle.classList.add('modal__header__title', 'options-header');
+    modalHeader.classList.add('modal__header', 'modal__header--options-header');
+    modalHeaderTitle.classList.add('modal__header__title');
+    modalCloseButton.classList.add('modal__close-button');
     modalPortionContainer.classList.add('modal__portion-container');
     modalButtonContainer.classList.add('modal__button-container');
     modalApplyButton.classList.add('modal__apply-button');
+    modalForm.id = ('modal__form')
 
+    modalApplyButton.type = "submit"
+    modalApplyButton.setAttribute('form', "modal__form")
+    modalCloseButton.setAttribute('data-close-button', '')
+
+    modalCloseButton.addEventListener('click', closeModal)
     modalApplyButton.addEventListener('click', applyOptions);
+    modalForm.addEventListener('submit', e => e.preventDefault())
 
     modalHeader.appendChild(modalHeaderTitle);
-    modal.appendChild(modalHeader);
-    modal.appendChild(modalPortionContainer);
+    modalPortionContainer.appendChild(modalForm)
     modalButtonContainer.appendChild(modalApplyButton);
-    modal.appendChild(modalButtonContainer);
 
+    modal.appendChild(modalHeader);
+    modal.appendChild(modalCloseButton);
+    modal.appendChild(modalPortionContainer);
+    modal.appendChild(modalButtonContainer);
   }
   function createModalPortion(option, inputType, inputProps = [], inputEvents = []) {
     const modalPortion = document.createElement('div');
-    const modalPortionTitle = document.createElement('div');
-    const modalPortionTitleHr = document.createElement('hr');
-    const modalPortionTitleText = document.createElement('span');
     const modalPortionInputContainer = document.createElement('div');
-    let modalPortionInput;
+    const modalPortionInputFieldset = document.createElement('fieldset');
+    const modalPortionFieldsetLegend = document.createElement('legend');
+
     if (inputType !== 'select') {
-      modalPortionInput = document.createElement('input');
+      const modalPortionInput = document.createElement('input');
       modalPortionInput.type = inputType;
       for (const propObject of inputProps) {
         modalPortionInput.setAttribute(propObject.name, propObject.value);
@@ -260,40 +272,39 @@ export function openOptionsEditor(options) {
       for (const eventObject of inputEvents) {
         modalPortionInput.addEventListener(eventObject.name, eventObject.handler);
       }
+      modalPortionInput.classList.add('modal__portion__input');
+      modalPortionInputFieldset.appendChild(modalPortionInput);
     }
     else {
-      modalPortionInput = document.createElement('select');
+      const modalPortionInput = document.createElement('select');
       for (const option of inputProps) {
         const modalPortionInputOption = document.createElement('option');
         modalPortionInputOption.textContent = option;
         modalPortionInput.appendChild(modalPortionInputOption);
       }
+      modalPortionInput.classList.add('modal__portion__input');
+      modalPortionInputFieldset.appendChild(modalPortionInput);
     }
 
     modalPortion.classList.add('modal__portion');
-    modalPortionTitle.classList.add('modal__portion__title');
-    modalPortionTitleHr.classList.add('modal__portion__title__hr-line');
-    modalPortionTitleText.classList.add('modal__portion__title__text');
+    modalPortionInputFieldset.classList.add('modal__portion__fieldset');
+    modalPortionFieldsetLegend.classList.add('modal__portion__fieldset__legend');
     modalPortionInputContainer.classList.add('modal__portion__input-container');
-    modalPortionInput.classList.add('modal__portion__input');
 
-    modalPortionTitleText.textContent = option;
+    modalPortionFieldsetLegend.textContent = option;
 
-    modalPortionTitle.appendChild(modalPortionTitleHr);
-    modalPortionTitle.appendChild(modalPortionTitleText);
+    modalPortionInputFieldset.appendChild(modalPortionFieldsetLegend)
+    modalPortionInputContainer.appendChild(modalPortionInputFieldset);
 
-    modalPortionInputContainer.appendChild(modalPortionInput);
-
-    modalPortion.appendChild(modalPortionTitle);
     modalPortion.appendChild(modalPortionInputContainer);
 
-    const modalPortionContainer = document.querySelector('.modal__portion-container');
-    modalPortionContainer.appendChild(modalPortion);
+    const modalForm = document.querySelector('#modal__form');
+    modalForm.appendChild(modalPortion);
   }
   function setModalPortionInputValues() {
     const modalPortions = document.querySelectorAll(".modal__portion");
     for (const modalPortion of modalPortions) {
-      const modalPortionTitle = modalPortion.querySelector('.modal__portion__title__text').textContent;
+      const modalPortionTitle = modalPortion.querySelector('.modal__portion__fieldset__legend').textContent;
       const modalPortionInput = modalPortion.querySelector('.modal__portion__input');
 
       if (modalPortionTitle === questionCountText) {
@@ -349,9 +360,9 @@ export function openOptionsEditor(options) {
   setModalPortionInputValues();
 }
 
-export function outsideClickCloser(e) {
+export function closeModal(e) {
   e.stopPropagation();
-  if (!e.target.closest('.modal')) {
+  if (!e.target.closest('.modal') || "closeButton" in e.target.dataset) {
     backdrop.classList.remove('visible');
     while (modal.firstChild) {
       modal.removeChild(modal.firstChild);

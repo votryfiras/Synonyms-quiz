@@ -152,6 +152,7 @@ export function submitClickHandle(rounds, options) {
     unselectedChoice.querySelector('.choice__button').setAttribute('disabled', '');
     disableSubmitButton();
     wrongGrade();
+    stopStopwatch();
     if (currentRound.currentQuestionNumber === currentRound.totalQuestionCount) {
       endRound(rounds);
     }

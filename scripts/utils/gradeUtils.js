@@ -12,7 +12,7 @@ export function hideAnswerGrade() {
   const toggleInfoButton = document.querySelector('.answer-grade__toggle-info');
   answerGradeSegment.classList.remove('correct', 'wrong', 'warn');
   answerGradeText.textContent = '';
-  toggleInfoButton.querySelector('span').textContent = "More about the word";
+  toggleInfoButton.querySelector('span').textContent = "Reveal extra details";
   toggleInfoButton.querySelector('.answer-grade__toggle-info__image').style.transform = "rotate(-90deg)"
   wordInfo.classList.remove('visible');
 }

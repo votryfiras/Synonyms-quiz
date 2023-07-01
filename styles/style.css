@@ -2,7 +2,7 @@
 .backdrop.visible {
   min-height: 100vh;
   width: 100vw;
-  padding: 2em 0;
+  padding: 2rem 0;
   background-color: rgba(0, 0, 0, 0.2);
   color: #444444;
   font-family: "Roboto", sans-serif;
@@ -10,46 +10,87 @@
   position: fixed;
   top: 0;
   left: 0;
-  display: flex;
-  justify-content: center;
-  align-items: center;
   z-index: 100;
 }
 
-.backdrop.visible .modal {
-  min-width: 280px;
-  width: 55vw;
-  max-height: 80vh;
-  padding: 0 1em;
-  background-color: #fcfcfc;
-  overflow-y: auto;
-  border-radius: 4px;
+.modal-container {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: transparent;
 }
-.backdrop.visible .modal__header {
-  padding: 2em 2em 1em 1em;
-  margin-bottom: 1em;
+
+.backdrop.visible .modal {
+  min-width: 320px;
+  max-width: 632px;
+  width: 90vw;
+  border-radius: 8px;
+  background-color: #fcfcfc;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
   position: relative;
 }
-.backdrop.visible .modal__header.options-header::before {
-  content: 'MUST press "Apply" to apply changes';
+.backdrop.visible .modal__header {
+  padding: 1.8em 0 3em 0;
+  padding-left: 1em;
+  padding-right: 0.4em;
+  position: relative;
+}
+.backdrop.visible .modal__header--options-header::before {
+  content: 'Press "Apply" to apply changes';
   position: absolute;
-  top: 100%;
-  left: 50%;
-  transform: translate(-50%);
-  font-size: 1rem;
-  text-align: center;
+  top: 72%;
   color: crimson;
+  font-size: 1rem;
+  white-space: nowrap;
+  text-align: center;
 }
 .backdrop.visible .modal__header__title {
   margin: 0;
   padding-bottom: 0.5em;
   border-bottom: 4px solid #d8dbe2;
 }
+.backdrop.visible .modal__close-button {
+  border: none;
+  outline-color: #0287c3;
+  position: absolute;
+  top: 0.4em;
+  right: 0.4em;
+  background: none;
+  font-size: 2em;
+  color: inherit;
+  cursor: pointer;
+}
 .backdrop.visible .modal__portion-container {
-  padding: 2em 0.6em;
+  max-height: 55vh;
+  padding-bottom: 1em;
+  position: relative;
+}
+.backdrop.visible .modal__portion-container::before {
+  content: "";
+  width: 100%;
+  height: 32px;
+  position: absolute;
+  top: 0;
+  left: 0;
+  background-image: linear-gradient(to top, rgba(0, 0, 0, 0) 0%, #f8f8f8 100%);
+}
+.backdrop.visible .modal__portion-container #modal__form {
+  max-height: inherit;
+  padding: 0 0.6em;
+  overflow-y: scroll;
 }
 .backdrop.visible .modal__button-container {
-  margin: 0 1em 1em 1em;
+  width: 100%;
+  padding: 0.8em 0 0.8em 1em;
+  border-top: 2px solid #cccccc;
+  border-bottom-left-radius: inherit;
+  border-bottom-right-radius: inherit;
+  box-sizing: border-box;
+  background-color: #e6e6e6;
+  position: absolute;
+  left: 0;
+  bottom: 0;
 }
 .backdrop.visible .modal__button-container .modal__apply-button {
   padding: 0.3em 0.4em;
@@ -60,46 +101,44 @@
   background-color: #fcfcfc;
   border-radius: 4px;
   cursor: pointer;
-  font-size: 1rem;
+  background-color: #737373;
+  color: #eee;
+  border-radius: 2px;
+  border-color: #6c6c6c;
+  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.3);
+  font-size: 0.95rem;
 }
 .backdrop.visible .modal__button-container .modal__apply-button:hover {
   color: #8f00ff;
   border-color: #8f00ff;
   text-decoration: underline;
 }
+.backdrop.visible .modal__button-container .modal__apply-button:hover {
+  background-color: #676767;
+  border-color: #616161;
+  color: #cdcdcd;
+}
+.backdrop.visible .modal__button-container .modal__apply-button:active {
+  background-color: #616161;
+  box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.3);
+}
 
 .backdrop.visible .modal__portion {
   margin-bottom: 3em;
 }
-.backdrop.visible .modal__portion__title {
-  height: max-content;
-  position: relative;
-  margin-bottom: 1.5em;
+.backdrop.visible .modal__portion:first-child {
+  margin-top: 2em;
 }
-.backdrop.visible .modal__portion__title__hr-line {
-  width: 100%;
-  border: none;
-  position: relative;
-  height: 2px;
+.backdrop.visible .modal__portion__fieldset {
+  border-right: 0;
+  border-left: 0;
+  border-bottom: 0;
+  border-top-color: #d8dbe2;
+  border-top-style: solid;
+  padding-top: 1.2em;
 }
-.backdrop.visible .modal__portion__title__hr-line::before {
-  content: "";
-  width: 100%;
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 100%;
-  border-top: 2px solid #d8dbe2;
-}
-.backdrop.visible .modal__portion__title__text {
-  background-color: #fcfcfc;
-  padding: 0 0.5em;
-  width: auto;
-  position: absolute;
-  top: 50%;
-  left: 2em;
-  transform: translateY(-50%);
+.backdrop.visible .modal__portion__fieldset__legend {
+  padding: 0 4px;
 }
 .backdrop.visible .modal__portion__input {
   border-color: #cccccc;
@@ -235,7 +274,7 @@
 }
 
 .answer-textbox-container {
-  margin: 0.8em var(--offset-margin);
+  margin-top: 0.2em;
   position: relative;
 }
 .answer-textbox-container .answer-textbox {
@@ -411,14 +450,7 @@
 .function-button-container .function-button--restart-button {
   background-color: #8f00ff;
   color: white;
-  border-color: transparent;
-}
-.function-button-container .function-button--restart-button__restart-image {
-  width: 1em;
-  margin-right: 0.1em;
-  vertical-align: middle;
-  transition: transform 450ms ease-out;
-  user-select: none;
+  border-color: #8f00ff;
 }
 .function-button-container .function-button--restart-button:hover {
   color: white;
@@ -426,6 +458,24 @@
 }
 .function-button-container .function-button--restart-button:hover .function-button--restart-button__restart-image {
   transform: rotate(270deg);
+}
+.function-button-container .function-button--restart-button[data-end] {
+  background-color: #c72626;
+  border-color: #c72626;
+}
+.function-button-container .function-button--restart-button[data-end]:hover {
+  color: #721616;
+}
+.function-button-container .function-button--restart-button[data-end]:hover .function-button--restart-button__restart-image {
+  transform: scale(1.3);
+  transition-duration: 250ms;
+}
+.function-button-container .function-button--restart-button__restart-image {
+  width: 1em;
+  margin-right: 0.1em;
+  vertical-align: middle;
+  transition: transform 450ms ease-out;
+  user-select: none;
 }
 
 .submit-segment {
@@ -574,7 +624,8 @@
 }
 
 .answer-grade-segment {
-  margin: 1.5rem 0;
+  margin-top: 1.5rem;
+  padding-bottom: 1em;
 }
 
 .answer-grade-segment__bg {
@@ -699,7 +750,8 @@
 
 html {
   background-color: #e6e6e6;
-  overflow-x: hidden;
+  background-image: url("../icons/quiz.svg");
+  background-size: 80px 80px;
 }
 
 body {
@@ -707,11 +759,10 @@ body {
 }
 
 main {
-  min-height: 100vh;
   background-color: #e6e6e6;
   font-family: "Roboto", sans-serif;
   color: #444444;
-  background-image: url(../icons/quiz.svg);
+  background-image: url("../icons/quiz.svg");
   background-size: 80px 80px;
 }
 

@@ -52,7 +52,7 @@ export function displayWordInfo() {
     const defSection = document.querySelector('.word-info__def');
     const exmSection = document.querySelector('.word-info__exm');
 
-    toggleInfoButton.querySelector('span').textContent = "Hide";
+    toggleInfoButton.querySelector('span').textContent = "Minimize extra details";
     toggleInfoButtonImage.style.transform = "rotate(0deg)";
 
     wordSpan.textContent = currentWordObject.word.charAt(0).toUpperCase() + currentWordObject.word.slice(1);
@@ -71,10 +71,9 @@ export function displayWordInfo() {
       exmListItem.textContent = exm;
       exmSection.querySelector('ul').appendChild(exmListItem);
     }
-
   }
   else {
-    toggleInfoButton.querySelector('span').textContent = "More about the word";
+    toggleInfoButton.querySelector('span').textContent = "Reveal extra details";
     toggleInfoButtonImage.setAttribute('style', 'transform: rotate(-90deg)');
     resetAnswerGradeInfo();
   }

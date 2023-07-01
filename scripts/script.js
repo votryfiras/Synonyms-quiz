@@ -1,6 +1,6 @@
 import { textboxPlaceholderToggle } from "./utils/answerUtils.js";
 import { restartClickHandle } from './app/restart.js';
-import { openOptionsEditor, outsideClickCloser } from './app/modal.js';
+import { openOptionsEditor, closeModal } from './app/modal.js';
 import { submitClickHandle, nextClickHandle } from './app/submit.js';
 import { displayWordInfo } from './app/grade.js';
 
@@ -24,6 +24,7 @@ const restartButton = document.querySelector('.function-button--restart-button')
 const questionScript = document.querySelector(".question__script");
 const choiceButtons = document.querySelectorAll('.choice__button');
 const answerSegment = document.querySelector('.answer-segment');
+const answerTextboxForm = document.querySelector('#answer-textbox-form')
 const answerTextbox = document.querySelector('#answer-textbox');
 const nextButton = document.querySelector(".next-button");
 const submitButton = document.querySelector(".submit-button");
@@ -50,10 +51,11 @@ choiceButtons.forEach((choice => {
 
 modeSelect.addEventListener('change', switchMode);
 answerTextbox.addEventListener('keydown', textboxPlaceholderToggle);
+answerTextboxForm.addEventListener('submit', e => e.preventDefault());
 nextButton.addEventListener('click', () => nextClickHandle(rounds, options));
-submitButton.addEventListener('click', () => submitClickHandle(rounds, options));
+submitButton.addEventListener('click', e => submitClickHandle(rounds, options));
 toggleInfoButton.addEventListener('click', displayWordInfo);
 // statsButton.addEventListener('click', displayStats(rounds))
 optionsButton.addEventListener('click', () => openOptionsEditor(options));
 restartButton.addEventListener('click', () => restartClickHandle(rounds, options));
-backdrop.addEventListener('click', outsideClickCloser);
+backdrop.addEventListener('click', closeModal);
