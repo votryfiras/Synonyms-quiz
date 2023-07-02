@@ -61,7 +61,7 @@ export function displayWordInfo() {
     for (const def of currentWordObject.def) {
       const defListItem = document.createElement('li');
       defListItem.className = "word-info__def__definition";
-      defListItem.textContent = def;
+      defListItem.innerHTML = def;
       defSection.querySelector('ul').appendChild(defListItem);
     }
 

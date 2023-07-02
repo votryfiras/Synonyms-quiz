@@ -1,5 +1,5 @@
 import WORDS from "../shared/words.js";
-import { getRandomItem } from "./utils.js";
+import { getCorrectSynonyms, getRandomItem } from "./utils.js";
 
 const answerTextbox = document.querySelector('#answer-textbox');
 
@@ -42,7 +42,17 @@ export function manipulateChoices(wordObject, newPrompt) {
   }
 
   if (wordObject.word !== newPrompt) {
-    newChoices.push(wordObject.word);
+    const EXCLUDED_PROMPT_SYNONYMS = {
+      purchase: ['grip', 'attachment', 'hold'],
+      obtain: ['derive'],
+      dish: ['container'],
+      container: ['dish', 'receptacle', 'vessel', 'repository', 'canister'],
+    }
+    const premittedSynonyms = getCorrectSynonyms(newPrompt)
+      .filter(element => element !== newPrompt)
+      .filter(element => EXCLUDED_PROMPT_SYNONYMS[newPrompt] ? !EXCLUDED_PROMPT_SYNONYMS[newPrompt].includes(element) : true);
+    const randomSynoynm = getRandomItem(premittedSynonyms);
+    newChoices.push(randomSynoynm);
   }
   else {
     let promptSynonym = getRandomItem(wordObject.syns);
