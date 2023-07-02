@@ -69,7 +69,7 @@
       background-color: $end-background;
       border-color: $end-background;
       &:hover {
-        color: darken(firebrick, 15);
+        color: darken(firebrick, 10);
         .function-button--restart-button__restart-image {
           transform: scale(1.3);
           transition-duration: 250ms;

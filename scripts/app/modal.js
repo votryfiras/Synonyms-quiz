@@ -191,6 +191,35 @@ export function displayStats(rounds) {
 export function openOptionsEditor(options) {
   function addOptionElements() {
     function applyOptions() {
+      function displaySuccessMessage() {
+
+        const successMessage = document.createElement('div');
+        const successMessageImageContainer = document.createElement('div');
+        const successMessageTextContent = document.createElement('p');
+
+
+        successMessage.className = "modal__success-message";
+        successMessageImageContainer.className = "modal__success-message__image-container";
+        successMessageTextContent.className = "modal__success-message__text-content";
+
+        successMessageImageContainer.innerHTML = '<svg stroke="currentColor" fill="none" stroke-width="2" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>';
+        successMessageTextContent.textContent = 'Successfully applied.'
+
+        if (document.querySelector('.modal__success-message')) {
+          document.querySelector('.modal__success-message').remove()
+        }
+
+        successMessage.appendChild(successMessageImageContainer);
+        successMessage.appendChild(successMessageTextContent);
+        document.querySelector('.modal').appendChild(successMessage);
+
+        const timeoutId = setTimeout(() => successMessage.remove(), 3975);
+        successMessage.addEventListener('click', () => {
+          setTimeout(() => successMessage.remove(), 0)
+          clearTimeout(timeoutId);
+        })
+      }
+
       const modalPortions = document.querySelectorAll(".modal__portion");
       for (const modalPortion of modalPortions) {
         const modalPortionTitle = modalPortion.querySelector('.modal__portion__fieldset__legend').textContent;
@@ -218,8 +247,9 @@ export function openOptionsEditor(options) {
           options.stopwatchWhileGrading = modalPortionInput === 'On';
         }
       }
+      displaySuccessMessage()
     }
-    const modalHeader = document.createElement("header");
+    const modalHeader = document.createElement('header');
     const modalHeaderTitle = document.createElement('h2');
     const modalCloseButton = document.createElement('button')
     const modalPortionContainer = document.createElement('div');
@@ -227,8 +257,8 @@ export function openOptionsEditor(options) {
     const modalButtonContainer = document.createElement('div');
     const modalApplyButton = document.createElement('button');
 
-    modalHeaderTitle.textContent = 'Options';
-    modalCloseButton.innerHTML = "&times;";
+    modalHeaderTitle.textContent = '⚙️ Options';
+    modalCloseButton.innerHTML = '&times;';
     modalApplyButton.textContent = 'Apply';
 
     modalHeader.classList.add('modal__header', 'modal__header--options-header');
@@ -240,7 +270,7 @@ export function openOptionsEditor(options) {
     modalForm.id = ('modal__form')
 
     modalApplyButton.type = "submit"
-    modalApplyButton.setAttribute('form', "modal__form")
+    modalApplyButton.setAttribute('form', 'modal__form')
     modalCloseButton.setAttribute('data-close-button', '')
 
     modalCloseButton.addEventListener('click', closeModal)

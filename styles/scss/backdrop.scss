@@ -24,7 +24,7 @@
 }
 
 .backdrop.visible .modal {
-  min-width: 320px;
+  min-width: 310px;
   max-width: 632px;
   width: 90vw;
   border-radius: 8px;
@@ -114,6 +114,43 @@
         box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.3);
       }
     }
+  }
+  &__success-message {
+    padding: 0.5em 1.5em;
+    @include mixins.absolute-center("horizontal");
+    position: absolute;
+    top: 0;
+    background-color: limegreen;
+    color: white;
+    display: flex;
+    animation: display-success-message 4s;
+    cursor: pointer;
+    &__image-container {
+      margin-right: 0.2em;
+      svg {
+        vertical-align: middle;
+        width: 1.2em;
+      }
+    }
+    &__text-content {
+      margin: 0;
+      white-space: nowrap;
+    }
+  }
+}
+
+@keyframes display-success-message {
+  0% {
+    opacity: 0;
+  }
+  2% {
+    opacity: 1;
+  }
+  95% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
   }
 }
 

@@ -16,9 +16,17 @@
   }
 }
 
-@mixin absolute-center {
+@mixin absolute-center($dir: "both") {
   position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
+  @if $dir == "both" {
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+  } @else if ($dir == "vertical") {
+    top: 50%;
+    transform: translate(0%, -50%);
+  } @else if $dir == "horizontal" {
+    left: 50%;
+    transform: translate(-50%, 0%);
+  }
 }
