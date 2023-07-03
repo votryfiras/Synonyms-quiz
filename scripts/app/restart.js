@@ -93,7 +93,7 @@ export function restartClickHandle(rounds, options) {
     resetStatCounters();
     enableSubmitButtons();
     resetStopwatch(options.stopwatchTimingMechanism);
-    startStopwatch(options.stopwatchTimingMechanism);
+    startStopwatch(options.stopwatchTimingMechanism, options.isStopwatchOn);
   }
   function generateRoundObject() {
     const choices = modeSelectElem.value.toLowerCase().replace(/\s/g, "") === 'multiplechoice'

@@ -47,6 +47,8 @@ export function manipulateChoices(wordObject, newPrompt) {
       obtain: ['derive'],
       dish: ['container'],
       container: ['dish', 'receptacle', 'vessel', 'repository', 'canister'],
+      home: ['house', 'territory'],
+      dwelling: ['territory']
     }
     const premittedSynonyms = getCorrectSynonyms(newPrompt)
       .filter(element => element !== newPrompt)
@@ -108,7 +110,7 @@ export function disableTextbox() {
   answerTextbox.setAttribute('disabled', '');
 }
 
-// Put to avoid putting in the utils.js file or creating a new file for such a function, Despite it not being appropriate.
+// Put to avoid putting in the utils.js file or creating a new file, Despite it's position not being appropriate.
 
 export function enableSubmitButtons() {
   const nextButton = document.querySelector(".next-button");

@@ -163,7 +163,6 @@ export function submitClickHandle(rounds, options) {
 export function nextClickHandle(rounds, options) {
   const currentRound = rounds[rounds.length - 1];
   const currentRoundPrompts = currentRound.prompts[currentRound.prompts.length - 1];
-  const NEXT_BUTTON_TEXT = 'Next Question';
   const SURE_TEXT = 'Are You Sure?';
   const SKIP_TEXT = 'Skip Question';
   const prompt = questionPromptElem.textContent;
@@ -216,7 +215,7 @@ export function nextClickHandle(rounds, options) {
     });
     const isTextboxDisabled = answerTextbox.hasAttribute('disabled');
     if (!options.stopwatchWhileGrading && (areChoiceButtonsDisabled && isTextboxDisabled)) { // && Question not skipped
-      continueStopwatch(options.stopwatchTimingMechanism);
+      continueStopwatch(options.stopwatchTimingMechanism, options.isStopwatchOn);
     }
   }
   else {

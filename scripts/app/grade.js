@@ -12,11 +12,18 @@ const answerGradeTextElem = document.querySelector(".answer-grade__text");
 const toggleInfoButton = document.querySelector('.answer-grade__toggle-info');
 const wordInfo = document.querySelector('.word-info');
 
+function redoFadeAnimation() {
+  answerGradeSegment.style.transitionDuration = "0ms";
+  answerGradeSegment.style.opacity = "0";
+  setTimeout(() => { answerGradeSegment.style.opacity = ""; answerGradeSegment.style.transitionDuration = "" }, 0)
+}
+
 export function motivatingGrade() {
   const motivationalPhrase = getRandomItem(CORRECT_PHRASES);
   answerGradeTextElem.textContent = motivationalPhrase;
   answerGradeSegment.classList.add("correct");
   answerGradeSegment.classList.remove("wrong", "warn");
+  redoFadeAnimation()
 }
 
 export function wrongGrade() {
@@ -24,6 +31,7 @@ export function wrongGrade() {
   answerGradeTextElem.textContent = wrongPhrase;
   answerGradeSegment.classList.remove("correct", "warn");
   answerGradeSegment.classList.add("wrong");
+  redoFadeAnimation();
 }
 
 export function warnGrade() {
@@ -31,6 +39,7 @@ export function warnGrade() {
   answerGradeTextElem.textContent = warnPhrase;
   answerGradeSegment.classList.add("warn");
   answerGradeSegment.classList.remove("correct", "wrong");
+  redoFadeAnimation();
 }
 
 export function displayWordInfo() {

@@ -98,10 +98,6 @@
   }
 }
 
-.word-info.visible {
-  display: block;
-}
-
 .word-info {
   display: none;
   max-width: calc(55vmax - 2 * var(--offset-margin));
@@ -122,12 +118,16 @@
     }
   }
   &__level__level {
-    font-size: 0.7em;
-    padding: 0.25em;
-    background-color: variables.$secondary-color;
+    font-size: 0.8em;
+    font-weight: 550;
+    padding: 0.4em;
+    background-color: lighten(#55565b, 5);
     border-radius: 5px;
   }
   &__def {
+    ul {
+      list-style: decimal;
+    }
     &__definition {
       margin: 0 auto;
     }

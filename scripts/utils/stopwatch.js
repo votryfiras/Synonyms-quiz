@@ -1,8 +1,9 @@
 let startTime;
 let stopwatchInterval;
 let elapsedTime = 0;
+export let currentFormattedTimeValue = '00:00.00';
 
-function updateStopwatch(mechanism) {
+function updateStopwatch(mechanism, isStopwatchOn) {
   return function () {
     const currentTime = Date.now();
     const totalElapsedTime = elapsedTime + (currentTime - startTime);
@@ -16,7 +17,10 @@ function updateStopwatch(mechanism) {
     const formattedSeconds = padNumber(seconds % 60);
     const formattedMinutes = padNumber(minutes);
 
-    document.querySelector('.question-segment__stopwatch__display').textContent = `${formattedMinutes}:${formattedSeconds}${mechanism !== 'seconds' ? '.' + formattedCentiseconds : ''}`;
+    currentFormattedTimeValue = `${formattedMinutes}:${formattedSeconds}${mechanism !== 'seconds' ? '.' + formattedCentiseconds : ''}`;
+    if (isStopwatchOn) {
+      document.querySelector('.question-segment__stopwatch__display').textContent = currentFormattedTimeValue;
+    }
   };
 }
 
@@ -24,10 +28,10 @@ function padNumber(number) {
   return number.toString().padStart(2, '0');
 }
 
-export function startStopwatch(mechanism) {
+export function startStopwatch(mechanism, isStopwatchOn) {
   const timeout = mechanism === 'centiseconds' ? 10 : (mechanism === 'deciseconds' ? 100 : 1000);
   startTime = Date.now();
-  stopwatchInterval = setInterval(updateStopwatch(mechanism), timeout);
+  stopwatchInterval = setInterval(updateStopwatch(mechanism, isStopwatchOn), timeout);
 }
 
 export function stopStopwatch() {
@@ -43,8 +47,8 @@ export function resetStopwatch(mechanism = 'centiseconds') {
     `00:00${mechanism !== 'seconds' ? (mechanism === 'centiseconds' ? '.00' : '.0') : ''}`;
 }
 
-export function continueStopwatch(mechanism = 'centiseconds') {
+export function continueStopwatch(mechanism = 'centiseconds', isStopwatchOn) {
   const timeout = mechanism === 'centiseconds' ? 10 : (mechanism === 'deciseconds' ? 100 : 1000);
   startTime = Date.now();
-  stopwatchInterval = setInterval(updateStopwatch(mechanism), timeout);
+  stopwatchInterval = setInterval(updateStopwatch(mechanism, isStopwatchOn), timeout);
 }

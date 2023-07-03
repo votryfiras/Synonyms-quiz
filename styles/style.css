@@ -749,10 +749,6 @@
   display: none;
 }
 
-.word-info.visible {
-  display: block;
-}
-
 .word-info {
   display: none;
   max-width: calc(55vmax - 2 * var(--offset-margin));
@@ -774,10 +770,14 @@
   text-decoration: underline;
 }
 .word-info__level__level {
-  font-size: 0.7em;
-  padding: 0.25em;
-  background-color: #8f00ff;
+  font-size: 0.8em;
+  font-weight: 550;
+  padding: 0.4em;
+  background-color: #616268;
   border-radius: 5px;
+}
+.word-info__def ul {
+  list-style: decimal;
 }
 .word-info__def__definition {
   margin: 0 auto;
