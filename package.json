@@ -16,7 +16,6 @@
     "url": "https://github.com/votryfiras/Synonyms-quiz/issues"
   },
   "homepage": "https://github.com/votryfiras/Synonyms-quiz#readme",
-  "browserslist": "> 10%, last 2 versions, not dead",
   "devDependencies": {
     "eslint": "^8.43.0"
   }

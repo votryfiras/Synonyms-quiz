@@ -205,6 +205,296 @@ const WORDS = [
     ],
     languageLevel: "B2",
     examples: ["The panda's natural habitat is the bamboo forest.", 'the destruction of wildlife habitat']
+  },
+  {
+    word: 'emit',
+    def: ['to send out something such as light, heat, sound, gas, etc.'],
+    syns: [
+      {
+        word: 'discharge',
+        def: ['to allow someone to leave a hospital or prison, or to order or allow someone to leave an organization such as the army', 'when a gas or a liquid discharges or is discharged, or somebody discharges it, it flows somewhere'],
+        languageLevel: 'C1',
+        examples: ['He was discharged from the army following his injury.', 'She was discharged from the police force for bad conduct.', 'The river is diverted through the power station before discharging into the sea.'],
+        additionalSyns: ['send out', 'eject']
+      },
+      {
+        word: 'release',
+        def: ['to let somebody come out of a place where they have been kept or stuck and unable to leave or move', 'to make a film, recording or other product available to the public'],
+        languageLevel: 'B2',
+        examples: ['to release a prisoner', 'He was released without charge after questioning by police.', "They've released a new version of the original film."],
+        additionalSyns: ['free']
+      },
+      {
+        word: 'pour',
+        def: ['to make a liquid or other substance flow from a container in a continuous stream, especially by holding the container at an angle'],
+        languageLevel: 'B1',
+        examples: ['Pour the sauce over the pasta.', 'She poured boiling water down the sink.'],
+        additionalSyns: ['stream', 'flow']
+      }
+    ],
+    languageLevel: "C1",
+    examples: ['The metal container began to emit a clicking sound.', 'Sulphur gases were emitted by the volcano.']
+  },
+  {
+    word: 'incentive',
+    def: ['something that encourages or motivates someone to do something'],
+    syns: [
+      {
+        word: 'motivation',
+        def: ['the reason or reasons one has for acting or behaving in a particular way'],
+        languageLevel: 'B2',
+        examples: ['Financial incentives can be a strong motivation for employees.', 'She lacks motivation to exercise regularly.'],
+        additionalSyns: ['drive', 'stimulus']
+      },
+      {
+        word: 'encouragement',
+        def: ['the act of giving someone support, confidence, or hope', 'something that inspires or stimulates'],
+        languageLevel: 'B2',
+        examples: ["Her teacher's encouragement helped her succeed", 'Positive feedback can be a powerful encouragement.'],
+        additionalSyns: ['support', 'boost']
+      },
+      {
+        word: 'stimulus',
+        def: ['something that encourages activity or growth', 'something that causes a reaction in an organism or a system'],
+        languageLevel: 'C1',
+        examples: ['The new tax policy served as a stimulus for economic growth.', 'The loud noise provided a stimulus for the animals to react.'],
+        additionalSyns: ['impetus', 'influence']
+      },
+      {
+        word: 'drive',
+        def: ['the strong motivation or desire to achieve something', 'an innate, biologically determined urge to attain a goal or satisfy a need'],
+        languageLevel: 'B2',
+        examples: ['His drive to succeed pushed him to work hard.', 'She has a strong drive for adventure and exploration.'],
+        additionalSyns: []
+      }
+    ],
+    languageLevel: 'B2',
+    examples: ['The company offers various incentives to attract new customers.', 'She was motivated by the incentive of a promotion.']
+  },
+  {
+    word: 'fantastic',
+    def: ['extraordinarily good or impressive; excellent'],
+    syns: [
+      {
+        word: 'awesome',
+        def: ['extremely impressive or daunting; inspiring great admiration'],
+        languageLevel: 'B2',
+        examples: ['That concert was awesome!', 'The view from the top of the mountain is absolutely awesome.'],
+        additionalSyns: ['amazing', 'incredible']
+      },
+      {
+        word: 'superb',
+        def: ['excellent; of the highest quality'],
+        languageLevel: 'B2',
+        examples: ['The food at the restaurant was superb.', 'She gave a superb performance on stage.'],
+        additionalSyns: ['outstanding', 'splendid']
+      },
+      {
+        word: 'marvelous',
+        def: ['extremely good or enjoyable; wonderful'],
+        languageLevel: 'B2',
+        examples: ['We had a marvelous time on our vacation.', 'The play was a marvelous success.'],
+        additionalSyns: ['fantabulous', 'excellent']
+      }
+    ],
+    languageLevel: 'B2',
+    examples: ['The movie was fantastic!', 'She did a fantastic job on the project.']
+  },
+  {
+    word: 'browse',
+    def: ['to look through or read something casually'],
+    syns: [
+      {
+        word: 'scan',
+        def: ['to quickly examine something'],
+        languageLevel: 'B2',
+        examples: ['She scanned the bookshelves for a good read.', 'He scanned the document for important details.'],
+        additionalSyns: ['glance', 'skim']
+      },
+      {
+        word: 'peruse',
+        def: ['to read something carefully'],
+        languageLevel: 'C1',
+        examples: ['He perused the article to gain a deeper understanding.', 'She perused the menu before ordering.'],
+        additionalSyns: ['examine', 'study']
+      },
+      {
+        word: 'navigate',
+        def: ['to move through or explore something'],
+        languageLevel: 'B2',
+        examples: ['She navigated through the website to find the information she needed.', 'He navigated the city streets with ease.'],
+        additionalSyns: ['explore', 'traverse']
+      }
+    ],
+    languageLevel: 'B2',
+    examples: ['She likes to browse magazines at the bookstore.', 'He spent some time browsing online forums.']
+  },
+  {
+    word: 'extinct',
+    def: ['no longer in existence'],
+    syns: [
+      {
+        word: 'vanished',
+        def: ['disappeared or ceased to exist'],
+        languageLevel: 'B2',
+        examples: ['The ancient civilization vanished without a trace.', 'The species vanished from the wild due to hunting and habitat loss.'],
+        additionalSyns: ['gone']
+      },
+      {
+        word: 'extinguished',
+        def: ['completely put an end to something'],
+        languageLevel: 'B2',
+        examples: ['The fire was quickly extinguished by the firefighters.', 'The hope of reconciliation was extinguished after the heated argument.'],
+        additionalSyns: ['eliminated', 'eradicated']
+      }
+    ],
+    languageLevel: 'B2',
+    examples: ['The dinosaur is an extinct species.', 'The once flourishing civilization is now extinct.']
+  },
+  {
+    word: 'scientist',
+    def: ['a person who studies and has expert knowledge of one or more branches of science'],
+    syns: [
+      {
+        word: 'researcher',
+        def: ['a person who conducts research or investigation'],
+        languageLevel: 'B2',
+        examples: ['The researcher conducted experiments to test the hypothesis.', 'Scientists and researchers work together to advance scientific knowledge.'],
+        additionalSyns: ['scholar']
+      },
+      {
+        word: 'expert',
+        def: ['a person who has extensive knowledge or skill in a particular field'],
+        languageLevel: 'B2',
+        examples: ['He is an expert in the field of genetics.', 'The expert provided valuable insights into the matter.'],
+        additionalSyns: ['specialist', 'authority']
+      }
+    ],
+    languageLevel: 'B2',
+    examples: ['The scientist made significant discoveries in the field of physics.', 'Scientists are continuously seeking answers to complex questions.']
+  },
+  {
+    word: 'impressed',
+    def: ['having a strong effect on the mind or feelings; eliciting admiration or respect'],
+    syns: [
+      {
+        word: 'awed',
+        def: ['filled with awe; deeply impressed or respectful'],
+        languageLevel: 'B2',
+        examples: ['The majestic mountain range left us awed.', 'She was awed by the stunning performance.'],
+        additionalSyns: ['amazed', 'astonished']
+      },
+      {
+        word: 'inspired',
+        def: ['filled with a positive and uplifting influence; motivated to create or achieve'],
+        languageLevel: 'B2',
+        examples: ['The passionate speech inspired the audience.', 'She felt inspired to write a song after witnessing the beauty of nature.'],
+        additionalSyns: ['encouraged', 'enthused']
+      },
+      {
+        word: 'captivated',
+        def: ['completely fascinated or charmed'],
+        languageLevel: 'B2',
+        examples: ['The captivating story held the audience\'s attention.', 'She was captivated by the intricate artwork.'],
+        additionalSyns: ['enchanted', 'spellbound']
+      }
+    ],
+    languageLevel: 'B2',
+    examples: ['I was impressed by her talent.', 'The performance left a lasting impression on me.']
+  },
+  {
+    word: 'delighted',
+    def: ['feeling or showing great pleasure or satisfaction'],
+    syns: [
+      {
+        word: 'joyful',
+        def: ['feeling, expressing, or causing great pleasure and happiness'],
+        languageLevel: 'B2',
+        examples: ['The children were joyful at the sight of presents.', 'She had a joyful smile on her face.'],
+        additionalSyns: ['ecstatic', 'thrilled']
+      },
+      {
+        word: 'elated',
+        def: ['extremely happy and excited'],
+        languageLevel: 'B2',
+        examples: ['He was elated after winning the championship.', 'They were elated by the news of their promotion.'],
+        additionalSyns: ['overjoyed', 'exhilarated']
+      },
+      {
+        word: 'gleeful',
+        def: ['expressing or causing great pleasure or amusement'],
+        languageLevel: 'C1',
+        examples: ['The children were gleeful as they opened their presents.', 'She had a gleeful laugh at the funny joke.'],
+        additionalSyns: ['merry', 'jubilant']
+      }
+    ],
+    languageLevel: 'B2',
+    examples: ['I was delighted to receive your invitation.', 'She was delighted with the outcome of the project.']
+  },
+  {
+    word: 'species',
+    def: ['a group of living organisms consisting of similar individuals capable of exchanging genes or interbreeding'],
+    syns: [
+      {
+        word: 'kind',
+        def: ['a category of things distinguished by some common characteristic'],
+        languageLevel: 'B1',
+        examples: ['There are different kinds of birds in the forest.', 'What kind of music do you enjoy?'],
+        additionalSyns: ['type', 'sort']
+      },
+      {
+        word: 'variety',
+        def: ['a number of different types of things'],
+        languageLevel: 'B2',
+        examples: ['The store offers a variety of fruits and vegetables.', 'We saw a variety of birds during our trip.'],
+        additionalSyns: ['assortment', 'range']
+      }
+    ],
+    languageLevel: 'B2',
+    examples: ['The concept of species is central to the study of biology.', 'The preservation of endangered species is crucial for biodiversity.']
+  },
+  {
+    word: 'as long as',
+    def: ['provided that; on the condition that'],
+    syns: [
+      {
+        word: 'if',
+        def: ['in the event that; on the condition that'],
+        languageLevel: 'A2',
+        examples: ['You can join us if you want.', 'If it rains, we\'ll stay indoors.'],
+        additionalSyns: ['providing', 'assuming']
+      },
+      {
+        word: 'while',
+        def: ['during the time that; as long as'],
+        languageLevel: 'B1',
+        examples: ['While I was studying, my friend called me.', 'You can use my computer while I\'m away.'],
+        additionalSyns: ['as you', 'during']
+      },
+      {
+        word: 'assuming',
+        def: ['supposing that something is true without having evidence to confirm it'],
+        languageLevel: 'B2',
+        examples: ['Assuming he\'ll be there, we can start the meeting.', 'She made decisions based on assuming certain risks.'],
+        additionalSyns: ['presuming', 'supposing']
+      },
+      {
+        word: 'presuming',
+        def: ['assuming something is true without evidence to confirm it'],
+        languageLevel: 'B2',
+        examples: ['Presuming you agree, we can move forward with the plan.', 'She acted on the project, presuming it would be approved.'],
+        additionalSyns: ['assuming', 'supposing']
+      },
+      {
+        word: 'providing',
+        def: ['on the condition that; if'],
+        languageLevel: 'B2',
+        examples: ['Providing you follow the rules, you can participate.', 'The offer is valid, providing you sign the agreement.'],
+        additionalSyns: ['if', 'as long as']
+      }
+    ],
+    languageLevel: 'B2',
+    examples: ['You can come with us as long as you promise to behave.', "I'll support you as long as you keep working hard."]
   }
 ]
 

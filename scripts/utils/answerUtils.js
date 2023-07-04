@@ -48,7 +48,10 @@ export function manipulateChoices(wordObject, newPrompt) {
       dish: ['container'],
       container: ['dish', 'receptacle', 'vessel', 'repository', 'canister'],
       home: ['house', 'territory'],
-      dwelling: ['territory']
+      dwelling: ['territory'],
+      inducement: ['reason'],
+      motivation: ['motive'],
+      motive: ['motivation']
     }
     const premittedSynonyms = getCorrectSynonyms(newPrompt)
       .filter(element => element !== newPrompt)

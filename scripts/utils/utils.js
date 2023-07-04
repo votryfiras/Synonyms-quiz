@@ -7,7 +7,7 @@ export function getRandomItem(arr) {
 }
 
 export function getPossiblePrompts(additionalExcludedPrompts = []) {
-  const EXCLUDED_INSERT_PROMPTS = ['pollution', 'pan', 'carbon footprint', 'conserve'];
+  const EXCLUDED_INSERT_PROMPTS = ['pollution', 'pan', 'carbon footprint', 'conserve', 'discharge', 'dwelling', 'vertex', 'territory', 'discharge'];
   const answerSegment = document.querySelector('.answer-segment');
   let excludedPrompts = [];
   if (answerSegment.classList.contains('insert-mode')) {
