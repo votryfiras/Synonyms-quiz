@@ -49,6 +49,7 @@ export function manipulateChoices(wordObject, newPrompt) {
       container: ['dish', 'receptacle', 'vessel', 'repository', 'canister'],
       home: ['house', 'territory'],
       dwelling: ['territory'],
+      pinnacle: ['tip'],
       inducement: ['reason'],
       motivation: ['motive'],
       motive: ['motivation']

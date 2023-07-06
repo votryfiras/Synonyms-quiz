@@ -18,19 +18,17 @@ export function displayStats(rounds) {
     const modalHeader = document.createElement("header");
     const modalHeaderTitle = document.createElement('h2');
     const modalPortionContainer = document.createElement('div');
-    const modalButtonContainer = document.createElement('div');
 
     modalHeaderTitle.textContent = 'Round Stats';
 
+    modal.classList.add('modal--stats')
     modalHeader.classList.add('modal__header');
     modalHeaderTitle.classList.add('modal__header__title');
     modalPortionContainer.classList.add('modal__portion-container');
-    modalButtonContainer.classList.add('modal__button-container');
 
     modalHeader.appendChild(modalHeaderTitle);
     modal.appendChild(modalHeader);
     modal.appendChild(modalPortionContainer);
-    modal.appendChild(modalButtonContainer);
 
   }
   function createModalPortion(round) {
@@ -94,7 +92,7 @@ export function displayStats(rounds) {
               modalPortionNestedSublistItemTitle.classList.add(SUBLIST_ITEM_CLASS + '--nested-sublist-container__sublist__item__title');
 
               modalPortionNestedSublistItemTitle.textContent = prop;
-              modalPortionNestedSublistItemValue.textContent = subStatValue[prop];
+              modalPortionNestedSublistItemValue.textContent = !Array.isArray(subStatValue[prop]) ? subStatValue[prop] : subStatValue[prop].join(' - ');
 
               modalPortionNestedSublistItem.appendChild(modalPortionNestedSublistItemTitle);
               modalPortionNestedSublistItem.appendChild(modalPortionNestedSublistItemValue);
@@ -139,18 +137,15 @@ export function displayStats(rounds) {
 
     const modalPortion = document.createElement('div');
     const modalPortionTitle = document.createElement('div');
-    const modalPortionTitleHr = document.createElement('hr');
-    const modalPortionTitleText = document.createElement('span');
+    const modalPortionTitleText = document.createElement('h3');
     const modalPortionStatList = document.createElement('ul');
 
     modalPortion.classList.add('modal__portion');
     modalPortionTitle.classList.add('modal__portion__title');
-    modalPortionTitleHr.classList.add('modal__portion__title__hr-line');
     modalPortionTitleText.classList.add('modal__portion__title__text');
 
     modalPortionTitleText.textContent = 'Round ' + round.roundNumber.toString();
 
-    modalPortionTitle.appendChild(modalPortionTitleHr);
     modalPortionTitle.appendChild(modalPortionTitleText);
     modalPortion.appendChild(modalPortionTitle);
 
@@ -180,7 +175,7 @@ export function displayStats(rounds) {
       delete promptObject[camelToNormalCase('selectedChoices')];
     });
 
-    createStatElement('Test', statedPromptsArray);
+    createStatElement('Prompts', statedPromptsArray);
   }
 
   addStatElements();
@@ -261,7 +256,8 @@ export function openOptionsEditor(options) {
     modalCloseButton.innerHTML = '&times;';
     modalApplyButton.textContent = 'Apply';
 
-    modalHeader.classList.add('modal__header', 'modal__header--options-header');
+    modal.classList.add('modal--options')
+    modalHeader.classList.add('modal__header');
     modalHeaderTitle.classList.add('modal__header__title');
     modalCloseButton.classList.add('modal__close-button');
     modalPortionContainer.classList.add('modal__portion-container');
@@ -393,6 +389,7 @@ export function openOptionsEditor(options) {
 export function closeModal(e) {
   e.stopPropagation();
   if (!e.target.closest('.modal') || "closeButton" in e.target.dataset) {
+    modal.classList.remove('modal--options', 'modal--stats')
     backdrop.classList.remove('visible');
     while (modal.firstChild) {
       modal.removeChild(modal.firstChild);
