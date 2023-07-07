@@ -166,6 +166,7 @@
 
 .backdrop.visible .modal__portion {
   margin-bottom: 3em;
+  position: relative;
   &:first-child {
     margin-top: 2em;
   }
@@ -201,17 +202,14 @@
 }
 
 .backdrop.visible .modal--stats .modal__portion {
-  &__stat-list {
-    list-style: none;
-    &__item {
-      display: flex;
-      justify-content: space-between;
-      &:first-child::before {
-        border-top: none;
-      }
-      &__value {
-        color: variables.$secondary-color;
-      }
+  &__toggler {
+    position: absolute;
+    width: 0.7em;
+    top: 0.2em;
+    left: 0.4em;
+    cursor: pointer;
+    &.rotated {
+      transform: rotate(-90deg);
     }
   }
   &__title {
@@ -229,6 +227,22 @@
         height: 2px;
         background-color: variables.$border-color;
         width: 100%;
+      }
+    }
+  }
+  &__stat-list {
+    list-style: none;
+    &.invisible {
+      display: none;
+    }
+    &__item {
+      display: flex;
+      justify-content: space-between;
+      &:first-child::before {
+        border-top: none;
+      }
+      &__value {
+        color: variables.$secondary-color;
       }
     }
   }
@@ -264,8 +278,22 @@
 
 .modal__portion__stat-list__item--sublist-container,
 .modal__portion__stat-list__item--sublist-container__sublist__item--nested-sublist-container {
+  position: relative;
+  &__toggler {
+    position: absolute;
+    width: 0.7em;
+    top: 0;
+    left: -1em;
+    cursor: pointer;
+    &.rotated {
+      transform: rotate(-90deg);
+    }
+  }
   &__sublist {
     list-style: none;
+    &.invisible {
+      display: none;
+    }
     &__item {
       margin: 1.5em 0;
       display: flex;

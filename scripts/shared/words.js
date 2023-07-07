@@ -495,6 +495,35 @@ const WORDS = [
     ],
     languageLevel: 'B2',
     examples: ['You can come with us as long as you promise to behave.', "I'll support you as long as you keep working hard."]
+  },
+  {
+    word: 'exquisite',
+    def: ['extremely beautiful, carefully made, or pleasing in a delicate way'],
+    syns: [
+      {
+        word: 'elegant',
+        def: ['gracefully stylish and sophisticated'],
+        languageLevel: 'B2',
+        examples: ['She wore an elegant gown to the gala.', 'The room was decorated in an elegant style.'],
+        additionalSyns: []
+      },
+      {
+        word: 'lovely',
+        def: ['attractive or beautiful, especially in a graceful way'],
+        languageLevel: 'B1',
+        examples: ['She had a lovely smile.', 'The garden was filled with lovely flowers.'],
+        additionalSyns: []
+      },
+      {
+        word: 'gorgeous',
+        def: ['extremely beautiful or attractive'],
+        languageLevel: 'B2',
+        examples: ['She looked absolutely gorgeous in her evening dress.', 'The sunset over the ocean was breathtakingly gorgeous.'],
+        additionalSyns: ['stunning', 'beautiful']
+      }
+    ],
+    languageLevel: 'B2',
+    examples: ['The artwork displayed in the gallery was exquisite.', 'She enjoyed an exquisite meal at the fine dining restaurant.']
   }
 ]
 

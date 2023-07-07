@@ -52,14 +52,19 @@ export function displayStats(rounds) {
       }
       else {
         const modalPortionStatListItem = document.createElement('li');
+        const modalPortionStatListItemToggler = document.createElement('div');
         const modalPortionStatListItemTitle = document.createElement('p');
         const modalPortionSublist = document.createElement('ul');
 
         modalPortionStatListItem.classList.add('modal__portion__stat-list__item--sublist-container');
+        modalPortionStatListItemToggler.classList.add('modal__portion__stat-list__item--sublist-container__toggler')
         modalPortionStatListItemTitle.classList.add('modal__portion__stat-list__item--sublist-container__title');
         modalPortionSublist.classList.add('modal__portion__stat-list__item--sublist-container__sublist');
 
         modalPortionStatListItemTitle.textContent = statTitle;
+        modalPortionStatListItemToggler.innerHTML = '<svg fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M11.178 19.569a.998.998 0 0 0 1.644 0l9-13A.999.999 0 0 0 21 5H3a1.002 1.002 0 0 0-.822 1.569l9 13z"></path></svg>'
+
+        modalPortionStatListItemToggler.addEventListener('click', () => toggleModalList(modalPortionSublist, modalPortionStatListItemToggler));
 
         statValue.forEach((subStatValue, i) => {
           const modalPortionSublistItem = document.createElement('li');
@@ -78,9 +83,15 @@ export function displayStats(rounds) {
             modalPortionSublistItem.appendChild(modalPortionSublistItemValue);
           }
           else {
+            const modalPortionSublistItemToggler = document.createElement('div');
             const modalPortionNestedSublist = document.createElement('ul');
+
             modalPortionSublistItem.classList.add(SUBLIST_ITEM_CLASS + '--nested-sublist-container');
-            modalPortionNestedSublist.classList.add(SUBLIST_ITEM_CLASS + '--nested-sublist-container__nested-sublist');
+            modalPortionSublistItemToggler.classList.add(SUBLIST_ITEM_CLASS + '--nested-sublist-container__toggler')
+            modalPortionNestedSublist.classList.add(SUBLIST_ITEM_CLASS + '--nested-sublist-container__sublist');
+
+            modalPortionSublistItemToggler.innerHTML = '<svg fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M11.178 19.569a.998.998 0 0 0 1.644 0l9-13A.999.999 0 0 0 21 5H3a1.002 1.002 0 0 0-.822 1.569l9 13z"></path></svg>'
+            modalPortionSublistItemToggler.addEventListener('click', () => toggleModalList(modalPortionNestedSublist, modalPortionSublistItemToggler))
 
             for (const prop in subStatValue) {
               const modalPortionNestedSublistItem = document.createElement('li');
@@ -98,16 +109,22 @@ export function displayStats(rounds) {
               modalPortionNestedSublistItem.appendChild(modalPortionNestedSublistItemValue);
               modalPortionNestedSublist.appendChild(modalPortionNestedSublistItem);
             }
+            modalPortionSublistItem.appendChild(modalPortionSublistItemToggler)
             modalPortionSublistItem.appendChild(modalPortionNestedSublist);
           }
 
           modalPortionSublist.appendChild(modalPortionSublistItem);
         });
 
+        modalPortionStatListItem.appendChild(modalPortionStatListItemToggler);
         modalPortionStatListItem.appendChild(modalPortionStatListItemTitle);
         modalPortionStatListItem.appendChild(modalPortionSublist);
         modalPortionStatList.appendChild(modalPortionStatListItem);
       }
+    }
+    function toggleModalList(list = modalPortionStatList, toggler = modalPortionToggler) {
+      list.classList.toggle('invisible');
+      toggler.classList.toggle('rotated');
     }
     function camelToNormalCase(camelCase) {
       const words = camelCase.replace(/([A-Z])/g, ' $1').trim().split(' ');
@@ -136,21 +153,28 @@ export function displayStats(rounds) {
     }
 
     const modalPortion = document.createElement('div');
+    const modalPortionToggler = document.createElement('div');
     const modalPortionTitle = document.createElement('div');
     const modalPortionTitleText = document.createElement('h3');
     const modalPortionStatList = document.createElement('ul');
 
     modalPortion.classList.add('modal__portion');
+    modalPortionToggler.classList.add('modal__portion__toggler');
     modalPortionTitle.classList.add('modal__portion__title');
     modalPortionTitleText.classList.add('modal__portion__title__text');
 
     modalPortionTitleText.textContent = 'Round ' + round.roundNumber.toString();
+    modalPortionToggler.innerHTML = '<svg fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M11.178 19.569a.998.998 0 0 0 1.644 0l9-13A.999.999 0 0 0 21 5H3a1.002 1.002 0 0 0-.822 1.569l9 13z"></path></svg>'
+
+    modalPortionToggler.addEventListener('click', toggleModalList)
 
     modalPortionTitle.appendChild(modalPortionTitleText);
+    modalPortion.appendChild(modalPortionToggler);
     modalPortion.appendChild(modalPortionTitle);
 
     const modalPortionContainer = document.querySelector('.modal__portion-container');
     modalPortionContainer.appendChild(modalPortion);
+
     createStatElement('Mode', round.mode === 'multiplechoice' ? 'Multiple Choice' : 'Insert');
     createStatElement('Question count', round.totalQuestionCount.toString());
     createStatElement('Correct answers', round.correctAnswerCount.toString());
