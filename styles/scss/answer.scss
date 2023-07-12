@@ -13,7 +13,7 @@
 
 .choice-container {
   --repeat: 2;
-  $selected-bg: transparentize(variables.$secondary-color, 0.8);
+  $selected-bg: rgba(var(--secondary-color), 0.2);
   display: grid;
   grid-template-columns: repeat(var(--repeat), 1fr);
   .choice {
@@ -23,7 +23,7 @@
     margin-left: 0;
     font-size: 1.1rem;
     border-radius: variables.$border-radius;
-    background-color: variables.$primary-color;
+    background-color: var(--primary-color);
     user-select: none;
     &:nth-child(2n) {
       margin-right: 0;
@@ -32,11 +32,11 @@
     &__button {
       width: 100%;
       padding: 1.3em 3em;
-      border: 2px solid variables.$border-color;
+      border: 2px solid var(--border-color);
       border-radius: variables.$border-radius;
       outline-color: variables.$focus-outline-color;
 
-      color: variables.$text-color;
+      color: var(--text-color);
       text-align: center;
 
       background-color: transparent;
@@ -44,14 +44,20 @@
       cursor: pointer;
       transition: background 25ms;
       &:hover {
-        border-color: variables.$secondary-color;
+        border-color: rgb(var(--secondary-color));
+        box-shadow: variables.$focus-shadow;
+      }
+      &:focus,
+      &:focus-visible {
+        box-shadow: variables.$focus-shadow;
       }
     }
   }
   .selected-choice .choice__button {
-    border-color: variables.$secondary-color;
+    border-color: rgb(var(--secondary-color));
     background-color: $selected-bg;
     outline: 0;
+    box-shadow: variables.$focus-shadow;
   }
   .choice.disabled {
     position: relative;
@@ -69,6 +75,7 @@
 
 .answer-textbox-container {
   margin-top: 0.2em;
+  margin-bottom: 0.5em;
   position: relative;
   .answer-textbox {
     box-sizing: border-box;
@@ -77,18 +84,19 @@
 
     border-width: 2px;
     border-style: solid;
-    border-color: variables.$border-color;
+    border-color: var(--border-color);
     border-radius: variables.$border-radius;
     outline: 0;
-    background-color: variables.$primary-color;
+    background-color: var(--primary-color);
 
     font-size: 1.2em;
+    color: var(--text-color);
 
     transition: border 50ms;
     user-select: none;
     &:focus,
     &:focus-visible {
-      border-color: variables.$secondary-color;
+      border-color: rgb(var(--secondary-color));
     }
   }
   .answer-textbox:disabled,

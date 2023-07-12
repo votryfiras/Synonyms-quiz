@@ -1,14 +1,20 @@
 @use "./partials/variables";
-@use "./backdrop";
-@use "./answer";
+@use "backdrop";
 @use "congrats";
 @use "function-buttons";
 @use "question";
+@use "answer";
 @use "answer-grade";
 
-html {
-  background-color: variables.$page-bg-color;
-  background-image: url("../icons/quiz.svg");
+:root {
+  --page-bg-color: hsl(0, 0%, 90%);
+  --primary-color: hsl(0, 0%, 99%);
+  --secondary-color: 144, 0, 255;
+  --text-color: #444444;
+  --border-color: hsl(0, 0%, 80%);
+  --options-modal-border-color: #d8dbe2;
+  background-color: var(--page-bg-color);
+  background-image: url("../../icons/quiz.svg");
   background-size: 80px 80px;
 }
 
@@ -17,10 +23,9 @@ body {
 }
 
 main {
-  // min-height: 100vh;
-  background-color: variables.$page-bg-color;
+  background-color: var(--page-bg-color);
   font-family: "Roboto", sans-serif;
-  color: variables.$text-color;
+  color: var(--text-color);
   background-image: url("../icons/quiz.svg");
   background-size: 80px 80px;
 }

@@ -19,7 +19,7 @@ export function displayStats(rounds) {
     const modalHeaderTitle = document.createElement('h2');
     const modalPortionContainer = document.createElement('div');
 
-    modalHeaderTitle.textContent = 'Round Stats';
+    modalHeaderTitle.textContent = '🎯 Round Stats';
 
     modal.classList.add('modal--stats')
     modalHeader.classList.add('modal__header');
@@ -29,7 +29,6 @@ export function displayStats(rounds) {
     modalHeader.appendChild(modalHeaderTitle);
     modal.appendChild(modalHeader);
     modal.appendChild(modalPortionContainer);
-
   }
   function createModalPortion(round) {
     function createStatElement(statTitle, statValue) {
@@ -122,7 +121,7 @@ export function displayStats(rounds) {
         modalPortionStatList.appendChild(modalPortionStatListItem);
       }
     }
-    function toggleModalList(list = modalPortionStatList, toggler = modalPortionToggler) {
+    function toggleModalList(list, toggler) {
       list.classList.toggle('invisible');
       toggler.classList.toggle('rotated');
     }
@@ -166,7 +165,7 @@ export function displayStats(rounds) {
     modalPortionTitleText.textContent = 'Round ' + round.roundNumber.toString();
     modalPortionToggler.innerHTML = '<svg fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M11.178 19.569a.998.998 0 0 0 1.644 0l9-13A.999.999 0 0 0 21 5H3a1.002 1.002 0 0 0-.822 1.569l9 13z"></path></svg>'
 
-    modalPortionToggler.addEventListener('click', toggleModalList)
+    modalPortionToggler.addEventListener('click', () => toggleModalList(modalPortionStatList, modalPortionToggler))
 
     modalPortionTitle.appendChild(modalPortionTitleText);
     modalPortion.appendChild(modalPortionToggler);

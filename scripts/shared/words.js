@@ -524,6 +524,35 @@ const WORDS = [
     ],
     languageLevel: 'B2',
     examples: ['The artwork displayed in the gallery was exquisite.', 'She enjoyed an exquisite meal at the fine dining restaurant.']
+  },
+  {
+    word: 'customer',
+    def: ['a person who buys goods or services from a business'],
+    syns: [
+      {
+        word: 'client',
+        def: ['a person or organization that uses the services or advice of a professional or company'],
+        languageLevel: 'B2',
+        examples: ['The lawyer\'s client was satisfied with the outcome of the case.', 'The company takes pride in serving its clients with excellence.'],
+        additionalSyns: ['patron']
+      },
+      {
+        word: 'consumer',
+        def: ['a person who purchases goods or services for personal use'],
+        languageLevel: 'B2',
+        examples: ['The consumer reviews helped me make an informed decision.', 'As a consumer, it is important to be aware of your rights.'],
+        additionalSyns: ['shopper', 'buyer']
+      },
+      {
+        word: 'purchaser',
+        def: ['a person who buys or acquires something'],
+        languageLevel: 'B2',
+        examples: ['The purchaser of the artwork was thrilled with the piece.', 'The company announced a special offer for purchasers of their product.'],
+        additionalSyns: ['buyer']
+      }
+    ],
+    languageLevel: 'B2',
+    examples: ['The store offers discounts to loyal customers.', 'The customer service representative addressed the concerns of the customer.']
   }
 ]
 
