@@ -27,6 +27,7 @@ const WORDS = [
     languageLevel: "A1",
     examples: ['Eventually she had saved enough money to buy a small car.', 'He bought his mother some flowers/He bought some flowers for his mother.', 'There are more people buying at this time of the year so prices are high.', 'The company was set up to buy and sell shares on behalf of investors.', 'I bought my camera from a friend of mine.']
   },
+
   {
     word: "basin",
     def: ["an open, round container shaped like a bowl with sloping sides, used for holding food or liquid", "a large, open bowl, or the amount such a container will hold"],
@@ -55,6 +56,7 @@ const WORDS = [
     languageLevel: "B1",
     examples: ['Run some water into the basin and wash your hands and face properly.', 'When you have broken the eggs into a basin, whisk them together lightly with a fork.', 'The basin in the upstairs bathroom has gold taps! …eaning fluids under the basin in the back toilet.', 'In the auction there is a rather nice antique porcelain basin and jug.', 'I left the napkins soaking in a basin.']
   },
+
   {
     word: "carbon footprint",
     def: ["a measure of the amount of carbon dioxide released into the atmosphere as a result of the activities of a particular individual, organization, or community."],
@@ -68,6 +70,7 @@ const WORDS = [
     languageLevel: "B2",
     examples: ['The four main areas that determine your carbon foo…tural gas usage, car mileage, and airplane trips.', 'We have partnered with nearby farms, hoping to reduce the carbon footprint of our delivery trucks.'],
   },
+  
   {
     word: "conserve",
     def: ["protect (something, especially something of environmental or cultural importance) from harm or destruction."],
@@ -82,6 +85,7 @@ const WORDS = [
     languageLevel: "C1",
     examples: ['To conserve electricity, we are cutting down on our heating.', 'The nationalists are very eager to conserve their customs and language.', "I'm not being lazy - I'm just conserving my energy/strength for later."],
   },
+  
   {
     word: "consume",
     def: ["to use fuel, energy, time, or a product, especially in large amounts", "to eat or drink something"],
@@ -120,6 +124,7 @@ const WORDS = [
     languageLevel: "B1",
     examples: ["Our high living standards cause our current population to consume 25 percent of the world's oil.", 'Most of their manufactured products are consumed domestically.', 'The software consumes huge amounts of internet bandwidth.', "He consumes huge amounts of bread with every meal."]
   },
+  
   {
     word: "top",
     def: ["the highest part or point of something", "the upper flat surface of something"],
@@ -170,6 +175,7 @@ const WORDS = [
     languageLevel: "A2",
     examples: ['She was standing at the top of the stairs.', 'The title is right at the top of the page.', ' to the top He filled my glass to the top.', 'We climbed to the very top of the hill.', 'Can you polish the top of the table?']
   },
+  
   {
     word: "habitat",
     def: ["the place where a particular type of animal or plant is normally found"],
@@ -206,6 +212,7 @@ const WORDS = [
     languageLevel: "B2",
     examples: ["The panda's natural habitat is the bamboo forest.", 'the destruction of wildlife habitat']
   },
+  
   {
     word: 'emit',
     def: ['to send out something such as light, heat, sound, gas, etc.'],
@@ -235,6 +242,7 @@ const WORDS = [
     languageLevel: "C1",
     examples: ['The metal container began to emit a clicking sound.', 'Sulphur gases were emitted by the volcano.']
   },
+  
   {
     word: 'incentive',
     def: ['something that encourages or motivates someone to do something'],
@@ -244,7 +252,7 @@ const WORDS = [
         def: ['the reason or reasons one has for acting or behaving in a particular way'],
         languageLevel: 'B2',
         examples: ['Financial incentives can be a strong motivation for employees.', 'She lacks motivation to exercise regularly.'],
-        additionalSyns: ['drive', 'stimulus']
+        additionalSyns: ['inspiration', 'reason']
       },
       {
         word: 'encouragement',
@@ -271,6 +279,7 @@ const WORDS = [
     languageLevel: 'B2',
     examples: ['The company offers various incentives to attract new customers.', 'She was motivated by the incentive of a promotion.']
   },
+  
   {
     word: 'fantastic',
     def: ['extraordinarily good or impressive; excellent'],
@@ -300,6 +309,7 @@ const WORDS = [
     languageLevel: 'B2',
     examples: ['The movie was fantastic!', 'She did a fantastic job on the project.']
   },
+  
   {
     word: 'browse',
     def: ['to look through or read something casually'],
@@ -329,6 +339,7 @@ const WORDS = [
     languageLevel: 'B2',
     examples: ['She likes to browse magazines at the bookstore.', 'He spent some time browsing online forums.']
   },
+  
   {
     word: 'extinct',
     def: ['no longer in existence'],
@@ -351,6 +362,7 @@ const WORDS = [
     languageLevel: 'B2',
     examples: ['The dinosaur is an extinct species.', 'The once flourishing civilization is now extinct.']
   },
+  
   {
     word: 'scientist',
     def: ['a person who studies and has expert knowledge of one or more branches of science'],
@@ -373,6 +385,7 @@ const WORDS = [
     languageLevel: 'B2',
     examples: ['The scientist made significant discoveries in the field of physics.', 'Scientists are continuously seeking answers to complex questions.']
   },
+  
   {
     word: 'impressed',
     def: ['having a strong effect on the mind or feelings; eliciting admiration or respect'],
@@ -402,6 +415,7 @@ const WORDS = [
     languageLevel: 'B2',
     examples: ['I was impressed by her talent.', 'The performance left a lasting impression on me.']
   },
+  
   {
     word: 'delighted',
     def: ['feeling or showing great pleasure or satisfaction'],
@@ -431,6 +445,7 @@ const WORDS = [
     languageLevel: 'B2',
     examples: ['I was delighted to receive your invitation.', 'She was delighted with the outcome of the project.']
   },
+  
   {
     word: 'species',
     def: ['a group of living organisms consisting of similar individuals capable of exchanging genes or interbreeding'],
@@ -447,12 +462,13 @@ const WORDS = [
         def: ['a number of different types of things'],
         languageLevel: 'B2',
         examples: ['The store offers a variety of fruits and vegetables.', 'We saw a variety of birds during our trip.'],
-        additionalSyns: ['assortment', 'range']
+        additionalSyns: ['assortment', 'range', 'diversity', 'different', 'differece', 'change']
       }
     ],
     languageLevel: 'B2',
     examples: ['The concept of species is central to the study of biology.', 'The preservation of endangered species is crucial for biodiversity.']
   },
+  
   {
     word: 'as long as',
     def: ['provided that; on the condition that'],
@@ -496,6 +512,7 @@ const WORDS = [
     languageLevel: 'B2',
     examples: ['You can come with us as long as you promise to behave.', "I'll support you as long as you keep working hard."]
   },
+  
   {
     word: 'exquisite',
     def: ['extremely beautiful, carefully made, or pleasing in a delicate way'],
@@ -525,33 +542,41 @@ const WORDS = [
     languageLevel: 'B2',
     examples: ['The artwork displayed in the gallery was exquisite.', 'She enjoyed an exquisite meal at the fine dining restaurant.']
   },
+  
   {
     word: 'customer',
     def: ['a person who buys goods or services from a business'],
     syns: [
       {
-        word: 'client',
-        def: ['a person or organization that uses the services or advice of a professional or company'],
-        languageLevel: 'B2',
-        examples: ['The lawyer\'s client was satisfied with the outcome of the case.', 'The company takes pride in serving its clients with excellence.'],
-        additionalSyns: ['patron']
+        word: "client",
+        def: ["a person or organization that uses the services of a professional person or organization."],
+        languageLevel: 'B1',
+        examples: ["The lawyer met with her client to discuss her case.", "The client was unhappy with the services they had received from the company.", "The company's clients are spread all over the world.", "The client is always right.", "We need to improve our customer satisfaction ratings."],
+        additionalSyns: ["patron", "consumer"]
       },
       {
         word: 'consumer',
         def: ['a person who purchases goods or services for personal use'],
         languageLevel: 'B2',
         examples: ['The consumer reviews helped me make an informed decision.', 'As a consumer, it is important to be aware of your rights.'],
-        additionalSyns: ['shopper', 'buyer']
+        additionalSyns: ['shopper']
       },
       {
         word: 'purchaser',
         def: ['a person who buys or acquires something'],
         languageLevel: 'B2',
         examples: ['The purchaser of the artwork was thrilled with the piece.', 'The company announced a special offer for purchasers of their product.'],
-        additionalSyns: ['buyer']
+        additionalSyns: []
+      },
+      {
+        word: "buyer",
+        def: ['a person who buys something, especially something expensive', 'a person whose job is to choose goods that will be sold in a large shop'],
+        languageLevel: 'B1',
+        examples: ['Have you found a buyer for your house?'],
+        additionalSyns: ['purchaser']
       }
     ],
-    languageLevel: 'B2',
+    languageLevel: 'A1',
     examples: ['The store offers discounts to loyal customers.', 'The customer service representative addressed the concerns of the customer.']
   }
 ]

@@ -4,22 +4,18 @@ import { stopStopwatch, continueStopwatch } from "../utils/stopwatch.js";
 import { getRandomItem, getPossiblePrompts, getCorrectSynonyms } from "../utils/utils.js";
 import { manipulateChoices, toggleChoicesAbility, resetChoices, textboxPlaceholderToggle, enableSubmitButtons, disableTextbox } from "../utils/answerUtils.js";
 import { hideAnswerGrade, resetAnswerGradeInfo } from "../utils/gradeUtils.js";
-import endRound from '../utils/endRound.js';
+import endRound from "../utils/endRound.js";
 
-const NEXT_BUTTON_TEXT = 'Next Question';
-const questionPromptElem = document.querySelector('.question__prompt');
+const NEXT_BUTTON_TEXT = "Next Question";
+const questionPromptElem = document.querySelector(".question__prompt");
 const nextButton = document.querySelector(".next-button");
-const streakCounter = document.querySelector('[data-streak-counter]');
-const answerTextbox = document.querySelector('#answer-textbox');
+const streakCounter = document.querySelector("[data-streak-counter]");
+const answerTextbox = document.querySelector("#answer-textbox");
 
 function pushRoundPromptObject(prompt, currentRound) {
-  const choiceButtons = document.querySelectorAll('.choice__button');
-  const choices = currentRound.mode === "multiplechoice"
-    ? Array.from(choiceButtons).map(btn => btn.textContent)
-    : [];
-  const correctAnswers = currentRound.mode === 'multiplechoice'
-    ? getCorrectSynonyms(prompt).filter(syn => choices.includes(syn))
-    : getCorrectSynonyms(prompt);
+  const choiceButtons = document.querySelectorAll(".choice__button");
+  const choices = currentRound.mode === "multiplechoice" ? Array.from(choiceButtons).map((btn) => btn.textContent) : [];
+  const correctAnswers = currentRound.mode === "multiplechoice" ? getCorrectSynonyms(prompt).filter((syn) => choices.includes(syn)) : getCorrectSynonyms(prompt);
 
   const promptRoundObject = {
     word: prompt,
@@ -38,12 +34,11 @@ function cutStreak(currentRound) {
 }
 
 function visualCounterDisablerSwitch(doEnable = false) {
-  const statsContainer = document.querySelector('.question-segment__stats');
+  const statsContainer = document.querySelector(".question-segment__stats");
   if (doEnable) {
-    statsContainer.classList.remove('disabled')
-  }
-  else {
-    statsContainer.classList.add('disabled')
+    statsContainer.classList.remove("disabled");
+  } else {
+    statsContainer.classList.add("disabled");
   }
 }
 
@@ -55,7 +50,7 @@ export function submitClickHandle(rounds, options) {
     currentRound.bestStreak = largestStreak;
   }
   function increaseCounters() {
-    const correctCounter = document.querySelector('[data-correct-counter]');
+    const correctCounter = document.querySelector("[data-correct-counter]");
     const correctCount = parseInt(correctCounter.textContent);
     const streakCount = parseInt(streakCounter.textContent);
     correctCounter.textContent = correctCount + 1;
@@ -65,44 +60,44 @@ export function submitClickHandle(rounds, options) {
     streakCounter.textContent = 0;
   }
   function disableSubmitButton() {
-    const submitButton = document.querySelector('.submit-button');
-    submitButton.setAttribute('disabled', '');
+    const submitButton = document.querySelector(".submit-button");
+    submitButton.setAttribute("disabled", "");
   }
 
   const currentRound = rounds[rounds.length - 1];
   const currentPrompt = questionPromptElem.textContent;
   const correctSynonyms = getCorrectSynonyms(currentPrompt);
-  const selectedChoice = document.querySelector('.selected-choice');
-  const selectedChoiceButton = selectedChoice ? selectedChoice.querySelector('.choice__button') : null;
-  const selectedChoiceText = selectedChoiceButton ? selectedChoiceButton.textContent : '';
+  const selectedChoice = document.querySelector(".selected-choice");
+  const selectedChoiceButton = selectedChoice ? selectedChoice.querySelector(".choice__button") : null;
+  const selectedChoiceText = selectedChoiceButton ? selectedChoiceButton.textContent : "";
   const writtenAnswer = answerTextbox.value.trim();
-  const isAnswerCorrect = correctSynonyms.includes(selectedChoiceText) ||
-    correctSynonyms.includes(writtenAnswer.toLowerCase().trim()) && writtenAnswer.toLowerCase().trim() !== currentPrompt
+  const isAnswerCorrect = correctSynonyms.includes(selectedChoiceText) || (correctSynonyms.includes(writtenAnswer.toLowerCase().trim()) && writtenAnswer.toLowerCase().trim() !== currentPrompt);
 
   if (selectedChoice || writtenAnswer) {
     const currentRoundPromptsObject = currentRound.prompts[currentRound.prompts.length - 1];
     if (currentRoundPromptsObject && currentRoundPromptsObject.word === currentPrompt) {
       currentRoundPromptsObject.selectedChoices.push(writtenAnswer || selectedChoiceButton.textContent);
-    }
-    else if (currentRoundPromptsObject) {
+    } else if (currentRoundPromptsObject) {
       pushRoundPromptObject(currentPrompt, currentRound);
       const updatedCurrentRoundPromptsObject = currentRound.prompts[currentRound.prompts.length - 1];
       updatedCurrentRoundPromptsObject.selectedChoices.push(writtenAnswer || selectedChoiceButton.textContent);
     }
-  }
-  else {
-    warnGrade()
+  } else {
+    warnGrade();
     return;
   }
 
   if (isAnswerCorrect) {
-    if (currentRound.currentQuestionNumber === currentRound.totalQuestionCount) { // Round ended
+    if (currentRound.currentQuestionNumber === currentRound.totalQuestionCount) {
+      // Round ended
       endRound(rounds);
     }
 
     nextButton.textContent = NEXT_BUTTON_TEXT;
 
-    if (!options.stopwatchWhileGrading) { stopStopwatch(); }
+    if (!options.stopwatchWhileGrading) {
+      stopStopwatch();
+    }
 
     motivatingGrade();
     disableSubmitButton();
@@ -114,8 +109,7 @@ export function submitClickHandle(rounds, options) {
         increaseStreak();
         increaseCounters();
       }
-    }
-    else if (currentRound.mode === "insert") {
+    } else if (currentRound.mode === "insert") {
       disableTextbox();
 
       if (currentRound.correctAnswerCount + currentRound.wrongAnswerCount + currentRound.skippedAnswerCount === currentRound.currentQuestionNumber) {
@@ -125,16 +119,15 @@ export function submitClickHandle(rounds, options) {
       increaseCounters();
       currentRound.correctAnswerCount++;
     }
-  }
-  else {
+  } else {
     if (currentRound.correctAnswerCount + currentRound.wrongAnswerCount + currentRound.skippedAnswerCount < currentRound.currentQuestionNumber) {
       currentRound.wrongAnswerCount++;
       visualCounterDisablerSwitch();
     }
 
     if (currentRound.mode === "multiplechoice") {
-      selectedChoice.classList.add('disabled');
-      selectedChoiceButton.setAttribute('disabled', '');
+      selectedChoice.classList.add("disabled");
+      selectedChoiceButton.setAttribute("disabled", "");
       resetChoices();
     }
 
@@ -143,40 +136,38 @@ export function submitClickHandle(rounds, options) {
     wrongGrade();
   }
 
-  if (document.querySelectorAll('.choice.disabled').length === 3) {
-    const unselectedChoice = Array.from(document.querySelectorAll('.choice'))
-      .find(choice => !choice.classList.contains('disabled'));
+  if (document.querySelectorAll(".choice.disabled").length === 3) {
+    const unselectedChoice = Array.from(document.querySelectorAll(".choice")).find((choice) => !choice.classList.contains("disabled"));
 
-    unselectedChoice.classList.add('selected-choice');
-    unselectedChoice.classList.add('disabled');
-    unselectedChoice.querySelector('.choice__button').setAttribute('disabled', '');
+    unselectedChoice.classList.add("selected-choice");
+    unselectedChoice.classList.add("disabled");
+    unselectedChoice.querySelector(".choice__button").setAttribute("disabled", "");
     disableSubmitButton();
     wrongGrade();
     stopStopwatch();
     if (currentRound.currentQuestionNumber === currentRound.totalQuestionCount) {
       endRound(rounds);
     }
-
   }
 }
 
 export function nextClickHandle(rounds, options) {
   const currentRound = rounds[rounds.length - 1];
-  const currentRoundPrompts = currentRound.prompts[currentRound.prompts.length - 1];
-  const SURE_TEXT = 'Are You Sure?';
-  const SKIP_TEXT = 'Skip Question';
+  const currentPrompt = currentRound.prompts[currentRound.prompts.length - 1];
+  const SURE_TEXT = "Are You Sure?";
+  const SKIP_TEXT = "Skip Question";
   const prompt = questionPromptElem.textContent;
-  const selectedChoice = document.querySelector('.selected-choice');
+  const selectedChoiceElem = document.querySelector(".selected-choice");
   const writtenAnswer = answerTextbox.value.trim();
 
-  if (((!selectedChoice && currentRound.mode === 'multiplechoice') || ((!writtenAnswer || !getCorrectSynonyms(prompt).includes(currentRoundPrompts.selectedChoices[currentRoundPrompts.selectedChoices.length - 1])) && currentRound.mode === 'insert') || (currentRound.correctAnswerCount + currentRound.wrongAnswerCount + currentRound.skippedAnswerCount !== currentRound.currentQuestionNumber)) && nextButton.textContent !== SURE_TEXT) {
+  if (((!selectedChoiceElem && currentRound.mode === "multiplechoice") || ((!writtenAnswer || !getCorrectSynonyms(prompt).includes(currentPrompt.selectedChoices[currentPrompt.selectedChoices.length - 1])) && currentRound.mode === "insert") || currentRound.correctAnswerCount + currentRound.wrongAnswerCount + currentRound.skippedAnswerCount !== currentRound.currentQuestionNumber) && nextButton.textContent !== SURE_TEXT) {
     nextButton.textContent = SURE_TEXT;
     return;
   }
-  if (nextButton.hasAttribute('data-skip')) {
+  if (nextButton.hasAttribute("data-skip")) {
     currentRound.skippedAnswerCount++;
     nextButton.textContent = NEXT_BUTTON_TEXT;
-    nextButton.removeAttribute('data-skip');
+    nextButton.removeAttribute("data-skip");
     pushRoundPromptObject(prompt, currentRound);
     toggleChoicesAbility();
     endRound(rounds);
@@ -184,41 +175,44 @@ export function nextClickHandle(rounds, options) {
   }
 
   function increaseCounter() {
-    const questionCounter = document.querySelector('.question-segment__banner__question-counter');
+    const questionCounter = document.querySelector(".question-segment__banner__question-counter");
     const count = parseInt(questionCounter.textContent);
     questionCounter.textContent = count + 1;
   }
   function pickNewPrompt() {
-    const currentPrompt = questionPromptElem.textContent;
-    const excludedPrompts = currentRound.prompts.map(promptObject => promptObject.word);
-    if (!excludedPrompts.includes(currentPrompt)) { excludedPrompts.push(currentPrompt); }
+    const x = questionPromptElem.textContent;
+    const excludedPrompts = currentRound.prompts.map((promptObject) => promptObject.word);
+    if (!excludedPrompts.includes(x)) {
+      excludedPrompts.push(x);
+    }
     const newPrompt = getRandomItem(getPossiblePrompts(excludedPrompts));
     return newPrompt;
   }
   function enableTextbox() {
-    answerTextbox.removeAttribute('disabled');
+    answerTextbox.removeAttribute("disabled");
     textboxPlaceholderToggle();
   }
   function resetTextbox() {
-    answerTextbox.value = '';
+    answerTextbox.value = "";
   }
 
   const newPrompt = pickNewPrompt();
-  const newWordObject = WORDS.find(wordObj => {
-    return (wordObj.word === newPrompt) || (wordObj.syns.find(synObject => synObject.word === newPrompt));
+  const newWordObject = WORDS.find((wordObj) => {
+    return wordObj.word === newPrompt || wordObj.syns.find((synObject) => synObject.word === newPrompt);
   });
 
-  if (!(currentRound.correctAnswerCount + currentRound.wrongAnswerCount + currentRound.skippedAnswerCount < currentRound.currentQuestionNumber)) { // Runs before currentQuestionNumber adiition, number of past question
-    const choices = document.querySelectorAll('.choice');
-    const areChoiceButtonsDisabled = Array.from(choices).every(choice => {
-      return choice.classList.contains('disabled');
+  if (!(currentRound.correctAnswerCount + currentRound.wrongAnswerCount + currentRound.skippedAnswerCount < currentRound.currentQuestionNumber)) {
+    // Runs before currentQuestionNumber addition, number of past question
+    const choices = document.querySelectorAll(".choice");
+    const areChoiceButtonsDisabled = Array.from(choices).every((choice) => {
+      return choice.classList.contains("disabled");
     });
-    const isTextboxDisabled = answerTextbox.hasAttribute('disabled');
-    if (!options.stopwatchWhileGrading && (areChoiceButtonsDisabled && isTextboxDisabled)) { // && Question not skipped
+    const isTextboxDisabled = answerTextbox.hasAttribute("disabled");
+    if (!options.stopwatchWhileGrading && areChoiceButtonsDisabled && isTextboxDisabled) {
+      // && Question not skipped
       continueStopwatch(options.stopwatchTimingMechanism, options.isStopwatchOn);
     }
-  }
-  else {
+  } else {
     currentRound.skippedAnswerCount++;
     cutStreak(currentRound);
     streakCounter.textContent = 0;
@@ -226,7 +220,7 @@ export function nextClickHandle(rounds, options) {
 
   currentRound.currentQuestionNumber++;
   questionPromptElem.textContent = newPrompt;
-  answerTextbox.textContent = '';
+  answerTextbox.textContent = "";
   nextButton.textContent = NEXT_BUTTON_TEXT;
 
   if (currentRound.prompts[currentRound.prompts.length - 1]) {
@@ -236,19 +230,18 @@ export function nextClickHandle(rounds, options) {
     }
   }
 
-  if (currentRound.mode === 'multiplechoice') {
+  if (currentRound.mode === "multiplechoice") {
     manipulateChoices(newWordObject, newPrompt);
     resetChoices();
     toggleChoicesAbility(false);
-  }
-  else {
+  } else {
     resetTextbox();
     enableTextbox();
   }
 
   if (currentRound.currentQuestionNumber === currentRound.totalQuestionCount) {
     nextButton.textContent = SKIP_TEXT;
-    nextButton.setAttribute('data-skip', '');
+    nextButton.setAttribute("data-skip", "");
   }
 
   increaseCounter();

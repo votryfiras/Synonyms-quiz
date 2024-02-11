@@ -1,0 +1,27 @@
+#about {
+  display: none;
+  &.visible {
+    display: block;
+  }
+  padding: 4%;
+}
+
+.about-content {
+  display: flex;
+  justify-content: center;
+}
+
+.about-content__bg {
+  width: 30vw;
+  padding: 1em;
+  background-color: whitesmoke;
+}
+
+.about {
+  &__title {
+    &__icon {
+      vertical-align: middle;
+      width: 1.5em;
+    }
+  }
+}

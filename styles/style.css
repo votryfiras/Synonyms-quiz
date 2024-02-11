@@ -1,5 +1,29 @@
 @import url("https://fonts.googleapis.com/css2?family=Dancing+Script&family=Belanosima&display=swap");
 @import url("https://fonts.googleapis.com/css2?family=Ubuntu:wght@400&display=swap");
+#about {
+  display: none;
+  padding: 4%;
+}
+#about.visible {
+  display: block;
+}
+
+.about-content {
+  display: flex;
+  justify-content: center;
+}
+
+.about-content__bg {
+  width: 30vw;
+  padding: 1em;
+  background-color: whitesmoke;
+}
+
+.about__title__icon {
+  vertical-align: middle;
+  width: 1.5em;
+}
+
 .backdrop.visible {
   min-height: 100vh;
   width: 100vw;
@@ -318,7 +342,7 @@
 }
 
 .congrats-segment {
-  background-color: limegreen;
+  background-color: rgb(50, 205, 50);
   padding: 0.4em 0.5em;
   border-width: 2px;
   border-style: solid;
@@ -918,6 +942,77 @@
   margin: 0 auto;
 }
 
+.navigation-segment {
+  display: flex;
+  justify-content: center;
+  margin-top: 2rem;
+}
+.navigation-segment .navigation-nav {
+  border-radius: 1000px;
+  border: 1px solid rgba(0, 0, 0, 0.2);
+  background-color: var(--nav-bg);
+  font-size: 1.3rem;
+}
+.navigation-segment .navigation-nav__list {
+  margin: 0;
+  padding: 0;
+  display: flex;
+  list-style: none;
+}
+.navigation-segment .navigation-nav__list__item {
+  display: flex;
+  align-items: center;
+  white-space: nowrap;
+}
+.navigation-segment .navigation-nav__list__item:first-child {
+  border-top-left-radius: 1000px;
+  border-bottom-left-radius: 1000px;
+}
+.navigation-segment .navigation-nav__list__item:last-child {
+  border-top-right-radius: 1000px;
+  border-bottom-right-radius: 1000px;
+}
+.navigation-segment .navigation-nav__list__item__button {
+  width: 2.2em;
+  height: 100%;
+  padding: 0.3em 0;
+  padding-right: 0.5em;
+  border-radius: inherit;
+  outline: none;
+  border: none;
+  background-color: transparent;
+  font-size: inherit;
+  color: var(--text-color);
+  overflow: hidden;
+  transition: width 200ms, background-color 100ms, color 100ms;
+  cursor: pointer;
+}
+.navigation-segment .navigation-nav__list__item__button.selected.selected {
+  background-color: rgb(var(--secondary-color));
+  color: whitesmoke;
+  width: 6em;
+}
+.navigation-segment .navigation-nav__list__item__button:hover {
+  background-color: rgba(var(--secondary-color), 0.1);
+}
+.navigation-segment .navigation-nav__list__item__button--game:hover {
+  width: calc(3.3em + 4ch);
+}
+.navigation-segment .navigation-nav__list__item__button--game.selected.selected {
+  width: calc(3.3em + 4ch);
+}
+.navigation-segment .navigation-nav__list__item__button--about:hover {
+  width: calc(2.7em + 8ch);
+}
+.navigation-segment .navigation-nav__list__item__button--about.selected.selected {
+  width: calc(2.7em + 8ch);
+}
+.navigation-segment .navigation-nav__list__item__icon {
+  margin: 0 0.5em;
+  width: 1.2em;
+  vertical-align: middle;
+}
+
 :root {
   --page-bg-color: hsl(0, 0%, 90%);
   --primary-color: hsl(0, 0%, 99%);
@@ -925,6 +1020,7 @@
   --text-color: #444444;
   --border-color: hsl(0, 0%, 80%);
   --options-modal-border-color: #d8dbe2;
+  --nav-bg: rgba(200, 200, 200, 0.8);
   background-color: var(--page-bg-color);
   background-image: url("../../icons/quiz.svg");
   background-size: 80px 80px;
@@ -945,8 +1041,12 @@ main {
 #game {
   max-width: 748px;
   padding: 0 1.5rem;
-  padding-top: 8%;
+  padding-top: 4%;
   margin: 0 auto;
+  display: none;
+}
+#game.visible {
+  display: block;
 }
 
 @keyframes placeholder-type {
@@ -1015,40 +1115,40 @@ main {
 }
 @keyframes rainbow {
   100%, 0% {
-    color: red;
+    color: rgb(255, 0, 0);
   }
   8% {
-    color: #ff7f00;
+    color: rgb(255, 127, 0);
   }
   16% {
-    color: yellow;
+    color: rgb(255, 255, 0);
   }
   25% {
-    color: chartreuse;
+    color: rgb(127, 255, 0);
   }
   33% {
-    color: lime;
+    color: rgb(0, 255, 0);
   }
   41% {
-    color: springgreen;
+    color: rgb(0, 255, 127);
   }
   50% {
-    color: aqua;
+    color: rgb(0, 255, 255);
   }
   58% {
-    color: #007fff;
+    color: rgb(0, 127, 255);
   }
   66% {
-    color: blue;
+    color: rgb(0, 0, 255);
   }
   75% {
-    color: #7f00ff;
+    color: rgb(127, 0, 255);
   }
   83% {
-    color: fuchsia;
+    color: rgb(255, 0, 255);
   }
   91% {
-    color: #ff007f;
+    color: rgb(255, 0, 127);
   }
 }
 @keyframes show-congrats {
@@ -1075,7 +1175,6 @@ main {
   .question-segment__question {
     padding: 2.4em 0.8em 0.8em 0.4em;
   }
-
   .question-segment__stopwatch {
     top: 1.6em;
     right: 50%;

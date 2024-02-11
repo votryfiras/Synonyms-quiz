@@ -1,0 +1,102 @@
+.navigation-segment {
+  display: flex;
+  justify-content: center;
+  margin-top: 2rem;
+
+  .navigation-nav {
+    $border-radius: 1000px;
+    border-radius: $border-radius;
+    border: 1px solid rgba(0, 0, 0, 0.2);
+    background-color: var(--nav-bg);
+    font-size: 1.3rem;
+    &__list {
+      margin: 0;
+      padding: 0;
+      display: flex;
+      list-style: none;
+
+      &__item {
+        $inline-padding: 0.5em;
+        display: flex;
+        align-items: center;
+        white-space: nowrap;
+
+        &:first-child {
+          border-top-left-radius: $border-radius;
+          border-bottom-left-radius: $border-radius;
+        }
+        &:last-child {
+          border-top-right-radius: $border-radius;
+          border-bottom-right-radius: $border-radius;
+        }
+
+        &__button {
+          $buttons: ("game", "about");
+          $about-width: calc(1.2em + 3 * $inline-padding + 8ch);
+          $game-width: calc(1.2em + 0.6em + 3 * $inline-padding + 4ch);
+          width: 1.2em + 2 * $inline-padding; // icon width + additional + icon margin
+          height: 100%;
+          padding: 0.3em 0;
+          padding-right: $inline-padding;
+          border-radius: inherit;
+          outline: none;
+          border: none;
+          background-color: transparent;
+          font-size: inherit;
+          color: var(--text-color);
+          overflow: hidden;
+          transition: width 200ms, background-color 100ms, color 100ms;
+          cursor: pointer;
+
+          &.selected.selected {
+            background-color: rgb(var(--secondary-color));
+            color: whitesmoke;
+            width: 6em;
+          }
+
+          &:hover {
+            background-color: rgba(var(--secondary-color), 0.1);
+          }
+
+          @each $button in $buttons {
+            $width: 0;
+
+            &--#{$button} {
+              @if $button == "about" {
+                $width: $about-width;
+              } @else if $button == "game" {
+                $width: $game-width;
+              }
+
+              &:hover {
+                width: $width;
+              }
+
+              &.selected.selected {
+                width: $width;
+              }
+            }
+          }
+
+          // &--about {
+          //   &:hover {
+          //     width: $about-width;
+          //   }
+          // }
+
+          // &--game {
+          //   &:hover {
+          //     width: $game-width;
+          //   }
+          // }
+        }
+
+        &__icon {
+          margin: 0 $inline-padding;
+          width: 1.2em;
+          vertical-align: middle;
+        }
+      }
+    }
+  }
+}
