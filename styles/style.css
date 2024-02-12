@@ -42,7 +42,7 @@
 .about__body {
   font-size: 1.1rem;
   max-width: 80ch;
-  line-height: 1.2em;
+  line-height: 1.4em;
 }
 
 .backdrop.visible {
@@ -519,8 +519,8 @@
 }
 .function-button-container .function-button--theme-button {
   box-sizing: border-box;
-  width: 1.5em;
-  height: 1.5em;
+  width: 1.2em;
+  height: 1.2em;
   padding: 0;
   border: 0;
   border-radius: 50%;
@@ -536,25 +536,40 @@
 }
 .function-button-container .function-button--theme-button:hover {
   text-decoration: none;
-  color: #333333;
-  background-color: rgba(200, 200, 200, 0.4);
-  transform: rotate(-360deg);
 }
-.function-button-container .function-button--theme-button:hover::before {
+.function-button-container .function-button--theme-button[data-current-theme=light]::before {
   content: "";
-  height: 0.1em;
-  width: 0.35em;
+  width: inherit;
+  height: inherit;
   position: absolute;
-  top: 0.75em;
-  background-color: white;
-  border-bottom: 2px solid #321b41;
-  border-right: 1px solid #321b41;
-  border-left: 1px solid #321b41;
-  border-bottom-left-radius: 100000000000000000px;
-  border-bottom-right-radius: 1000000000000px;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: gold;
+  border-radius: 50%;
 }
-.function-button-container .function-button--theme-button:active {
-  background-color: rgba(200, 200, 200, 0.8);
+.function-button-container .function-button--theme-button[data-current-theme=light]::after {
+  content: "";
+  width: 0.8em;
+  height: 0.8em;
+  position: absolute;
+  top: 0;
+  left: 0;
+  background-color: var(--page-bg-color);
+  border-radius: 50%;
+}
+.function-button-container .function-button--theme-button[data-current-theme=dark] {
+  box-shadow: 0 0 12px 1px yellow;
+  position: relative;
+}
+.function-button-container .function-button--theme-button[data-current-theme=dark]::before {
+  content: "";
+  height: inherit;
+  position: absolute;
+  width: inherit;
+  height: inherit;
+  background-color: yellow;
+  border-radius: 50%;
 }
 
 .submit-segment {

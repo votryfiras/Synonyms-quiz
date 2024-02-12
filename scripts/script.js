@@ -37,7 +37,9 @@ function switchTheme() {
   const rootElem = document.querySelector(":root");
   if (themeButton.dataset.currentTheme === "light") {
     themeButton.dataset.currentTheme = "dark";
-    themeButton.textContent = "🌞";
+    // themeButton.classList.add("light");
+    // themeButton.classList.remove("night");
+
     rootElem.style = `
       --page-bg-color: hsl(0, 0%, 10%);
       --primary-color: hsl(0, 0%, 20%);
@@ -49,7 +51,8 @@ function switchTheme() {
     `;
   } else if (themeButton.dataset.currentTheme === "dark") {
     themeButton.dataset.currentTheme = "light";
-    themeButton.textContent = "🌚";
+    // themeButton.classList.add("night");
+    // themeButton.classList.remove("light");
     rootElem.style = "";
   }
 }
