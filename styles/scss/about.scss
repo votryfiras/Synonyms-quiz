@@ -3,7 +3,7 @@
   &.visible {
     display: block;
   }
-  padding: 4%;
+  padding: 10% 10vw 4% 10vw;
 }
 
 .about-content {
@@ -12,16 +12,41 @@
 }
 
 .about-content__bg {
-  width: 30vw;
-  padding: 1em;
-  background-color: whitesmoke;
+  padding: 1.2em;
+  background-color: transparentize(mediumpurple, 0.7);
+  position: relative;
+  box-shadow: 0 0 8px 0 rgba(0, 0, 0, 0.2);
+  border-radius: 6px;
 }
 
 .about {
+  // no element with class .about
   &__title {
-    &__icon {
-      vertical-align: middle;
-      width: 1.5em;
+    &__icon-container {
+      padding: 1em;
+      font-size: 1.2rem;
+      box-shadow: 0 0 10px 5px rgba(0, 0, 0, 0.2);
+      border-radius: 50%;
+      background-color: rgb(var(--secondary-color));
+      position: absolute;
+      left: 0.7em;
+      transform: translateY(-100%);
     }
+
+    &__icon {
+      color: #4d4d4d;
+      width: 1.5em;
+      vertical-align: middle;
+    }
+
+    &__text {
+      padding-top: 1em;
+    }
+  }
+
+  &__body {
+    font-size: 1.1rem;
+    max-width: 80ch;
+    line-height: 1.2em;
   }
 }

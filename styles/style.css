@@ -2,7 +2,7 @@
 @import url("https://fonts.googleapis.com/css2?family=Ubuntu:wght@400&display=swap");
 #about {
   display: none;
-  padding: 4%;
+  padding: 10% 10vw 4% 10vw;
 }
 #about.visible {
   display: block;
@@ -14,14 +14,35 @@
 }
 
 .about-content__bg {
-  width: 30vw;
-  padding: 1em;
-  background-color: whitesmoke;
+  padding: 1.2em;
+  background-color: rgba(147, 112, 219, 0.3);
+  position: relative;
+  box-shadow: 0 0 8px 0 rgba(0, 0, 0, 0.2);
+  border-radius: 6px;
 }
 
+.about__title__icon-container {
+  padding: 1em;
+  font-size: 1.2rem;
+  box-shadow: 0 0 10px 5px rgba(0, 0, 0, 0.2);
+  border-radius: 50%;
+  background-color: rgb(var(--secondary-color));
+  position: absolute;
+  left: 0.7em;
+  transform: translateY(-100%);
+}
 .about__title__icon {
-  vertical-align: middle;
+  color: #4d4d4d;
   width: 1.5em;
+  vertical-align: middle;
+}
+.about__title__text {
+  padding-top: 1em;
+}
+.about__body {
+  font-size: 1.1rem;
+  max-width: 80ch;
+  line-height: 1.2em;
 }
 
 .backdrop.visible {
