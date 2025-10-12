@@ -1,0 +1,37 @@
+@use "./variables";
+
+@mixin button {
+  padding: 0.3em 0.4em;
+  border-color: var(--border-color);
+  border-style: solid;
+  outline-color: variables.$focus-outline-color;
+  color: var(--text-color);
+  background-color: var(--primary-color);
+  border-radius: 4px;
+  cursor: pointer;
+  &:hover {
+    color: rgb(var(--secondary-color));
+    border-color: rgb(var(--secondary-color));
+    text-decoration: underline;
+    box-shadow: variables.$focus-shadow;
+  }
+  &:focus,
+  &:focus-visible {
+    box-shadow: variables.$focus-shadow;
+  }
+}
+
+@mixin absolute-center($dir: "both") {
+  position: absolute;
+  @if $dir == "both" {
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+  } @else if ($dir == "vertical") {
+    top: 50%;
+    transform: translate(0%, -50%);
+  } @else if $dir == "horizontal" {
+    left: 50%;
+    transform: translate(-50%, 0%);
+  }
+}

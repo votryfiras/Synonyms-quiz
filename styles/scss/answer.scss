@@ -1,0 +1,141 @@
+@use "./partials/variables.scss";
+
+.answer-segment {
+  padding-top: 0.2rem;
+  position: relative;
+  &.choice-mode .answer-textbox-container {
+    display: none;
+  }
+  &.insert-mode .choice-container {
+    display: none;
+  }
+}
+
+.choice-container {
+  --repeat: 2;
+  $selected-bg: rgba(var(--secondary-color), 0.2);
+  display: grid;
+  grid-template-columns: repeat(var(--repeat), 1fr);
+  .choice {
+    $offset-margin: 0.6rem;
+    box-sizing: border-box;
+    margin: $offset-margin;
+    margin-left: 0;
+    font-size: 1.1rem;
+    border-radius: variables.$border-radius;
+    background-color: var(--primary-color);
+    user-select: none;
+    &:nth-child(2n) {
+      margin-right: 0;
+      margin-left: $offset-margin;
+    }
+    &__button {
+      width: 100%;
+      padding: 1.3em 3em;
+      border: 2px solid var(--border-color);
+      border-radius: variables.$border-radius;
+      outline-color: variables.$focus-outline-color;
+
+      color: var(--text-color);
+      text-align: center;
+
+      background-color: transparent;
+      font-size: inherit;
+      cursor: pointer;
+      transition: background 25ms;
+      &:hover {
+        border-color: rgb(var(--secondary-color));
+        box-shadow: variables.$focus-shadow;
+      }
+      &:focus,
+      &:focus-visible {
+        box-shadow: variables.$focus-shadow;
+      }
+    }
+  }
+  .selected-choice .choice__button {
+    border-color: rgb(var(--secondary-color));
+    background-color: $selected-bg;
+    outline: 0;
+    box-shadow: variables.$focus-shadow;
+  }
+  .choice.disabled {
+    position: relative;
+    &::before {
+      content: "";
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.1);
+      border-radius: inherit;
+      cursor: not-allowed;
+    }
+  }
+}
+
+.answer-textbox-container {
+  margin-top: 0.2em;
+  margin-bottom: 0.5em;
+  position: relative;
+  .answer-textbox {
+    box-sizing: border-box;
+    width: 100%;
+    padding: 0.2em 0.4em;
+
+    border-width: 2px;
+    border-style: solid;
+    border-color: var(--border-color);
+    border-radius: variables.$border-radius;
+    outline: 0;
+    background-color: var(--primary-color);
+
+    font-size: 1.2em;
+    color: var(--text-color);
+
+    transition: border 50ms;
+    user-select: none;
+    &:focus,
+    &:focus-visible {
+      border-color: rgb(var(--secondary-color));
+    }
+  }
+  .answer-textbox:disabled,
+  .answer-textbox:disabled ~ .answer-textbox-label {
+    background-color: initial;
+    cursor: not-allowed;
+  }
+  .answer-textbox-label {
+    height: 100%;
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    cursor: text;
+    &--transformer-placeholder {
+      left: 16ch;
+      font-size: 1.2em;
+      color: gray;
+      &::before {
+        content: "here.";
+        width: max-content;
+        position: absolute;
+        top: 50%;
+        transform: translateY(-50%);
+        animation: placeholder-type 7s infinite;
+      }
+    }
+    &--wrapper {
+      width: 100%;
+      left: 0;
+    }
+  }
+  &:focus-within .answer-textbox-label--transformer-placeholder::before {
+    animation: unset;
+  }
+  &.typing .answer-textbox-label--transformer-placeholder::before {
+    content: "";
+    animation: none;
+  }
+  &.typing .answer-textbox-label--wrapper {
+    z-index: -1;
+  }
+}

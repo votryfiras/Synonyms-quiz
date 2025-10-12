@@ -1,0 +1,191 @@
+@use "./partials/variables";
+@use "about";
+@use "backdrop";
+@use "congrats";
+@use "function-buttons";
+@use "question";
+@use "answer";
+@use "answer-grade";
+@use "navigation";
+
+:root {
+  --page-bg-color: hsl(0, 0%, 90%);
+  --primary-color: hsl(0, 0%, 99%);
+  --secondary-color: 144, 0, 255;
+  --text-color: #444444;
+  --border-color: hsl(0, 0%, 80%);
+  --options-modal-border-color: #d8dbe2;
+  --nav-bg: rgba(200, 200, 200, 0.8);
+  background-color: var(--page-bg-color);
+  background-image: url("../../icons/quiz.svg");
+  background-size: 80px 80px;
+}
+
+body {
+  margin: 0;
+}
+
+main {
+  background-color: var(--page-bg-color);
+  font-family: "Roboto", sans-serif;
+  color: var(--text-color);
+  background-image: url("../icons/quiz.svg");
+  background-size: 80px 80px;
+}
+
+#game {
+  max-width: 748px;
+  padding: 0 1.5rem;
+  padding-top: 4%;
+  margin: 0 auto;
+  display: none;
+  &.visible {
+    display: block;
+  }
+}
+
+@keyframes placeholder-type {
+  20% {
+    content: "here";
+  }
+  24% {
+    content: "her";
+  }
+  28% {
+    content: "he";
+  }
+  32% {
+    content: "h";
+  }
+  36% {
+    content: "";
+  }
+  40% {
+    content: "i";
+  }
+  44% {
+    content: "in";
+  }
+  48% {
+    content: "in t";
+  }
+  52% {
+    content: "in th";
+  }
+  56% {
+    content: "in thi";
+  }
+  60% {
+    content: "in this";
+  }
+  64% {
+    content: "in this s";
+  }
+  68% {
+    content: "in this sp";
+  }
+  72% {
+    content: "in this spo";
+  }
+  76% {
+    content: "in this spot";
+  }
+  80% {
+    content: "in this spot.";
+  }
+}
+
+@keyframes ellipsis {
+  25% {
+    content: ".";
+  }
+  50% {
+    content: "..";
+  }
+  75% {
+    content: "...";
+  }
+  100% {
+    content: "";
+  }
+}
+
+@keyframes rainbow {
+  100%,
+  0% {
+    color: rgb(255, 0, 0);
+  }
+  8% {
+    color: rgb(255, 127, 0);
+  }
+  16% {
+    color: rgb(255, 255, 0);
+  }
+  25% {
+    color: rgb(127, 255, 0);
+  }
+  33% {
+    color: rgb(0, 255, 0);
+  }
+  41% {
+    color: rgb(0, 255, 127);
+  }
+  50% {
+    color: rgb(0, 255, 255);
+  }
+  58% {
+    color: rgb(0, 127, 255);
+  }
+  66% {
+    color: rgb(0, 0, 255);
+  }
+  75% {
+    color: rgb(127, 0, 255);
+  }
+  83% {
+    color: rgb(255, 0, 255);
+  }
+  91% {
+    color: rgb(255, 0, 127);
+  }
+}
+
+@keyframes show-congrats {
+  0% {
+    opacity: 0;
+    visibility: hidden;
+  }
+  3%,
+  100% {
+    opacity: 1;
+    visibility: visible;
+  }
+}
+
+@media screen and (max-width: 648px) {
+  .choice-container {
+    --repeat: 1;
+    .choice.choice {
+      font-size: 1rem;
+      margin-left: 0;
+      margin-right: 0;
+    }
+  }
+}
+
+@media screen and (max-width: 485px) {
+  .question-segment__question {
+    padding: 2.4em 0.8em 0.8em 0.4em;
+  }
+  .question-segment__stopwatch {
+    top: 1.6em;
+    right: 50%;
+    transform: translate(50%);
+  }
+}
+
+@media screen and (min-height: 768px) {
+  .app {
+    padding-top: 20vh;
+  }
+}

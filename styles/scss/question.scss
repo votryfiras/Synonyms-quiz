@@ -1,0 +1,109 @@
+@use "./partials/variables";
+@use "./partials/mixins";
+@import url("https://fonts.googleapis.com/css2?family=Ubuntu:wght@400&display=swap");
+
+.question-segment {
+  position: relative;
+  font-size: 1.1em;
+}
+
+.question-segment__question {
+  box-sizing: border-box;
+  width: 100%;
+  padding: 1.8em 1em 1em 1em;
+
+  text-align: center;
+
+  background-color: var(--primary-color);
+  border-radius: variables.$border-radius;
+  border: 2px solid var(--border-color);
+  &::before {
+    content: "";
+    height: 0;
+    width: 90%;
+    @include mixins.absolute-center;
+    transform: translate(-50%, -20%);
+    background-color: inherit;
+  }
+  &.disabled::before {
+    height: 50%;
+  }
+  &-content {
+    text-align: center;
+    padding: 0 1em 0 2.5em;
+    font-family: "Ubuntu", sans-serif;
+    font-weight: 500;
+    font-size: 1.05em;
+  }
+  .question__prompt {
+    color: rgb(var(--secondary-color));
+    font-weight: 800;
+  }
+}
+
+.question-segment__banner {
+  position: absolute;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  border-radius: 1000000000000px;
+  padding: 0.7em 1em;
+  white-space: nowrap;
+  color: white;
+  background-color: rgb(var(--secondary-color));
+  .question-segment__banner__content {
+    margin: 0;
+    text-align: center;
+  }
+}
+
+.question-segment__stopwatch {
+  position: absolute;
+  top: 0.4em;
+  right: 0.6em;
+  color: rgb(var(--secondary-color));
+  display: none;
+  z-index: 1;
+  &.visible {
+    display: flex;
+  }
+  &__image {
+    width: 1.2em;
+    color: rgb(var(--secondary-color));
+    margin-right: 0.4em;
+  }
+}
+
+.question-segment__stats {
+  position: absolute;
+  top: 0.4em;
+  left: 0.6em;
+  z-index: 1;
+  &.disabled::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    right: -5%;
+    height: 50%;
+    width: 110%;
+    background-color: rgba(255, 0, 0, 0.2);
+  }
+  &__item {
+    font-size: 1.1em;
+    &__img {
+      width: 1.2em;
+      vertical-align: middle;
+      &--correct {
+        color: #33b864;
+      }
+      &--streak {
+        color: #d0312d;
+      }
+    }
+    &__counter {
+      vertical-align: middle;
+    }
+  }
+  &__item--streak {
+    margin-top: 0.7em;
+  }
+}

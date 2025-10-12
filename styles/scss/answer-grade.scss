@@ -1,0 +1,140 @@
+@use "./partials/variables";
+
+.answer-grade-segment {
+  margin-top: 1.5rem;
+  padding-bottom: 1em;
+}
+
+.answer-grade-segment__bg {
+  color: #fff;
+  font-size: 1.4rem;
+  padding: 0.4em 0.5em;
+  border-width: 2px;
+  border-style: solid;
+  border-radius: variables.$border-radius;
+  opacity: 0;
+  transition: opacity 100ms;
+  &.correct,
+  &.wrong,
+  &.warn {
+    opacity: 1;
+    user-select: auto;
+  }
+
+  @each $type in ("correct", "wrong", "warn") {
+    &.#{$type} {
+      & .answer-grade__#{$type}-image {
+        display: inline;
+        @if $type == "correct" {
+          color: darkgreen;
+          border-color: darkgreen;
+          background-color: limegreen;
+          .answer-grade .answer-grade__toggle-info {
+            display: block;
+          }
+        } @else if ($type == "wrong") {
+          color: maroon;
+          border-color: maroon;
+          background-color: lighten(firebrick, 5);
+        } @else if ($type == "warn") {
+          color: darkgoldenrod;
+          border-color: darkgoldenrod;
+          background-color: goldenrod;
+        }
+      }
+
+      &.#{$type} {
+        @if $type == "correct" {
+          border-color: darkgreen;
+          background-color: limegreen;
+          .answer-grade .answer-grade__toggle-info {
+            display: block;
+          }
+        } @else if ($type == "wrong") {
+          border-color: maroon;
+          background-color: lighten(firebrick, 5);
+        } @else if ($type == "warn") {
+          border-color: darkgoldenrod;
+          background-color: goldenrod;
+        }
+      }
+    }
+  }
+
+  .answer-grade {
+    display: flex;
+    align-items: center;
+    position: relative;
+    &__text {
+      height: min-content;
+      margin: 0 0.5em;
+    }
+    &__toggle-info {
+      padding: 0;
+      border: 0;
+      margin: 0 4rem;
+      outline-color: variables.$focus-outline-color;
+
+      position: absolute;
+      top: 50%;
+      transform: translateY(100%);
+
+      background-color: transparent;
+      color: #0000d6;
+      font-size: 0.5em;
+
+      display: none;
+      cursor: pointer;
+      .answer-grade__toggle-info__image {
+        width: 1em;
+        vertical-align: middle;
+        transform: rotate(-90deg);
+      }
+    }
+  }
+  .answer-grade__image {
+    width: 2.3em;
+    display: none;
+  }
+}
+
+.word-info {
+  display: none;
+  max-width: calc(55vmax - 2 * var(--offset-margin));
+  box-sizing: border-box;
+  margin-top: 1em;
+  font-size: 0.9em;
+  &.visible {
+    display: block;
+  }
+  hr {
+    border-color: darkgreen;
+  }
+  &__section {
+    margin: 1em 0;
+    &__keyword {
+      color: darkgreen;
+      text-decoration: underline;
+    }
+  }
+  &__level__level {
+    font-size: 0.8em;
+    font-weight: 550;
+    padding: 0.4em;
+    background-color: lighten(#55565b, 5);
+    border-radius: 5px;
+  }
+  &__def {
+    ul {
+      list-style: decimal;
+    }
+    &__definition {
+      margin: 0 auto;
+    }
+  }
+  &__exm {
+    &__example {
+      margin: 0 auto;
+    }
+  }
+}
